@@ -1,0 +1,139 @@
+DeutschRoom — فهرست وسایل مراحل ۱ تا ۹
+ترتیب ستون‌ها: Deutsch | فارسی | English
+این فهرست نام وسایل و اجزای اصلی است؛ قطعات تکراری مدل جداگانه شمارش نشده‌اند.
+
+مرحله ۱ — کابینت و کشو
+Deutsch | فارسی | English
+der Unterschrank | کابینت زمینی | base cabinet
+die Schublade | کشو | drawer
+die Schranktür | درِ کابینت | cabinet door
+der Griff | دستگیره | handle
+
+مرحله ۲ — سینک، شیر آب و چیدمان آشپزخانه
+Deutsch | فارسی | English
+die Spüle | سینک ظرف‌شویی | kitchen sink
+das Spülbecken | لگن سینک | sink basin
+der Abfluss | خروجی آب سینک | sink drain
+der Wasserhahn | شیر آب | faucet
+die Arbeitsplatte | صفحه کار آشپزخانه | kitchen countertop
+der Spülenunterschrank | کابینت زیر سینک | sink base cabinet
+die Dunstabzugshaube | هود آشپزخانه | range hood
+وسایل بزرگ و کابینت‌های دیواری اولیه این مرحله، در مرحله‌های ۳ و ۴ تکمیل شده‌اند.
+
+مرحله ۳ — کابینت دیواری
+Deutsch | فارسی | English
+der Hängeschrank | کابینت دیواری | wall cabinet
+der Einlegeboden | طبقه داخلی کابینت | cabinet shelf
+die Schranktür | درِ کابینت | cabinet door
+der Metallgriff | دستگیره فلزی | metal handle
+تعداد کابینت دیواری: ۴ عدد؛ هرکدام دو در و یک طبقه داخلی دارند.
+
+مرحله ۴ — وسایل بزرگ
+Deutsch | فارسی | English
+der Kühlschrank | یخچال | refrigerator
+das Gefrierfach | بخش فریزر | freezer compartment
+der Gasherd | اجاق گاز | gas stove
+das Kochfeld | صفحه اجاق | cooktop
+der Gasbrenner | شعله اجاق گاز | gas burner
+der Topfträger | شبکه نگهدارنده قابلمه | pan support
+der Backofen | فر | oven
+die Backofentür | درِ فر | oven door
+der Bedienknopf | پیچ کنترل | control knob
+die Mikrowelle | مایکروویو | microwave oven
+die Mikrowellentür | درِ مایکروویو | microwave door
+das Display | نمایشگر | display
+
+مرحله ۵ — وسایل کوچک
+Deutsch | فارسی | English
+der Teller | بشقاب | plate
+der Löffel | قاشق | spoon
+die Gabel | چنگال | fork
+das Glas | لیوان | drinking glass
+der Kochtopf | قابلمه | cooking pot
+der Topfdeckel | درِ قابلمه | pot lid
+die Bratpfanne | ماهیتابه | frying pan
+der Wasserkessel | کتری | kettle
+das Schneidebrett | تخته برش | cutting board
+بشقاب، قاشق و لیوان قبلی با مدل‌های این مرحله جایگزین شدند.
+چیدمان: ظروف غذاخوری روی میز، قابلمه و ماهیتابه روی اجاق، کتری و تخته برش روی صفحه کار.
+
+مرحله ۶ — وسایل کاربردی
+Deutsch | فارسی | English
+der Mülleimer | سطل زباله | trash bin
+das Abtropfgestell | آبچکان | dish drying rack
+die Abtropfschale | سینی زیر آبچکان | drip tray
+das Spülmittel | مایع ظرف‌شویی | dishwashing liquid
+der Pumpspender | پمپ مایع ظرف‌شویی | pump dispenser
+der Spülschwamm | اسفنج ظرف‌شویی | dish sponge
+das Geschirrtuch | دستمال آشپزخانه | dish towel
+der Geschirrtuchhalter | آویز دستمال آشپزخانه | dish towel rail
+چیدمان: سطل کنار انتهای چپ کابینت، آبچکان سمت چپ سینک، مایع پشت سینک، اسفنج سمت راست سینک و دستمال روی آویز جلوی کابینت.
+
+مرحله ۷ — تکمیل میز
+Deutsch | فارسی | English
+der Stuhl | صندلی | chair
+das Sitzkissen | بالشتک نشیمن صندلی | seat cushion
+das Messer | چاقو | knife
+die Schüssel | کاسه | bowl
+der Salzstreuer | نمکدان | salt shaker
+der Pfefferstreuer | فلفلدان | pepper shaker
+چیدمان: چهار صندلی چوبی با نشیمن آبی، دو عدد در هر طرف بلند میز؛ چاقو کنار قاشق و چنگال، کاسه در سمت راست میز و نمکدان و فلفلدان کنار هم روی میز.
+
+مرحله ۸ — جزئیات اتاق
+Deutsch | فارسی | English
+das Fenster | پنجره | window
+der Fensterrahmen | قاب پنجره | window frame
+die Fensterscheibe | شیشه پنجره | window pane
+die Fensterbank | لبه زیر پنجره | window sill
+der Fenstergriff | دستگیره پنجره | window handle
+die Tür | در | door
+der Türrahmen | چارچوب در | door frame
+der Türgriff | دستگیره در | door handle
+die Türschwelle | آستانه در | door threshold
+der Vorhang | پرده | curtain
+die Gardinenstange | میله پرده | curtain rod
+der Vorhangraffhalter | بند جمع‌کننده پرده | curtain tieback
+die Deckenleuchte | چراغ سقفی | ceiling light
+die Unterbauleuchte | چراغ زیر کابینت | under-cabinet light
+چیدمان: پنجره در دیوار سمت چپ میز با شیشه شفاف و پرده‌های آبی کنارکشیده؛ درِ بسته روی دیوار پشت بازیکن. چراغ سقفی با نور گرم و چراغ‌های زیر کابینت با نور ملایم صفحه کار را روشن می‌کنند. برای پنجره و در، دیوارها با قطعات دارای بازشوی واقعی جایگزین شده‌اند.
+
+مرحله ۹ — تعامل
+Deutsch | فارسی | English
+das Wasser | آب | water
+der Wasserstrahl | جریان آب | water stream
+der Kühlschrankboden | طبقه یخچال | refrigerator shelf
+der Drehteller | سینی گردان مایکروویو | microwave turntable
+der Backofenrost | شبکه داخل فر | oven rack
+
+کنترل‌ها:
+WASD: حرکت؛ ماوس: نگاه کردن؛ E: تعامل یا برداشتن؛ G: گذاشتن وسیله؛ R: چرخش وسیله در دست؛ Escape: آزاد کردن ماوس؛ کلیک: بازگشت به بازی.
+برای گذاشتن وسیله، به سطح صاف و خالی در فاصله دسترس نگاه کنید. اگر جا کافی نباشد یا سطح ناپایدار باشد، وسیله در دست می‌ماند.
+درهای کابینت زمینی و دیواری، یخچال و فریزر، فر، مایکروویو و در اتاق با دستگیره‌های خود حرکت می‌کنند. کشو به جلو می‌لغزد. در صورت برخورد با بازیکن، حرکت در برمی‌گردد.
+۱۷ وسیله قابل برداشتن: بشقاب، قاشق، چنگال، لیوان، قابلمه، ماهیتابه، کتری، تخته برش، مایع ظرف‌شویی، اسفنج، دستمال، چاقو، کاسه، نمکدان، فلفلدان، آبچکان و سطل زباله.
+شیر آب با E باز و بسته می‌شود؛ اهرم حرکت می‌کند و جریان آب داخل سینک دیده می‌شود. این جریان نمایشی است و آب جمع نمی‌شود.
+نام وسایل قابل حمل در مرحله‌های پیشین به سه زبان ثبت شده‌اند.
+
+کنترل لمسی گوشی — تکمیل مرحله ۹
+Deutsch | فارسی | English
+die Touchsteuerung | کنترل لمسی | touch controls
+der virtuelle Joystick | جوی‌استیک مجازی | virtual joystick
+die Interaktionstaste | دکمه تعامل | interact button
+die Ablegetaste | دکمه گذاشتن وسیله | place button
+die Drehtaste | دکمه چرخاندن وسیله | rotate button
+
+در گوشی کنترل لمسی خودکار فعال می‌شود؛ حرکت با جوی‌استیک سمت چپ و نگاه کردن با کشیدن انگشت در قسمت آزاد سمت راست انجام می‌شود. لمس هم‌زمان حرکت، نگاه کردن و دکمه‌ها پشتیبانی می‌شود.
+دکمه USE متناسب با هدف به Open، Close، Pick up یا Turn water on/off تغییر می‌کند. دکمه PLACE وسیله را روی سطح می‌گذارد و ROTATE آن را ۴۵ درجه می‌چرخاند؛ دکمه‌های گذاشتن و چرخاندن فقط هنگام در دست داشتن وسیله فعال‌اند.
+چیدمان دکمه‌ها با اندازه نمایشگر و حاشیه امن ناچ گوشی تنظیم می‌شود. خروج برنامه به پس‌زمینه یا قطع لمس، ورودی‌های نگه‌داشته‌شده را پاک می‌کند. جهت نمایش در ساخت موبایل افقی است.
+برای پیش‌نمایش روی کامپیوتر M را بزنید، یا پس از Escape روی Touch controls کلیک کنید. در حالت پیش‌نمایش می‌توان جوی‌استیک، دکمه‌ها و نگاه کردن را با ماوس امتحان کرد؛ M به کنترل کیبورد و ماوس برمی‌گردد. حالت پیش‌فرض در Inspector بازیکن، Player Controls > Control Mode > Automatic است.
+
+وسایل موجود پیش از مرحله ۱ — برای کامل بودن فهرست صحنه
+Deutsch | فارسی | English
+der Tisch | میز | table
+der Teller | بشقاب | plate
+das Glas | لیوان | drinking glass
+der Löffel | قاشق | spoon
+die Deckenleuchte | چراغ سقفی | ceiling light
+
+یادداشت: درها، کشو، وسایل قابل حمل و شیر آب تعاملی هستند. پخت‌وپز، سرمایش، تغییر دما و پر شدن ظروف شبیه‌سازی نشده‌اند.
+
+قاعده ثبت وسایل: از مرحله ۵ به بعد، هر وسیله جدید همراه نام آلمانی، فارسی و انگلیسی در همین فایل ثبت شود.
