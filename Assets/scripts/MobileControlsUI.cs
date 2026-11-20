@@ -12,6 +12,8 @@ public sealed class MobileControlsUI : MonoBehaviour
     private Image interactButton;
     private Image placeButton;
     private Image rotateButton;
+    private Image hearButton;
+    private Image partButton;
     private Text interactText;
     private Text status;
     private Text feedback;
@@ -46,14 +48,14 @@ public sealed class MobileControlsUI : MonoBehaviour
         Anchor(joystick, new Vector2(0, 0), new Vector2(145, 135), new Vector2(164, 164));
         knob = Image("Thumb", joystick, new Color(.7f, .84f, .9f, .88f), circle).rectTransform;
         Anchor(knob, new Vector2(.5f, .5f), Vector2.zero, new Vector2(62, 62));
-        Text move = Label("Move hint", safeRoot, "MOVE", 19);
+        Text move = Label("Move hint", safeRoot, "BEWEGEN", 19);
         Anchor(move.rectTransform, Vector2.zero, new Vector2(145, 31), new Vector2(180, 30));
-        Text look = Label("Look hint", safeRoot, "Drag here to look", 18);
-        Anchor(look.rectTransform, new Vector2(.78f, 1), new Vector2(0, -96), new Vector2(240, 32));
 
-        interactButton = ActionButton("Interact", new Vector2(-125, 130), "USE", out interactText);
-        placeButton = ActionButton("Place", new Vector2(-125, 265), "PLACE", out _);
-        rotateButton = ActionButton("Rotate", new Vector2(-265, 130), "ROTATE", out _);
+        interactButton = ActionButton("Interact", new Vector2(-125, 130), "BENUTZEN", out interactText);
+        placeButton = ActionButton("Place", new Vector2(-125, 265), "ABLEGEN", out _);
+        rotateButton = ActionButton("Rotate", new Vector2(-265, 265), "DREHEN", out _);
+        hearButton = ActionButton("Hear object", new Vector2(-265, 130), "ANHÖREN", out _);
+        partButton = ActionButton("Hear part", new Vector2(-405, 130), "DETAIL", out _);
         status = Label("Target and held item", safeRoot, "", 22);
         status.rectTransform.anchorMin = new Vector2(.17f, 1);
         status.rectTransform.anchorMax = new Vector2(.83f, 1);
@@ -92,20 +94,40 @@ public sealed class MobileControlsUI : MonoBehaviour
         Rect area = Screen.safeArea;
         if (area.width <= 0 || area.height <= 0)
             area = new Rect(Vector2.zero, size);
-        if (size == lastSize && area == lastSafeArea)
-            return;
-        safeRoot.anchorMin = new Vector2(area.xMin / size.x, area.yMin / size.y);
-        safeRoot.anchorMax = new Vector2(area.xMax / size.x, area.yMax / size.y);
-        safeRoot.offsetMin = safeRoot.offsetMax = Vector2.zero;
-        lastSize = size;
-        lastSafeArea = area;
-        Canvas.ForceUpdateCanvases();
+        if (size != lastSize || area != lastSafeArea)
+        {
+            safeRoot.anchorMin = new Vector2(area.xMin / size.x, area.yMin / size.y);
+            safeRoot.anchorMax = new Vector2(area.xMax / size.x, area.yMax / size.y);
+            safeRoot.offsetMin = safeRoot.offsetMax = Vector2.zero;
+            lastSize = size;
+            lastSafeArea = area;
+            Canvas.ForceUpdateCanvases();
+        }
+        bool targeting = interaction != null && interaction.CanUseFocused;
+        bool holding = interaction != null && interaction.HeldItem != null;
+        bool canPlace = interaction != null && interaction.CanPlaceHeld;
+        bool canHear = interaction != null && interaction.CanIdentify;
+        bool canDetail = interaction != null && interaction.CanIdentifyPart;
+        hearButton.rectTransform.anchoredPosition = new Vector2(targeting ? -265 : -125, 130);
+        partButton.rectTransform.anchoredPosition = new Vector2(targeting ? -405 : -265, 130);
+        interactButton.gameObject.SetActive(targeting);
+        hearButton.gameObject.SetActive(canHear);
+        partButton.gameObject.SetActive(canDetail);
+        placeButton.gameObject.SetActive(canPlace);
+        rotateButton.gameObject.SetActive(holding);
+        Tint(interactButton, true);
+        Tint(placeButton, true);
+        Tint(rotateButton, true);
+        Tint(hearButton, true);
+        Tint(partButton, true);
         Rect stick = ScreenRect(joystick);
         Layout = new TouchControlLayout {
             SafeArea = area, JoystickCenter = stick.center, JoystickRadius = stick.width / 2,
-            InteractButton = ScreenRect(interactButton.rectTransform),
-            PlaceButton = ScreenRect(placeButton.rectTransform),
-            RotateButton = ScreenRect(rotateButton.rectTransform)
+            InteractButton = targeting ? ScreenRect(interactButton.rectTransform) : UnityEngine.Rect.zero,
+            PlaceButton = canPlace ? ScreenRect(placeButton.rectTransform) : UnityEngine.Rect.zero,
+            RotateButton = holding ? ScreenRect(rotateButton.rectTransform) : UnityEngine.Rect.zero,
+            HearButton = canHear ? ScreenRect(hearButton.rectTransform) : UnityEngine.Rect.zero,
+            PartButton = canDetail ? ScreenRect(partButton.rectTransform) : UnityEngine.Rect.zero
         };
     }
 
@@ -116,15 +138,11 @@ public sealed class MobileControlsUI : MonoBehaviour
         RefreshLayout();
         knob.anchoredPosition = controls.JoystickValue * 69f;
         bool holding = interaction != null && interaction.HeldItem != null;
-        bool targeting = interaction != null && interaction.FocusedObject != null;
-        Tint(interactButton, targeting);
-        Tint(placeButton, holding);
-        Tint(rotateButton, holding);
-        interactText.text = targeting ? interaction.FocusedObject.GetAction(interaction) : "USE";
-        status.text = targeting ? interaction.FocusedObject.DisplayName : "Aim at an object";
-        if (holding)
-            status.text += "\nHolding: " + interaction.HeldItem.DisplayName;
-        feedback.text = interaction != null ? interaction.FeedbackText : "";
+        bool targeting = interaction != null && interaction.CanUseFocused;
+        interactText.text = targeting ? interaction.FocusedObject.GetAction(interaction) : "BENUTZEN";
+        status.text = "";
+
+        feedback.text = "";
     }
 
     private Image ActionButton(string name, Vector2 position, string caption, out Text text)
@@ -213,9 +231,10 @@ public sealed class MobileControlsUI : MonoBehaviour
 
     private void OnGUI()
     {
+        if (GetComponent<RoomExperience>()?.MenuOpen == true) return;
         if (controls == null || controls.UsesTouch || Cursor.lockState == CursorLockMode.Locked)
             return;
-        GUI.Box(PlayerControls.ModeButtonRect, "Touch controls (M)");
+        GUI.Box(PlayerControls.ModeButtonRect, "Touch-Steuerung (M)");
     }
 
     private void OnDestroy()

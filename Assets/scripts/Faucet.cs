@@ -21,7 +21,7 @@ public sealed class Faucet : KitchenInteractable
         SetRunning(false);
     }
 
-    public override string GetAction(PlayerInteraction player) => IsRunning ? "Turn water off" : "Turn water on";
+    public override string GetAction(PlayerInteraction player) => IsRunning ? "Wasser aus" : "Wasser an";
 
     public override void Interact(PlayerInteraction player)
     {

@@ -16,17 +16,22 @@ public sealed class PlayerControls : MonoBehaviour
     private bool detectedTouch;
     private bool hasFocus = true;
     private bool suspended;
+    private bool menuOpen;
+    private RoomExperience experience;
     private bool mouseHeld;
     private Rect touchSafeArea;
 
     public bool UsesTouch { get; private set; }
-    public bool GameplayActive => hasFocus && !suspended &&
+    public bool GameplayActive => hasFocus && !suspended && !menuOpen &&
+        (experience == null || !experience.MapExpanded) &&
         (UsesTouch || Cursor.lockState == CursorLockMode.Locked);
     public Vector2 Movement { get; private set; }
     public Vector2 LookDelta { get; private set; }
     public bool InteractPressed { get; private set; }
     public bool PlacePressed { get; private set; }
     public bool RotatePressed { get; private set; }
+    public bool LowerPosturePressed { get; private set; }
+    public bool RaisePosturePressed { get; private set; }
     public Vector2 JoystickValue => touches.Movement;
     public static Rect ModeButtonRect => new Rect(16, 16, 190, 44);
 
@@ -35,7 +40,16 @@ public sealed class PlayerControls : MonoBehaviour
         interaction = GetComponent<PlayerInteraction>();
         overlay = GetComponent<MobileControlsUI>();
         overlay.Initialize(this);
+        experience = GetComponent<RoomExperience>();
+        if (experience == null) experience = gameObject.AddComponent<RoomExperience>();
+        SetMenuOpen(true);
         ApplyMode();
+    }
+
+    public void SetMenuOpen(bool value)
+    {
+        menuOpen = value; ResetInput(); ApplyCursor();
+        if (overlay != null) overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded));
     }
 
     private void Start()
@@ -65,15 +79,15 @@ public sealed class PlayerControls : MonoBehaviour
             ResetInput();
             ApplyCursor();
         }
-        if (overlay != null && overlay.IsVisible != UsesTouch)
-            overlay.SetVisible(UsesTouch);
+        if (overlay != null && overlay.IsVisible != (UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded)))
+            overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded));
     }
 
     private void Update()
     {
         touches.BeginFrame();
         Movement = LookDelta = Vector2.zero;
-        InteractPressed = PlacePressed = RotatePressed = false;
+        InteractPressed = PlacePressed = RotatePressed = LowerPosturePressed = RaisePosturePressed = false;
 
         if (Input.touchCount > 0 && !detectedTouch)
         {
@@ -84,7 +98,7 @@ public sealed class PlayerControls : MonoBehaviour
         if (!Application.isMobilePlatform && Input.GetKeyDown(KeyCode.M))
             SetMode(UsesTouch ? ControlMode.KeyboardAndMouse : ControlMode.Touch);
 
-        if (!hasFocus || suspended)
+        if (!hasFocus || suspended || menuOpen)
         {
             ResetInput();
             return;
@@ -101,6 +115,8 @@ public sealed class PlayerControls : MonoBehaviour
             InteractPressed |= (actions & PlayerAction.Interact) != 0;
             PlacePressed |= (actions & PlayerAction.Place) != 0;
             RotatePressed |= (actions & PlayerAction.Rotate) != 0;
+            LowerPosturePressed |= (actions & PlayerAction.LowerPosture) != 0;
+            RaisePosturePressed |= (actions & PlayerAction.RaisePosture) != 0;
         }
     }
 
@@ -113,12 +129,8 @@ public sealed class PlayerControls : MonoBehaviour
         }
         else if (Input.GetMouseButtonDown(0))
         {
-            Vector2 guiPosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-            if (Cursor.lockState != CursorLockMode.Locked && ModeButtonRect.Contains(guiPosition))
-            {
-                SetMode(ControlMode.Touch);
-                return;
-            }
+            Vector2 pointer = Cursor.lockState == CursorLockMode.Locked ? new Vector2(Screen.width / 2f, Screen.height / 2f) : (Vector2)Input.mousePosition;
+            if (experience.TryPointer(pointer)) return;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -129,6 +141,8 @@ public sealed class PlayerControls : MonoBehaviour
         InteractPressed = Input.GetKeyDown(KeyCode.E);
         PlacePressed = Input.GetKeyDown(KeyCode.G);
         RotatePressed = Input.GetKeyDown(KeyCode.R);
+        LowerPosturePressed = Input.GetKeyDown(KeyCode.C);
+        RaisePosturePressed = Input.GetKeyDown(KeyCode.X);
     }
 
     private void ReadTouch()
@@ -141,7 +155,7 @@ public sealed class PlayerControls : MonoBehaviour
             mouseHeld = false;
             touchSafeArea = layout.SafeArea;
         }
-        bool canInteract = interaction != null && interaction.FocusedObject != null;
+        bool canInteract = interaction != null && interaction.CanInteract;
         bool isHolding = interaction != null && interaction.HeldItem != null;
         for (int i = 0; i < Input.touchCount; i++)
         {
@@ -149,6 +163,7 @@ public sealed class PlayerControls : MonoBehaviour
             switch (touch.phase)
             {
                 case TouchPhase.Began:
+                    if (experience.TryPointer(touch.position)) break;
                     touches.Press(touch.fingerId, touch.position, layout, canInteract, isHolding);
                     break;
                 case TouchPhase.Moved:
@@ -166,6 +181,7 @@ public sealed class PlayerControls : MonoBehaviour
             Vector2 position = Input.mousePosition;
             if (Input.GetMouseButtonDown(0))
             {
+                if (experience.TryPointer(position)) return;
                 mouseHeld = true;
                 touches.Press(-100, position, layout, canInteract, isHolding);
             }
@@ -177,6 +193,7 @@ public sealed class PlayerControls : MonoBehaviour
                 mouseHeld = false;
             }
         }
+        touches.SamplePosture(Time.unscaledTime, 72f * Mathf.Max(.6f, Mathf.Min(Screen.width, Screen.height) / 720f));
         Movement = touches.Movement;
         // Touch delta is displacement, so it must not be multiplied by deltaTime.
         LookDelta = touches.LookDelta * (touchLookSensitivity * 720f / Mathf.Max(1, Mathf.Min(Screen.width, Screen.height)));
@@ -184,9 +201,9 @@ public sealed class PlayerControls : MonoBehaviour
 
     private void ApplyCursor()
     {
-        Cursor.lockState = UsesTouch ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.lockState = UsesTouch || menuOpen ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = true;
-        if (!UsesTouch)
+        if (!UsesTouch && !menuOpen)
             Cursor.visible = false;
     }
 
@@ -195,7 +212,7 @@ public sealed class PlayerControls : MonoBehaviour
         touches.Reset();
         queuedActions = PlayerAction.None;
         Movement = LookDelta = Vector2.zero;
-        InteractPressed = PlacePressed = RotatePressed = false;
+        InteractPressed = PlacePressed = RotatePressed = LowerPosturePressed = RaisePosturePressed = false;
         mouseHeld = false;
     }
 
@@ -226,6 +243,6 @@ public sealed class PlayerControls : MonoBehaviour
     private void OnEnable()
     {
         if (overlay != null)
-            overlay.SetVisible(UsesTouch);
+            overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded));
     }
 }

@@ -24,7 +24,7 @@ public sealed class Openable : KitchenInteractable
         movingColliders = GetComponentsInChildren<Collider>();
     }
 
-    public override string GetAction(PlayerInteraction player) => IsOpen ? "Close" : "Open";
+    public override string GetAction(PlayerInteraction player) => IsOpen ? "Schließen" : "Öffnen";
 
     public override void Interact(PlayerInteraction player)
     {
@@ -47,7 +47,7 @@ public sealed class Openable : KitchenInteractable
             progress = previous;
             ApplyPose();
             IsOpen = !IsOpen;
-            operatorPlayer.ShowMessage("Step back to leave room for the door.");
+            operatorPlayer.ShowMessage("Geh einen Schritt zurück, damit die Tür Platz hat.");
         }
         Physics.SyncTransforms();
     }

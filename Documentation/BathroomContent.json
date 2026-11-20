@@ -1,0 +1,454 @@
+{
+    "fixtures": [
+        {
+            "id": "Bath_Toilet",
+            "de": "die Toilette",
+            "fa": "توالت؛ کاسه و نشیمن",
+            "en": "toilet fixture",
+            "order": 0
+        },
+        {
+            "id": "Bath_Cistern",
+            "de": "der Spülkasten",
+            "fa": "فلاش‌تانک",
+            "en": "toilet cistern",
+            "order": 1
+        },
+        {
+            "id": "Bath_Vanity",
+            "de": "der Waschbeckenunterschrank",
+            "fa": "کابینت زیر روشویی",
+            "en": "vanity cabinet",
+            "order": 9
+        },
+        {
+            "id": "Bath_Washbasin",
+            "de": "das Waschbecken",
+            "fa": "روشویی",
+            "en": "washbasin",
+            "order": 2
+        },
+        {
+            "id": "Bath_BasinTap",
+            "de": "die Armatur",
+            "fa": "شیر روشویی",
+            "en": "basin tap",
+            "order": 3
+        },
+        {
+            "id": "Bath_Shower",
+            "de": "die Dusche",
+            "fa": "دوش",
+            "en": "shower",
+            "order": 4
+        },
+        {
+            "id": "Bath_Enclosure",
+            "de": "die Duschkabine",
+            "fa": "کابین دوش",
+            "en": "shower enclosure",
+            "order": 5
+        },
+        {
+            "id": "Bath_ShowerHead",
+            "de": "der Duschkopf",
+            "fa": "سردوش",
+            "en": "shower head",
+            "order": 6
+        },
+        {
+            "id": "Bath_ShowerHose",
+            "de": "der Duschschlauch",
+            "fa": "شلنگ دوش",
+            "en": "shower hose",
+            "order": 7
+        },
+        {
+            "id": "Bath_FloorDrain",
+            "de": "der Bodenablauf",
+            "fa": "کف‌شور",
+            "en": "floor drain",
+            "order": 8
+        }
+    ],
+    "vocabulary": [
+        {
+            "id": "",
+            "de": "die Toilette",
+            "fa": "توالت؛ کاسه و نشیمن",
+            "en": "toilet fixture",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Toilettenschüssel",
+            "fa": "کاسه توالت",
+            "en": "toilet bowl",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Toilettensitz",
+            "fa": "نشیمن توالت",
+            "en": "toilet seat",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Toilettendeckel",
+            "fa": "درپوش توالت",
+            "en": "toilet lid",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Spülkasten",
+            "fa": "فلاش‌تانک",
+            "en": "toilet cistern",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Spültaste",
+            "fa": "دکمه فلاش",
+            "en": "flush button",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Waschbeckenunterschrank",
+            "fa": "کابینت زیر روشویی",
+            "en": "vanity cabinet",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Schranktür",
+            "fa": "در کابینت",
+            "en": "cabinet door",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Schrankgriff",
+            "fa": "دستگیره کابینت",
+            "en": "cabinet handle",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "das Waschbecken",
+            "fa": "روشویی",
+            "en": "washbasin",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Abfluss",
+            "fa": "خروجی آب",
+            "en": "drain",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Armatur",
+            "fa": "شیر روشویی",
+            "en": "basin tap",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Auslauf",
+            "fa": "آبریز شیر",
+            "en": "tap spout",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Bedienhebel",
+            "fa": "اهرم کنترل",
+            "en": "control lever",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Dusche",
+            "fa": "دوش",
+            "en": "shower",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Duscharmatur",
+            "fa": "شیر دوش",
+            "en": "shower mixer",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Duschkabine",
+            "fa": "کابین دوش",
+            "en": "shower enclosure",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Duschwanne",
+            "fa": "سینی زیر دوش",
+            "en": "shower tray",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Glasscheibe",
+            "fa": "پنل شیشه‌ای",
+            "en": "glass panel",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Duschkopf",
+            "fa": "سردوش",
+            "en": "shower head",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Duschschlauch",
+            "fa": "شلنگ دوش",
+            "en": "shower hose",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Bodenablauf",
+            "fa": "کف‌شور",
+            "en": "floor drain",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Dunstabzugshaube",
+            "fa": "هود آشپزخانه",
+            "en": "range hood",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Gasherd",
+            "fa": "اجاق گاز",
+            "en": "gas stove",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "das Kochfeld",
+            "fa": "صفحه اجاق",
+            "en": "cooktop",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "das Fenster",
+            "fa": "پنجره",
+            "en": "window",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Vorhang",
+            "fa": "پرده",
+            "en": "curtain",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Deckenleuchte",
+            "fa": "چراغ سقفی",
+            "en": "ceiling light",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Boden",
+            "fa": "کف",
+            "en": "floor",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Decke",
+            "fa": "سقف",
+            "en": "ceiling",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Türrahmen",
+            "fa": "چارچوب در",
+            "en": "door frame",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Türgriff",
+            "fa": "دستگیره در",
+            "en": "door handle",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Wand",
+            "fa": "دیوار",
+            "en": "wall",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Sitzfläche",
+            "fa": "سطح نشیمن",
+            "en": "seat surface",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Fensterrahmen",
+            "fa": "قاب پنجره",
+            "en": "window frame",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "das Stuhlbein",
+            "fa": "پایه صندلی",
+            "en": "chair leg",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Bedienknopf",
+            "fa": "پیچ کنترل",
+            "en": "control knob",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Topfträger",
+            "fa": "شبکه نگهدارنده قابلمه",
+            "en": "pan support",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Fensterscheibe",
+            "fa": "شیشه پنجره",
+            "en": "window pane",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Gasbrenner",
+            "fa": "شعله اجاق",
+            "en": "gas burner",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Rückenlehne",
+            "fa": "پشتی صندلی",
+            "en": "backrest",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Gardinenstange",
+            "fa": "میله پرده",
+            "en": "curtain rod",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Deckelknopf",
+            "fa": "دستگیره درپوش",
+            "en": "lid knob",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Schubladengriff",
+            "fa": "دستگیره کشو",
+            "en": "drawer handle",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "das Sitzkissen",
+            "fa": "بالشتک نشیمن",
+            "en": "seat cushion",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "das Türblatt",
+            "fa": "لنگه در",
+            "en": "door leaf",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "das Tischbein",
+            "fa": "پایه میز",
+            "en": "table leg",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Griff",
+            "fa": "دستگیره",
+            "en": "handle",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Topfdeckel",
+            "fa": "در قابلمه",
+            "en": "pot lid",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Schubladenfront",
+            "fa": "جلوی کشو",
+            "en": "drawer front",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Fensterbank",
+            "fa": "لبه زیر پنجره",
+            "en": "window sill",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "der Fenstergriff",
+            "fa": "دستگیره پنجره",
+            "en": "window handle",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "das Display",
+            "fa": "نمایشگر",
+            "en": "display",
+            "order": -1
+        },
+        {
+            "id": "",
+            "de": "die Tischplatte",
+            "fa": "صفحه میز",
+            "en": "tabletop",
+            "order": -1
+        }
+    ]
+}

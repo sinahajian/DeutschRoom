@@ -6,7 +6,9 @@ public enum PlayerAction
     None = 0,
     Interact = 1,
     Place = 2,
-    Rotate = 4
+    Rotate = 4,
+    LowerPosture = 8,
+    RaisePosture = 16
 }
 
 public struct TouchControlLayout
@@ -17,6 +19,8 @@ public struct TouchControlLayout
     public Rect InteractButton;
     public Rect PlaceButton;
     public Rect RotateButton;
+    public Rect HearButton;
+    public Rect PartButton;
 }
 
 // Each finger keeps its role until release, so a thumb cannot turn into a look gesture
@@ -28,6 +32,8 @@ public sealed class TouchInputState
     private Vector2 moveCenter;
     private Vector2 previousLook;
     private float moveRadius;
+    private readonly PostureGesture posture = new PostureGesture();
+    private Vector2 lookPosition;
 
     public Vector2 Movement { get; private set; }
     public Vector2 LookDelta { get; private set; }
@@ -68,8 +74,17 @@ public sealed class TouchInputState
         else if (!lookFinger.HasValue && position.x >= layout.SafeArea.center.x)
         {
             lookFinger = finger;
-            previousLook = position;
+            previousLook = lookPosition = position;
+            posture.Begin(position);
         }
+    }
+
+    public void SamplePosture(float now, float threshold)
+    {
+        if (!lookFinger.HasValue) return;
+        int direction = posture.Sample(lookPosition, now, threshold);
+        if (direction < 0) Actions |= PlayerAction.LowerPosture;
+        if (direction > 0) Actions |= PlayerAction.RaisePosture;
     }
 
     public void Drag(int finger, Vector2 position)
@@ -83,7 +98,7 @@ public sealed class TouchInputState
         if (lookFinger == finger)
         {
             LookDelta += position - previousLook;
-            previousLook = position;
+            previousLook = lookPosition = position;
         }
     }
 
@@ -95,13 +110,17 @@ public sealed class TouchInputState
             Movement = Vector2.zero;
         }
         if (lookFinger == finger)
+        {
             lookFinger = null;
+            posture.Reset();
+        }
     }
 
     public void Reset()
     {
         moveFinger = null;
         lookFinger = null;
+        posture.Reset();
         Movement = Vector2.zero;
         BeginFrame();
     }

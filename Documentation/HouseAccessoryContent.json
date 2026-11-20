@@ -1,0 +1,510 @@
+{
+    "fixtures": [
+        {
+            "id": "Hall_Key",
+            "de": "der Schlüssel",
+            "fa": "کلید",
+            "en": "key",
+            "room": "Hallway",
+            "order": 50
+        },
+        {
+            "id": "Hall_KeyRack",
+            "de": "das Schlüsselbrett",
+            "fa": "آویز کلید",
+            "en": "key rack",
+            "room": "Hallway",
+            "order": 51
+        },
+        {
+            "id": "Hall_Umbrella",
+            "de": "der Regenschirm",
+            "fa": "چتر",
+            "en": "umbrella",
+            "room": "Hallway",
+            "order": 52
+        },
+        {
+            "id": "Hall_UmbrellaStand",
+            "de": "der Schirmständer",
+            "fa": "جاچتری",
+            "en": "umbrella stand",
+            "room": "Hallway",
+            "order": 53
+        },
+        {
+            "id": "Hall_Clock",
+            "de": "die Wanduhr",
+            "fa": "ساعت دیواری",
+            "en": "wall clock",
+            "room": "Hallway",
+            "order": 54
+        },
+        {
+            "id": "Bath_Mirror",
+            "de": "der Spiegel",
+            "fa": "آینه",
+            "en": "mirror",
+            "room": "BathroomWC",
+            "order": 55
+        },
+        {
+            "id": "Bath_Towel",
+            "de": "das Handtuch",
+            "fa": "حوله",
+            "en": "towel",
+            "room": "BathroomWC",
+            "order": 56
+        },
+        {
+            "id": "Bath_TowelRail",
+            "de": "der Handtuchhalter",
+            "fa": "آویز حوله",
+            "en": "towel rail",
+            "room": "BathroomWC",
+            "order": 57
+        },
+        {
+            "id": "Bath_Soap",
+            "de": "die Seife",
+            "fa": "صابون",
+            "en": "soap",
+            "room": "BathroomWC",
+            "order": 58
+        },
+        {
+            "id": "Bath_ToiletBrush",
+            "de": "die Toilettenbürste",
+            "fa": "برس توالت",
+            "en": "toilet brush",
+            "room": "BathroomWC",
+            "order": 59
+        },
+        {
+            "id": "Bath_PaperHolder",
+            "de": "der Toilettenpapierhalter",
+            "fa": "نگهدارنده دستمال توالت",
+            "en": "toilet roll holder",
+            "room": "BathroomWC",
+            "order": 60
+        },
+        {
+            "id": "Bath_Washer",
+            "de": "die Waschmaschine",
+            "fa": "ماشین لباس‌شویی",
+            "en": "washing machine",
+            "room": "BathroomWC",
+            "order": 61
+        },
+        {
+            "id": "Bath_LaundryBasket",
+            "de": "der Wäschekorb",
+            "fa": "سبد لباس",
+            "en": "laundry basket",
+            "room": "BathroomWC",
+            "order": 62
+        },
+        {
+            "id": "Bath_Detergent",
+            "de": "das Waschmittel",
+            "fa": "مایع یا پودر لباس‌شویی",
+            "en": "laundry detergent",
+            "room": "BathroomWC",
+            "order": 63
+        },
+        {
+            "id": "Bedroom2_DryingRack",
+            "de": "der Wäscheständer",
+            "fa": "بند رخت تاشو",
+            "en": "drying rack",
+            "room": "Bedroom2",
+            "order": 64
+        },
+        {
+            "id": "Bedroom2_ClothesPeg",
+            "de": "die Wäscheklammer",
+            "fa": "گیره لباس",
+            "en": "clothes peg",
+            "room": "Bedroom2",
+            "order": 65
+        },
+        {
+            "id": "Bath_Vacuum",
+            "de": "der Staubsauger",
+            "fa": "جاروبرقی",
+            "en": "vacuum cleaner",
+            "room": "BathroomWC",
+            "order": 66
+        },
+        {
+            "id": "Bath_Broom",
+            "de": "der Besen",
+            "fa": "جارو",
+            "en": "broom",
+            "room": "BathroomWC",
+            "order": 67
+        },
+        {
+            "id": "Bath_Dustpan",
+            "de": "das Kehrblech",
+            "fa": "خاک‌انداز",
+            "en": "dustpan",
+            "room": "BathroomWC",
+            "order": 68
+        },
+        {
+            "id": "Bath_Mop",
+            "de": "der Wischmopp",
+            "fa": "تی",
+            "en": "mop",
+            "room": "BathroomWC",
+            "order": 69
+        }
+    ],
+    "vocabulary": [
+        {
+            "id": "",
+            "de": "der Schlüssel",
+            "fa": "کلید",
+            "en": "key",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Schlüsselschaft",
+            "fa": "ساقه کلید",
+            "en": "key shaft",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Schlüsselbart",
+            "fa": "دندانه کلید",
+            "en": "key bit",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Schlüsselbrett",
+            "fa": "آویز کلید",
+            "en": "key rack",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Haken",
+            "fa": "قلاب",
+            "en": "hook",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Regenschirm",
+            "fa": "چتر",
+            "en": "umbrella",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Schirmdach",
+            "fa": "پارچه چتر",
+            "en": "umbrella canopy",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Schirmständer",
+            "fa": "جاچتری",
+            "en": "umbrella stand",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Wanduhr",
+            "fa": "ساعت دیواری",
+            "en": "wall clock",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Stundenzeiger",
+            "fa": "عقربه ساعت‌شمار",
+            "en": "hour hand",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Minutenzeiger",
+            "fa": "عقربه دقیقه‌شمار",
+            "en": "minute hand",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Spiegel",
+            "fa": "آینه",
+            "en": "mirror",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Spiegelfläche",
+            "fa": "سطح آینه",
+            "en": "mirror surface",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Handtuch",
+            "fa": "حوله",
+            "en": "towel",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Handtuchhalter",
+            "fa": "آویز حوله",
+            "en": "towel rail",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Seife",
+            "fa": "صابون",
+            "en": "soap",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Seifenschale",
+            "fa": "جاصابونی",
+            "en": "soap dish",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Toilettenbürste",
+            "fa": "برس توالت",
+            "en": "toilet brush",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Griff",
+            "fa": "دستگیره",
+            "en": "handle",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Toilettenpapierhalter",
+            "fa": "نگهدارنده دستمال توالت",
+            "en": "toilet roll holder",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Toilettenpapier",
+            "fa": "دستمال توالت",
+            "en": "toilet paper",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Waschmaschine",
+            "fa": "ماشین لباس‌شویی",
+            "en": "washing machine",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Waschtrommel",
+            "fa": "دیگ لباس‌شویی",
+            "en": "washing drum",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Waschmaschinentür",
+            "fa": "در ماشین لباس‌شویی",
+            "en": "washing-machine door",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Türgriff",
+            "fa": "دستگیره در",
+            "en": "door handle",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Waschmittelfach",
+            "fa": "محفظه مواد شوینده",
+            "en": "detergent compartment",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Programmwähler",
+            "fa": "پیچ انتخاب برنامه",
+            "en": "program selector",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Display",
+            "fa": "نمایشگر",
+            "en": "display",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Wäschekorb",
+            "fa": "سبد لباس",
+            "en": "laundry basket",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Waschmittel",
+            "fa": "مایع یا پودر لباس‌شویی",
+            "en": "laundry detergent",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Verschluss",
+            "fa": "درپوش",
+            "en": "cap",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Wäscheständer",
+            "fa": "بند رخت تاشو",
+            "en": "drying rack",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Wäscheklammer",
+            "fa": "گیره لباس",
+            "en": "clothes peg",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Feder",
+            "fa": "فنر",
+            "en": "spring",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Staubsauger",
+            "fa": "جاروبرقی",
+            "en": "vacuum cleaner",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Rad",
+            "fa": "چرخ",
+            "en": "wheel",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Saugschlauch",
+            "fa": "شلنگ مکش",
+            "en": "vacuum hose",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Saugrohr",
+            "fa": "لوله مکش",
+            "en": "vacuum tube",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Bodendüse",
+            "fa": "سری کف جاروبرقی",
+            "en": "floor nozzle",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Besen",
+            "fa": "جارو",
+            "en": "broom",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Stiel",
+            "fa": "دسته بلند",
+            "en": "long handle",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Kehrblech",
+            "fa": "خاک‌انداز",
+            "en": "dustpan",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Wischmopp",
+            "fa": "تی",
+            "en": "mop",
+            "room": "",
+            "order": 0
+        }
+    ]
+}

@@ -1,0 +1,430 @@
+{
+    "fixtures": [
+        {
+            "id": "Bedroom1_Bed",
+            "de": "das Bett",
+            "fa": "تخت",
+            "en": "bed",
+            "room": "Bedroom1",
+            "order": 10
+        },
+        {
+            "id": "Bedroom1_Mattress",
+            "de": "die Matratze",
+            "fa": "تشک",
+            "en": "mattress",
+            "room": "Bedroom1",
+            "order": 11
+        },
+        {
+            "id": "Bedroom1_Pillow",
+            "de": "das Kopfkissen",
+            "fa": "بالش",
+            "en": "pillow",
+            "room": "Bedroom1",
+            "order": 12
+        },
+        {
+            "id": "Bedroom1_Duvet",
+            "de": "die Bettdecke",
+            "fa": "لحاف",
+            "en": "duvet",
+            "room": "Bedroom1",
+            "order": 13
+        },
+        {
+            "id": "Bedroom1_Sheet",
+            "de": "das Bettlaken",
+            "fa": "ملحفه",
+            "en": "bedsheet",
+            "room": "Bedroom1",
+            "order": 14
+        },
+        {
+            "id": "Bedroom1_Wardrobe",
+            "de": "der Kleiderschrank",
+            "fa": "کمد لباس",
+            "en": "wardrobe",
+            "room": "Bedroom1",
+            "order": 15
+        },
+        {
+            "id": "Bedroom1_Dresser",
+            "de": "die Kommode",
+            "fa": "دراور",
+            "en": "chest of drawers",
+            "room": "Bedroom1",
+            "order": 16
+        },
+        {
+            "id": "Bedroom1_Nightstand",
+            "de": "der Nachttisch",
+            "fa": "پاتختی",
+            "en": "bedside table",
+            "room": "Bedroom1",
+            "order": 17
+        },
+        {
+            "id": "Bedroom1_NightLamp",
+            "de": "die Nachttischlampe",
+            "fa": "چراغ پاتختی",
+            "en": "bedside lamp",
+            "room": "Bedroom1",
+            "order": 18
+        },
+        {
+            "id": "Bedroom1_Hanger",
+            "de": "der Kleiderbügel",
+            "fa": "چوب‌لباسی",
+            "en": "clothes hanger",
+            "room": "Bedroom1",
+            "order": 19
+        },
+        {
+            "id": "Bedroom2_Bed",
+            "de": "das Bett",
+            "fa": "تخت",
+            "en": "bed",
+            "room": "Bedroom2",
+            "order": 20
+        },
+        {
+            "id": "Bedroom2_Mattress",
+            "de": "die Matratze",
+            "fa": "تشک",
+            "en": "mattress",
+            "room": "Bedroom2",
+            "order": 21
+        },
+        {
+            "id": "Bedroom2_Pillow",
+            "de": "das Kopfkissen",
+            "fa": "بالش",
+            "en": "pillow",
+            "room": "Bedroom2",
+            "order": 22
+        },
+        {
+            "id": "Bedroom2_Duvet",
+            "de": "die Bettdecke",
+            "fa": "لحاف",
+            "en": "duvet",
+            "room": "Bedroom2",
+            "order": 23
+        },
+        {
+            "id": "Bedroom2_Nightstand",
+            "de": "der Nachttisch",
+            "fa": "پاتختی",
+            "en": "bedside table",
+            "room": "Bedroom2",
+            "order": 24
+        },
+        {
+            "id": "Bedroom2_Desk",
+            "de": "der Schreibtisch",
+            "fa": "میز تحریر",
+            "en": "desk",
+            "room": "Bedroom2",
+            "order": 25
+        },
+        {
+            "id": "Bedroom2_OfficeChair",
+            "de": "der Bürostuhl",
+            "fa": "صندلی کار",
+            "en": "desk chair",
+            "room": "Bedroom2",
+            "order": 26
+        },
+        {
+            "id": "Bedroom2_DeskLamp",
+            "de": "die Schreibtischlampe",
+            "fa": "چراغ مطالعه",
+            "en": "desk lamp",
+            "room": "Bedroom2",
+            "order": 27
+        },
+        {
+            "id": "Bedroom2_Bookcase",
+            "de": "das Bücherregal",
+            "fa": "قفسه کتاب",
+            "en": "bookcase",
+            "room": "Bedroom2",
+            "order": 28
+        },
+        {
+            "id": "Bedroom2_Book",
+            "de": "das Buch",
+            "fa": "کتاب",
+            "en": "book",
+            "room": "Bedroom2",
+            "order": 29
+        }
+    ],
+    "vocabulary": [
+        {
+            "id": "",
+            "de": "das Bett",
+            "fa": "تخت",
+            "en": "bed",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Kopfteil",
+            "fa": "تاج تخت",
+            "en": "headboard",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Bettrahmen",
+            "fa": "چارچوب تخت",
+            "en": "bed frame",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Bettfuß",
+            "fa": "پایه تخت",
+            "en": "bed leg",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Matratze",
+            "fa": "تشک",
+            "en": "mattress",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Kopfkissen",
+            "fa": "بالش",
+            "en": "pillow",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Bettdecke",
+            "fa": "لحاف",
+            "en": "duvet",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Bettlaken",
+            "fa": "ملحفه",
+            "en": "bedsheet",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Kleiderschrank",
+            "fa": "کمد لباس",
+            "en": "wardrobe",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Kleiderstange",
+            "fa": "میله آویز لباس",
+            "en": "clothes rail",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Schranktür",
+            "fa": "در کابینت",
+            "en": "cabinet door",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Schrankgriff",
+            "fa": "دستگیره کابینت",
+            "en": "cabinet handle",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Kommode",
+            "fa": "دراور",
+            "en": "chest of drawers",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Schublade",
+            "fa": "کشو",
+            "en": "drawer",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Schubladengriff",
+            "fa": "دستگیره کشو",
+            "en": "drawer handle",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Nachttisch",
+            "fa": "پاتختی",
+            "en": "bedside table",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Nachttischlampe",
+            "fa": "چراغ پاتختی",
+            "en": "bedside lamp",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Lampenschirm",
+            "fa": "کلاهک چراغ",
+            "en": "lampshade",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Kleiderbügel",
+            "fa": "چوب‌لباسی",
+            "en": "clothes hanger",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Schreibtisch",
+            "fa": "میز تحریر",
+            "en": "desk",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Tischplatte",
+            "fa": "صفحه میز",
+            "en": "tabletop",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Tischbein",
+            "fa": "پایه میز",
+            "en": "table leg",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Bürostuhl",
+            "fa": "صندلی کار",
+            "en": "desk chair",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Sitzfläche",
+            "fa": "سطح نشیمن",
+            "en": "seat surface",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Rückenlehne",
+            "fa": "پشتی صندلی",
+            "en": "backrest",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Rolle",
+            "fa": "چرخ",
+            "en": "caster",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Armlehne",
+            "fa": "دسته صندلی",
+            "en": "armrest",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Schreibtischlampe",
+            "fa": "چراغ مطالعه",
+            "en": "desk lamp",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Bücherregal",
+            "fa": "قفسه کتاب",
+            "en": "bookcase",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Regalboden",
+            "fa": "طبقه قفسه",
+            "en": "shelf board",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Buch",
+            "fa": "کتاب",
+            "en": "book",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Buchseiten",
+            "fa": "صفحه‌های کتاب",
+            "en": "book pages",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Buchdeckel",
+            "fa": "جلد کتاب",
+            "en": "book cover",
+            "room": "",
+            "order": 0
+        }
+    ]
+}

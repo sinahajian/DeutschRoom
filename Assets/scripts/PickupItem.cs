@@ -3,6 +3,8 @@ using UnityEngine;
 public sealed class PickupItem : KitchenInteractable
 {
     [SerializeField] private Vector3 placementEulerAngles;
+    [SerializeField] private int lessonOrder;
+    public int LessonOrder => lessonOrder;
     private Collider[] itemColliders;
     private bool[] colliderStates;
     private Rigidbody body;
@@ -46,7 +48,7 @@ public sealed class PickupItem : KitchenInteractable
         LocalBounds = bounds;
     }
 
-    public override string GetAction(PlayerInteraction player) => player.HeldItem == null ? "Pick up" : "Put down your item first";
+    public override string GetAction(PlayerInteraction player) => player.HeldItem == null ? "Aufheben" : "Zuerst ablegen";
 
     public override void Interact(PlayerInteraction player)
     {
@@ -90,6 +92,16 @@ public sealed class PickupItem : KitchenInteractable
     public void Place(Vector3 position, Quaternion rotation)
     {
         transform.SetParent(previousParent, true);
+        SetCarriedPose(position, rotation);
+        RestoreColliders();
+    }
+
+    public void PlaceOnSurface(Vector3 position, Quaternion rotation, Transform surface)
+    {
+        Openable movingSurface = surface != null ? surface.GetComponentInParent<Openable>() : null;
+        Transform parent = movingSurface != null ? movingSurface.transform :
+            previousParent != null && previousParent.GetComponentInParent<Openable>() == null ? previousParent : null;
+        transform.SetParent(parent, true);
         SetCarriedPose(position, rotation);
         RestoreColliders();
     }

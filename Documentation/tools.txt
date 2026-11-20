@@ -1,6 +1,7 @@
-DeutschRoom — فهرست وسایل مراحل ۱ تا ۹
+DeutschRoom — فهرست سه‌زبانهٔ وسایل و اجزای صحنه
 ترتیب ستون‌ها: Deutsch | فارسی | English
 این فهرست نام وسایل و اجزای اصلی است؛ قطعات تکراری مدل جداگانه شمارش نشده‌اند.
+شمارهٔ بخش‌ها مراحل توسعه‌اند؛ ترتیب مراحل قابل بازی از مرحلهٔ ۰ در Documentation/GameStages.md آمده است.
 
 مرحله ۱ — کابینت و کشو
 Deutsch | فارسی | English
@@ -137,3 +138,477 @@ die Deckenleuchte | چراغ سقفی | ceiling light
 یادداشت: درها، کشو، وسایل قابل حمل و شیر آب تعاملی هستند. پخت‌وپز، سرمایش، تغییر دما و پر شدن ظروف شبیه‌سازی نشده‌اند.
 
 قاعده ثبت وسایل: از مرحله ۵ به بعد، هر وسیله جدید همراه نام آلمانی، فارسی و انگلیسی در همین فایل ثبت شود.
+
+مرحله ۱۰ — محتویات کابینت‌ها، یخچال و اجزای زیر سینک
+Deutsch | فارسی | English
+die Tasse | فنجان | cup
+der Becher | ماگ | mug
+die Untertasse | نعلبکی | saucer
+das Weinglas | جام | wine glass
+die Teekanne | قوری | teapot
+die Zuckerdose | قندان | sugar bowl
+das Mehl | آرد | flour
+der Reis | برنج | rice
+die Nudeln | پاستا | pasta
+der Kaffee | قهوه | coffee
+der Tee | چای | tea
+das Müsli | موسلی | muesli
+der Einlegeboden | طبقه داخلی کابینت | cabinet shelf
+das Sieb | آبکش | colander
+der Messbecher | پارچ اندازه‌گیری | measuring jug
+die Auflaufform | ظرف گراتن | casserole dish
+die Vorratsdose | ظرف نگهداری مواد غذایی | food storage container
+die Reibe | رنده | grater
+die Backform | قالب کیک | baking tin
+der Pfannenwender | کفگیر | spatula
+der Dosenöffner | دربازکن قوطی | can opener
+das Nudelholz | وردنه | rolling pin
+der Schäler | پوست‌کن | peeler
+das Spülbecken | لگن سینک | sink basin
+die Spüle | سینک ظرف‌شویی | kitchen sink
+der Abfluss | خروجی آب سینک | sink drain
+das Abflussrohr | لوله خروجی سینک | sink drainpipe
+der Siphon | سیفون | P-trap
+das Abwasserrohr | لوله فاضلاب | waste pipe
+das Eckventil | شیر پیسوار | angle valve
+der Warmwasserschlauch | شلنگ آب گرم | hot water hose
+der Kaltwasserschlauch | شلنگ آب سرد | cold water hose
+der Eimer | سطل | bucket
+das Reinigungsmittel | شوینده | cleaning product
+die Spülbürste | برس ظرف‌شویی | dish brush
+die Milch | شیر | milk
+der Joghurt | ماست | yogurt
+die Butter | کره | butter
+der Käse | پنیر | cheese
+das Ei | تخم‌مرغ | egg
+die Marmelade | مربا | jam
+der Apfel | سیب | apple
+die Tomate | گوجه‌فرنگی | tomato
+die Gurke | خیار | cucumber
+der Saft | آب‌میوه | juice
+das Eis | بستنی | ice cream
+der Kühlschrankboden | طبقه یخچال | refrigerator shelf
+der Stuhl | صندلی | chair
+der Tisch | میز | table
+
+همهٔ وسایل جدید نام و صدای آلمانی دارند. وسایل داخل کشو همراه آن حرکت می‌کنند. ظروف و خوراکی‌ها قابل برداشتن‌اند؛ لوله‌ها و مبلمان ثابت‌اند.
+کنترل وضعیت بدن: در بخش آزاد سمت راست، به پایین بکشید و ۰٫۶ ثانیه ثابت نگه دارید تا بنشینید؛ رها کنید و دوباره همین حرکت را انجام دهید تا دراز بکشید. کشیدن به بالا و نگه‌داشتن، یک حالت بالاتر می‌برد. روی کامپیوتر C پایین و X بالا. زیر مانع نمی‌توان بلند شد.
+
+مرحله ۱۱ — فضای سبز بیرون پنجره
+Deutsch | فارسی | English
+der Baum | درخت | tree
+das Gras | چمن | grass
+der Strauch | بوته | shrub
+die Blume | گل | flower
+der Gartenweg | مسیر باغ | garden path
+die Gartenbank | نیمکت باغ | garden bench
+der Hügel | تپه | hill
+der Stein | سنگ | stone
+
+فضای بیرون تزئینی است و از پنجره دیده می‌شود؛ وسایل قابل برداشتن نیستند.
+
+مرحله ۱۲ — ساختمان خانه، بدون وسایل
+Deutsch | فارسی | English
+das Wohnzimmer | پذیرایی | living room
+das Schlafzimmer | اتاق خواب | bedroom
+das Badezimmer | حمام | bathroom
+die Toilette | دستشویی | toilet
+der Flur | راهرو | hallway
+die Wand | دیوار | wall
+der Boden | کف | floor
+die Decke | سقف | ceiling
+die Zimmertür | در اتاق | room door
+das Fenster | پنجره | window
+
+دو اتاق خواب خالی، یک پذیرایی خالی و یک حمام/دستشویی مشترک خالی از راهروی متصل به درِ قبلی آشپزخانه قابل دسترسی‌اند. تنها کف، دیوار، سقف، پنجره، چهار در و روشنایی محیطی ساخته شده‌اند؛ وسیله یا تجهیزات حمام اضافه نشده است.
+
+
+مرحله ۱۳ — اصلاح گرافیک و جزئیات معماری
+Deutsch | فارسی | English
+die Sockelleiste | قرنیز | baseboard
+der Parkettboden | کف پارکت | parquet floor
+die Wandfliese | کاشی دیوار | wall tile
+der Putz | اندود گچ دیوار | wall plaster
+این بخش جزئیات بصری معماری است؛ به معنی اضافه شدن وسیلهٔ قابل حمل یا مرحلهٔ آموزشی جدید نیست.
+
+مرحله ۱۴ — فهرست وسایل کل خانه؛ هر ۸۰ مورد ساخته شده‌اند
+Deutsch | فارسی | English
+
+وضعیت: همهٔ ردیف‌های دارای [ ] هنوز در محل مشخص‌شده ساخته یا چیده نشده‌اند.
+[ ] = هنوز اضافه نشده / Not added / Noch nicht hinzugefügt
+پس از ساخت و بررسی واقعی هر وسیله، فقط [ ] همان ردیف حذف شود تا مانند نام‌های عادی بالای فایل شود؛ بقیهٔ ردیف‌ها در انتظار بمانند.
+اگر یک واژه در بخش‌های قبلی وجود دارد، ردیف این بخش نمونهٔ دیگری برای اتاق مشخص‌شده است، نه ادعای نبود آن در کل بازی.
+هر گروه حدود ۴ تا ۶ وسیله دارد تا بعداً جداگانه اضافه شود. گروه‌های دارای [ ] هنوز ساخته نشده‌اند؛ شمارهٔ گروه با شمارهٔ وظیفهٔ قابل بازی متفاوت است.
+اندازه، جای دقیق و نوع تعامل هر وسیله هنگام ساخت همان گروه مشخص می‌شود.
+
+گروه F01 — اتاق خواب ۱ — تخت و خواب
+Bedroom 1 — bed and bedding / Schlafzimmer 1 — Bett und Bettzeug
+das Bett | تخت | bed
+die Matratze | تشک | mattress
+das Kopfkissen | بالش | pillow
+die Bettdecke | لحاف | duvet
+das Bettlaken | ملحفه | bedsheet
+
+گروه F02 — اتاق خواب ۱ — نگهداری و کنار تخت
+Bedroom 1 — storage and bedside / Schlafzimmer 1 — Aufbewahrung und Nachttisch
+der Kleiderschrank | کمد لباس | wardrobe
+die Kommode | دراور | chest of drawers
+der Nachttisch | پاتختی | bedside table
+die Nachttischlampe | چراغ پاتختی | bedside lamp
+der Kleiderbügel | چوب‌لباسی | clothes hanger
+
+گروه F03 — اتاق خواب ۲ — تخت و خواب
+Bedroom 2 — bed and bedding / Schlafzimmer 2 — Bett und Bettzeug
+das Bett | تخت | bed
+die Matratze | تشک | mattress
+das Kopfkissen | بالش | pillow
+die Bettdecke | لحاف | duvet
+der Nachttisch | پاتختی | bedside table
+
+گروه F04 — اتاق خواب ۲ — مطالعه
+Bedroom 2 — study / Schlafzimmer 2 — Arbeitsplatz
+der Schreibtisch | میز تحریر | desk
+der Bürostuhl | صندلی کار | desk chair
+die Schreibtischlampe | چراغ مطالعه | desk lamp
+das Bücherregal | قفسه کتاب | bookcase
+das Buch | کتاب | book
+
+گروه F05 — پذیرایی — وسایل اصلی
+Living room — main furniture / Wohnzimmer — Hauptmöbel
+das Sofa | مبل | sofa
+der Sessel | مبل تک‌نفره | armchair
+der Couchtisch | میز جلو مبلی | coffee table
+der Fernsehtisch | میز تلویزیون | TV stand
+der Fernseher | تلویزیون | television
+
+گروه F06 — پذیرایی — وسایل کوچک و پارچه
+Living room — small items and textiles / Wohnzimmer — Kleinteile und Textilien
+die Fernbedienung | کنترل تلویزیون | remote control
+das Sofakissen | کوسن مبل | sofa cushion
+die Wohndecke | پتوی مبل | throw blanket
+der Teppich | فرش | rug
+der Vorhang | پرده | curtain
+
+گروه F07 — پذیرایی — روشنایی و تزیین
+Living room — lighting and decoration / Wohnzimmer — Beleuchtung und Dekoration
+die Stehlampe | چراغ ایستاده | floor lamp
+die Deckenleuchte | چراغ سقفی | ceiling light
+die Zimmerpflanze | گیاه آپارتمانی | houseplant
+der Blumentopf | گلدان گیاه | plant pot
+das Bild | تابلو | picture
+
+گروه F08 — راهرو — ورودی
+Hallway — entrance / Flur — Eingangsbereich
+der Schuhschrank | جاکفشی | shoe cabinet
+die Garderobe | رخت‌آویز ورودی | coat rack
+die Fußmatte | پادری | doormat
+der Spiegel | آینه | mirror
+die Sitzbank | نیمکت ورودی | entrance bench
+
+گروه F09 — راهرو — وسایل روزمره
+Hallway — everyday items / Flur — Alltagsgegenstände
+der Schlüssel | کلید | key
+das Schlüsselbrett | آویز کلید | key rack
+der Regenschirm | چتر | umbrella
+der Schirmständer | جاچتری | umbrella stand
+die Wanduhr | ساعت دیواری | wall clock
+
+گروه F10 — حمام/دستشویی — تجهیزات بهداشتی
+Bathroom/WC — sanitary fixtures / Bad/WC — Sanitärausstattung
+die Toilette | توالت؛ کاسه و نشیمن | toilet fixture
+der Spülkasten | فلاش‌تانک | toilet cistern
+das Waschbecken | روشویی | washbasin
+die Armatur | شیر روشویی | basin tap
+die Dusche | دوش | shower
+
+گروه F11 — حمام/دستشویی — تجهیزات شست‌وشو
+Bathroom/WC — washing fixtures / Bad/WC — Duschausstattung
+die Duschkabine | کابین دوش | shower enclosure
+der Duschkopf | سردوش | shower head
+der Duschschlauch | شلنگ دوش | shower hose
+der Bodenablauf | کف‌شور | floor drain
+der Waschbeckenunterschrank | کابینت زیر روشویی | vanity cabinet
+
+گروه F12 — حمام/دستشویی — لوازم کوچک
+Bathroom/WC — accessories / Bad/WC — Zubehör
+der Spiegel | آینه | mirror
+das Handtuch | حوله | towel
+der Handtuchhalter | آویز حوله | towel rail
+die Seife | صابون | soap
+die Toilettenbürste | برس توالت | toilet brush
+der Toilettenpapierhalter | نگهدارنده دستمال توالت | toilet roll holder
+
+گروه F13 — رخت‌شویی در حمام و بند رخت در اتاق خواب ۲
+Laundry in bathroom, drying rack in bedroom 2 / Wäschepflege im Bad, Wäscheständer in Schlafzimmer 2
+die Waschmaschine | ماشین لباس‌شویی | washing machine
+der Wäschekorb | سبد لباس | laundry basket
+das Waschmittel | مایع یا پودر لباس‌شویی | laundry detergent
+der Wäscheständer | بند رخت تاشو | drying rack
+die Wäscheklammer | گیره لباس | clothes peg
+
+گروه F14 — لوازم نظافت — هر پنج مورد در حمام ساخته شده‌اند
+House cleaning — all five built in bathroom / Hausreinigung — alle fünf im Bad gebaut
+der Staubsauger | جاروبرقی | vacuum cleaner
+der Besen | جارو | broom
+das Kehrblech | خاک‌انداز | dustpan
+der Wischmopp | تی | mop
+die Mülltüte | کیسه زباله | bin bag
+
+گروه F15 — اجزای مشترک ساختمان
+Shared house fittings / Gemeinsame Hausausstattung
+der Lichtschalter | کلید برق | light switch
+die Steckdose | پریز | power socket
+der Heizkörper | رادیاتور | radiator
+das Thermostat | ترموستات | thermostat
+
+گروه F16 — تکمیل آشپزخانه — هر پنج مورد ساخته شده‌اند
+Kitchen additions — all five built / Küchenergänzungen — alle fünf gebaut
+die Küchenschere | قیچی آشپزخانه | kitchen scissors
+die Küchenrolle | دستمال کاغذی رولی آشپزخانه | kitchen roll
+der Toaster | توستر | toaster
+die Kaffeemaschine | قهوه‌ساز | coffee machine
+die Küchenwaage | ترازوی آشپزخانه | kitchen scale
+
+مرحله ۱۵ — وسایل ساخته‌شدهٔ حمام و نام اجزای وسایل
+Deutsch | فارسی | English
+die Toilette | توالت؛ کاسه و نشیمن | toilet fixture
+die Toilettenschüssel | کاسه توالت | toilet bowl
+der Toilettensitz | نشیمن توالت | toilet seat
+der Toilettendeckel | درپوش توالت | toilet lid
+der Spülkasten | فلاش‌تانک | toilet cistern
+die Spültaste | دکمه فلاش | flush button
+der Waschbeckenunterschrank | کابینت زیر روشویی | vanity cabinet
+die Schranktür | در کابینت | cabinet door
+der Schrankgriff | دستگیره کابینت | cabinet handle
+das Waschbecken | روشویی | washbasin
+der Abfluss | خروجی آب | drain
+die Armatur | شیر روشویی | basin tap
+der Auslauf | آبریز شیر | tap spout
+der Bedienhebel | اهرم کنترل | control lever
+die Dusche | دوش | shower
+die Duscharmatur | شیر دوش | shower mixer
+die Duschkabine | کابین دوش | shower enclosure
+die Duschwanne | سینی زیر دوش | shower tray
+die Glasscheibe | پنل شیشه‌ای | glass panel
+der Duschkopf | سردوش | shower head
+der Duschschlauch | شلنگ دوش | shower hose
+der Bodenablauf | کف‌شور | floor drain
+die Dunstabzugshaube | هود آشپزخانه | range hood
+der Gasherd | اجاق گاز | gas stove
+das Kochfeld | صفحه اجاق | cooktop
+das Fenster | پنجره | window
+der Vorhang | پرده | curtain
+die Deckenleuchte | چراغ سقفی | ceiling light
+der Boden | کف | floor
+die Decke | سقف | ceiling
+der Türrahmen | چارچوب در | door frame
+der Türgriff | دستگیره در | door handle
+die Wand | دیوار | wall
+die Sitzfläche | سطح نشیمن | seat surface
+der Fensterrahmen | قاب پنجره | window frame
+das Stuhlbein | پایه صندلی | chair leg
+der Bedienknopf | پیچ کنترل | control knob
+der Topfträger | شبکه نگهدارنده قابلمه | pan support
+die Fensterscheibe | شیشه پنجره | window pane
+der Gasbrenner | شعله اجاق | gas burner
+die Rückenlehne | پشتی صندلی | backrest
+die Gardinenstange | میله پرده | curtain rod
+der Deckelknopf | دستگیره درپوش | lid knob
+der Schubladengriff | دستگیره کشو | drawer handle
+das Sitzkissen | بالشتک نشیمن | seat cushion
+das Türblatt | لنگه در | door leaf
+das Tischbein | پایه میز | table leg
+der Griff | دستگیره | handle
+der Topfdeckel | در قابلمه | pot lid
+die Schubladenfront | جلوی کشو | drawer front
+die Fensterbank | لبه زیر پنجره | window sill
+der Fenstergriff | دستگیره پنجره | window handle
+das Display | نمایشگر | display
+die Tischplatte | صفحه میز | tabletop
+
+گروه‌های F10 و F11 اکنون ساخته شده‌اند. موردی از صف ۸۰تایی باقی نمانده است. نام‌های اجزا به‌صورت جداگانه قابل شناسایی‌اند و عمل اصلی باز کردن، برداشتن یا استفاده از صاحب جزء را عوض نمی‌کنند. وسایل حمام ثابت‌اند؛ این نسخه شست‌وشو یا تخلیهٔ واقعی را شبیه‌سازی نمی‌کند.
+
+مرحله ۱۶ — وسایل ساخته‌شدهٔ دو اتاق خواب
+Deutsch | فارسی | English
+das Bett | تخت | bed
+das Kopfteil | تاج تخت | headboard
+der Bettrahmen | چارچوب تخت | bed frame
+der Bettfuß | پایه تخت | bed leg
+die Matratze | تشک | mattress
+das Kopfkissen | بالش | pillow
+die Bettdecke | لحاف | duvet
+das Bettlaken | ملحفه | bedsheet
+der Kleiderschrank | کمد لباس | wardrobe
+die Kleiderstange | میله آویز لباس | clothes rail
+die Schranktür | در کابینت | cabinet door
+der Schrankgriff | دستگیره کابینت | cabinet handle
+die Kommode | دراور | chest of drawers
+die Schublade | کشو | drawer
+der Schubladengriff | دستگیره کشو | drawer handle
+der Nachttisch | پاتختی | bedside table
+die Nachttischlampe | چراغ پاتختی | bedside lamp
+der Lampenschirm | کلاهک چراغ | lampshade
+der Kleiderbügel | چوب‌لباسی | clothes hanger
+der Schreibtisch | میز تحریر | desk
+die Tischplatte | صفحه میز | tabletop
+das Tischbein | پایه میز | table leg
+der Bürostuhl | صندلی کار | desk chair
+die Sitzfläche | سطح نشیمن | seat surface
+die Rückenlehne | پشتی صندلی | backrest
+die Rolle | چرخ | caster
+die Armlehne | دسته صندلی | armrest
+die Schreibtischlampe | چراغ مطالعه | desk lamp
+das Bücherregal | قفسه کتاب | bookcase
+der Regalboden | طبقه قفسه | shelf board
+das Buch | کتاب | book
+die Buchseiten | صفحه‌های کتاب | book pages
+der Buchdeckel | جلد کتاب | book cover
+
+گروه‌های F01 تا F04 با ۲۰ نمونهٔ مخصوص دو اتاق ساخته شدند. تعداد موارد هنوز اضافه‌نشده در فهرست: 0. درها و کشوهای این گروه باز می‌شوند؛ اشیا در این نسخه هدف شناسایی ثابت‌اند و با نقطهٔ نام یا F شناخته می‌شوند.
+
+مرحله ۱۷ — وسایل ساخته‌شدهٔ پذیرایی و راهرو
+Deutsch | فارسی | English
+das Sofa | مبل | sofa
+der Möbelfuß | پایه مبلمان | furniture leg
+das Sitzpolster | بالشتک نشیمن | seat cushion
+die Rückenlehne | پشتی صندلی | backrest
+die Armlehne | دسته صندلی | armrest
+der Sessel | مبل تک‌نفره | armchair
+der Couchtisch | میز جلو مبلی | coffee table
+die Tischplatte | صفحه میز | tabletop
+das Tischbein | پایه میز | table leg
+der Fernsehtisch | میز تلویزیون | TV stand
+der Regalboden | طبقه قفسه | shelf board
+der Fernseher | تلویزیون | television
+der Bildschirm | صفحه‌نمایش | screen
+die Fernbedienung | کنترل تلویزیون | remote control
+die Taste | دکمه | button
+das Sofakissen | کوسن مبل | sofa cushion
+die Wohndecke | پتوی مبل | throw blanket
+der Teppich | فرش | rug
+der Vorhang | پرده | curtain
+die Gardinenstange | میله پرده | curtain rod
+die Stehlampe | چراغ ایستاده | floor lamp
+der Lampenschirm | کلاهک چراغ | lampshade
+die Deckenleuchte | چراغ سقفی | ceiling light
+die Zimmerpflanze | گیاه آپارتمانی | houseplant
+das Blatt | برگ | leaf
+der Blumentopf | گلدان گیاه | plant pot
+das Bild | تابلو | picture
+der Bilderrahmen | قاب تابلو | picture frame
+der Schuhschrank | جاکفشی | shoe cabinet
+die Schranktür | در کابینت | cabinet door
+der Schrankgriff | دستگیره کابینت | cabinet handle
+die Garderobe | رخت‌آویز ورودی | coat rack
+der Haken | قلاب | hook
+die Fußmatte | پادری | doormat
+der Spiegel | آینه | mirror
+die Spiegelfläche | سطح آینه | mirror surface
+die Sitzbank | نیمکت ورودی | entrance bench
+die Sitzfläche | سطح نشیمن | seat surface
+
+۲۰ مورد F05–F08 ساخته شدند؛ هر ۸۰ مورد از صف ساخته شده‌اند. این وسایل هدف شناسایی ثابت‌اند؛ دو در جاکفشی باز می‌شوند. تلویزیون تصویر ثابت دارد، چراغ‌ها روشن‌اند و آینه سطح فلزی براق دارد.
+
+مرحله ۱۸ — لوازم راهرو، حمام، رخت‌شویی و نظافت
+Deutsch | فارسی | English
+der Schlüssel | کلید | key
+der Schlüsselschaft | ساقه کلید | key shaft
+der Schlüsselbart | دندانه کلید | key bit
+das Schlüsselbrett | آویز کلید | key rack
+der Haken | قلاب | hook
+der Regenschirm | چتر | umbrella
+das Schirmdach | پارچه چتر | umbrella canopy
+der Schirmständer | جاچتری | umbrella stand
+die Wanduhr | ساعت دیواری | wall clock
+der Stundenzeiger | عقربه ساعت‌شمار | hour hand
+der Minutenzeiger | عقربه دقیقه‌شمار | minute hand
+der Spiegel | آینه | mirror
+die Spiegelfläche | سطح آینه | mirror surface
+das Handtuch | حوله | towel
+der Handtuchhalter | آویز حوله | towel rail
+die Seife | صابون | soap
+die Seifenschale | جاصابونی | soap dish
+die Toilettenbürste | برس توالت | toilet brush
+der Griff | دستگیره | handle
+der Toilettenpapierhalter | نگهدارنده دستمال توالت | toilet roll holder
+das Toilettenpapier | دستمال توالت | toilet paper
+die Waschmaschine | ماشین لباس‌شویی | washing machine
+die Waschtrommel | دیگ لباس‌شویی | washing drum
+die Waschmaschinentür | در ماشین لباس‌شویی | washing-machine door
+der Türgriff | دستگیره در | door handle
+das Waschmittelfach | محفظه مواد شوینده | detergent compartment
+der Programmwähler | پیچ انتخاب برنامه | program selector
+das Display | نمایشگر | display
+der Wäschekorb | سبد لباس | laundry basket
+das Waschmittel | مایع یا پودر لباس‌شویی | laundry detergent
+der Verschluss | درپوش | cap
+der Wäscheständer | بند رخت تاشو | drying rack
+die Wäscheklammer | گیره لباس | clothes peg
+die Feder | فنر | spring
+der Staubsauger | جاروبرقی | vacuum cleaner
+das Rad | چرخ | wheel
+der Saugschlauch | شلنگ مکش | vacuum hose
+das Saugrohr | لوله مکش | vacuum tube
+die Bodendüse | سری کف جاروبرقی | floor nozzle
+der Besen | جارو | broom
+der Stiel | دسته بلند | long handle
+das Kehrblech | خاک‌انداز | dustpan
+der Wischmopp | تی | mop
+
+۲۰ مورد F09، F12، F13 و چهار ردیف اول F14 ساخته شدند؛ تعداد موارد در انتظار: 0. اشیا هدف شناسایی ثابت‌اند. در و کشوی لباس‌شویی باز می‌شوند؛ چرخهٔ شست‌وشو، نظافت، ساعت زنده و بازتاب زندهٔ آینه شبیه‌سازی نشده‌اند.
+
+
+مرحله ۱۹ — ده وسیلهٔ نهایی خانه و آشپزخانه
+Deutsch | فارسی | English
+die Mülltüte | کیسه زباله | bin bag
+der Knoten | گره | knot
+der Lichtschalter | کلید برق | light switch
+die Schalterwippe | صفحه کلید برق | switch rocker
+die Steckdose | پریز | power socket
+der Heizkörper | رادیاتور | radiator
+die Heizrippe | پره رادیاتور | radiator fin
+das Thermostat | ترموستات | thermostat
+das Heizungsventil | شیر رادیاتور | radiator valve
+der Drehregler | پیچ تنظیم | control dial
+die Küchenschere | قیچی آشپزخانه | kitchen scissors
+der Scherengriff | دسته قیچی | scissor handle
+die Scherenklinge | تیغه قیچی | scissor blade
+die Küchenrolle | دستمال کاغذی رولی آشپزخانه | kitchen roll
+der Küchenrollenhalter | پایه دستمال رولی | kitchen-roll holder
+der Toaster | توستر | toaster
+der Toastschlitz | شیار نان توستر | toast slot
+der Bedienhebel | اهرم کنترل | control lever
+der Bräunungsregler | پیچ تنظیم برشتگی | browning control
+die Kaffeemaschine | قهوه‌ساز | coffee machine
+der Wassertank | مخزن آب | water tank
+der Filterhalter | نگهدارنده فیلتر | filter holder
+die Kaffeekanne | قوری قهوه‌ساز | coffee pot
+der Kannengriff | دسته قوری | pot handle
+die Küchenwaage | ترازوی آشپزخانه | kitchen scale
+die Wiegefläche | سطح توزین | weighing platform
+das Display | نمایشگر | display
+
+هر ۸۰ نمونهٔ برنامه‌ریزی‌شده ساخته شده‌اند؛ هیچ ردیف وسیلهٔ [ ] باقی نمانده است. این ده مورد هدف شناسایی ثابت‌اند. کلید برق چراغ‌های پذیرایی را قطع و وصل می‌کند؛ گرمایش، کارکرد پریز، برش، توست‌کردن، دم‌کردن قهوه و وزن‌کشی شبیه‌سازی نشده‌اند.
+
+
+ظاهر شخصیت بازیکن — 2026-11-20
+Player avatar appearance / Aussehen der Spielfigur
+Deutsch | فارسی | English
+die Spielfigur | شخصیت بازیکن | player character
+der Körper | بدن | body
+der Kopf | سر | head
+die Haare | مو | hair
+das Auge | چشم | eye
+die Nase | بینی | nose
+der Arm | بازو و ساعد | arm
+die Hand | دست | hand
+der Daumen | انگشت شست | thumb
+das Bein | پا | leg
+der Fuß | پا؛ کف پا | foot
+das Sweatshirt | سویشرت | sweatshirt
+die Hose | شلوار | trousers
+der Turnschuh | کفش ورزشی | sneaker
+
+این‌ها اجزای نمایشی شخصیت‌اند؛ هدف واژه، دکمهٔ نام یا مرحلهٔ تازه نیستند و جزو صف وسایل F01–F16 شمرده نمی‌شوند.
+These are avatar visuals, not vocabulary targets, naming controls or new stages; they are outside the F01–F16 furnishing queue.
+Dies sind Teile der Spielfigur, keine Vokabelziele, Benennungstasten oder neuen Aufgaben; sie zählen nicht zum Einrichtungsplan F01–F16.

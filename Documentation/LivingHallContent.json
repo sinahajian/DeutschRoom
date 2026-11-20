@@ -1,0 +1,470 @@
+{
+    "fixtures": [
+        {
+            "id": "Living_Sofa",
+            "de": "das Sofa",
+            "fa": "مبل",
+            "en": "sofa",
+            "room": "LivingRoom",
+            "order": 30
+        },
+        {
+            "id": "Living_Armchair",
+            "de": "der Sessel",
+            "fa": "مبل تک‌نفره",
+            "en": "armchair",
+            "room": "LivingRoom",
+            "order": 31
+        },
+        {
+            "id": "Living_CoffeeTable",
+            "de": "der Couchtisch",
+            "fa": "میز جلو مبلی",
+            "en": "coffee table",
+            "room": "LivingRoom",
+            "order": 32
+        },
+        {
+            "id": "Living_TVStand",
+            "de": "der Fernsehtisch",
+            "fa": "میز تلویزیون",
+            "en": "TV stand",
+            "room": "LivingRoom",
+            "order": 33
+        },
+        {
+            "id": "Living_TV",
+            "de": "der Fernseher",
+            "fa": "تلویزیون",
+            "en": "television",
+            "room": "LivingRoom",
+            "order": 34
+        },
+        {
+            "id": "Living_Remote",
+            "de": "die Fernbedienung",
+            "fa": "کنترل تلویزیون",
+            "en": "remote control",
+            "room": "LivingRoom",
+            "order": 35
+        },
+        {
+            "id": "Living_Cushion",
+            "de": "das Sofakissen",
+            "fa": "کوسن مبل",
+            "en": "sofa cushion",
+            "room": "LivingRoom",
+            "order": 36
+        },
+        {
+            "id": "Living_Throw",
+            "de": "die Wohndecke",
+            "fa": "پتوی مبل",
+            "en": "throw blanket",
+            "room": "LivingRoom",
+            "order": 37
+        },
+        {
+            "id": "Living_Rug",
+            "de": "der Teppich",
+            "fa": "فرش",
+            "en": "rug",
+            "room": "LivingRoom",
+            "order": 38
+        },
+        {
+            "id": "Living_Curtain",
+            "de": "der Vorhang",
+            "fa": "پرده",
+            "en": "curtain",
+            "room": "LivingRoom",
+            "order": 39
+        },
+        {
+            "id": "Living_FloorLamp",
+            "de": "die Stehlampe",
+            "fa": "چراغ ایستاده",
+            "en": "floor lamp",
+            "room": "LivingRoom",
+            "order": 40
+        },
+        {
+            "id": "Living_CeilingLight",
+            "de": "die Deckenleuchte",
+            "fa": "چراغ سقفی",
+            "en": "ceiling light",
+            "room": "LivingRoom",
+            "order": 41
+        },
+        {
+            "id": "Living_Plant",
+            "de": "die Zimmerpflanze",
+            "fa": "گیاه آپارتمانی",
+            "en": "houseplant",
+            "room": "LivingRoom",
+            "order": 42
+        },
+        {
+            "id": "Living_Pot",
+            "de": "der Blumentopf",
+            "fa": "گلدان گیاه",
+            "en": "plant pot",
+            "room": "LivingRoom",
+            "order": 43
+        },
+        {
+            "id": "Living_Picture",
+            "de": "das Bild",
+            "fa": "تابلو",
+            "en": "picture",
+            "room": "LivingRoom",
+            "order": 44
+        },
+        {
+            "id": "Hall_ShoeCabinet",
+            "de": "der Schuhschrank",
+            "fa": "جاکفشی",
+            "en": "shoe cabinet",
+            "room": "Hallway",
+            "order": 45
+        },
+        {
+            "id": "Hall_CoatRack",
+            "de": "die Garderobe",
+            "fa": "رخت‌آویز ورودی",
+            "en": "coat rack",
+            "room": "Hallway",
+            "order": 46
+        },
+        {
+            "id": "Hall_Mat",
+            "de": "die Fußmatte",
+            "fa": "پادری",
+            "en": "doormat",
+            "room": "Hallway",
+            "order": 47
+        },
+        {
+            "id": "Hall_Mirror",
+            "de": "der Spiegel",
+            "fa": "آینه",
+            "en": "mirror",
+            "room": "Hallway",
+            "order": 48
+        },
+        {
+            "id": "Hall_Bench",
+            "de": "die Sitzbank",
+            "fa": "نیمکت ورودی",
+            "en": "entrance bench",
+            "room": "Hallway",
+            "order": 49
+        }
+    ],
+    "vocabulary": [
+        {
+            "id": "",
+            "de": "das Sofa",
+            "fa": "مبل",
+            "en": "sofa",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Möbelfuß",
+            "fa": "پایه مبلمان",
+            "en": "furniture leg",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Sitzpolster",
+            "fa": "بالشتک نشیمن",
+            "en": "seat cushion",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Rückenlehne",
+            "fa": "پشتی صندلی",
+            "en": "backrest",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Armlehne",
+            "fa": "دسته صندلی",
+            "en": "armrest",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Sessel",
+            "fa": "مبل تک‌نفره",
+            "en": "armchair",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Couchtisch",
+            "fa": "میز جلو مبلی",
+            "en": "coffee table",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Tischplatte",
+            "fa": "صفحه میز",
+            "en": "tabletop",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Tischbein",
+            "fa": "پایه میز",
+            "en": "table leg",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Fernsehtisch",
+            "fa": "میز تلویزیون",
+            "en": "TV stand",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Regalboden",
+            "fa": "طبقه قفسه",
+            "en": "shelf board",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Fernseher",
+            "fa": "تلویزیون",
+            "en": "television",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Bildschirm",
+            "fa": "صفحه‌نمایش",
+            "en": "screen",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Fernbedienung",
+            "fa": "کنترل تلویزیون",
+            "en": "remote control",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Taste",
+            "fa": "دکمه",
+            "en": "button",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Sofakissen",
+            "fa": "کوسن مبل",
+            "en": "sofa cushion",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Wohndecke",
+            "fa": "پتوی مبل",
+            "en": "throw blanket",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Teppich",
+            "fa": "فرش",
+            "en": "rug",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Vorhang",
+            "fa": "پرده",
+            "en": "curtain",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Gardinenstange",
+            "fa": "میله پرده",
+            "en": "curtain rod",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Stehlampe",
+            "fa": "چراغ ایستاده",
+            "en": "floor lamp",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Lampenschirm",
+            "fa": "کلاهک چراغ",
+            "en": "lampshade",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Deckenleuchte",
+            "fa": "چراغ سقفی",
+            "en": "ceiling light",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Zimmerpflanze",
+            "fa": "گیاه آپارتمانی",
+            "en": "houseplant",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Blatt",
+            "fa": "برگ",
+            "en": "leaf",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Blumentopf",
+            "fa": "گلدان گیاه",
+            "en": "plant pot",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Bild",
+            "fa": "تابلو",
+            "en": "picture",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Bilderrahmen",
+            "fa": "قاب تابلو",
+            "en": "picture frame",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Schuhschrank",
+            "fa": "جاکفشی",
+            "en": "shoe cabinet",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Schranktür",
+            "fa": "در کابینت",
+            "en": "cabinet door",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Schrankgriff",
+            "fa": "دستگیره کابینت",
+            "en": "cabinet handle",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Garderobe",
+            "fa": "رخت‌آویز ورودی",
+            "en": "coat rack",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Haken",
+            "fa": "قلاب",
+            "en": "hook",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Fußmatte",
+            "fa": "پادری",
+            "en": "doormat",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Spiegel",
+            "fa": "آینه",
+            "en": "mirror",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Spiegelfläche",
+            "fa": "سطح آینه",
+            "en": "mirror surface",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Sitzbank",
+            "fa": "نیمکت ورودی",
+            "en": "entrance bench",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Sitzfläche",
+            "fa": "سطح نشیمن",
+            "en": "seat surface",
+            "room": "",
+            "order": 0
+        }
+    ]
+}

@@ -1,0 +1,302 @@
+{
+    "fixtures": [
+        {
+            "id": "Bath_BinBag",
+            "de": "die Mülltüte",
+            "fa": "کیسه زباله",
+            "en": "bin bag",
+            "room": "BathroomWC",
+            "order": 70
+        },
+        {
+            "id": "Hall_LightSwitch",
+            "de": "der Lichtschalter",
+            "fa": "کلید برق",
+            "en": "light switch",
+            "room": "Hallway",
+            "order": 71
+        },
+        {
+            "id": "Hall_PowerSocket",
+            "de": "die Steckdose",
+            "fa": "پریز",
+            "en": "power socket",
+            "room": "Hallway",
+            "order": 72
+        },
+        {
+            "id": "Living_Radiator",
+            "de": "der Heizkörper",
+            "fa": "رادیاتور",
+            "en": "radiator",
+            "room": "LivingRoom",
+            "order": 73
+        },
+        {
+            "id": "Living_Thermostat",
+            "de": "das Thermostat",
+            "fa": "ترموستات",
+            "en": "thermostat",
+            "room": "LivingRoom",
+            "order": 74
+        },
+        {
+            "id": "Kitchen_Scissors",
+            "de": "die Küchenschere",
+            "fa": "قیچی آشپزخانه",
+            "en": "kitchen scissors",
+            "room": "Kitchen",
+            "order": 75
+        },
+        {
+            "id": "Kitchen_PaperRoll",
+            "de": "die Küchenrolle",
+            "fa": "دستمال کاغذی رولی آشپزخانه",
+            "en": "kitchen roll",
+            "room": "Kitchen",
+            "order": 76
+        },
+        {
+            "id": "Kitchen_Toaster",
+            "de": "der Toaster",
+            "fa": "توستر",
+            "en": "toaster",
+            "room": "Kitchen",
+            "order": 77
+        },
+        {
+            "id": "Kitchen_CoffeeMachine",
+            "de": "die Kaffeemaschine",
+            "fa": "قهوه‌ساز",
+            "en": "coffee machine",
+            "room": "Kitchen",
+            "order": 78
+        },
+        {
+            "id": "Kitchen_Scale",
+            "de": "die Küchenwaage",
+            "fa": "ترازوی آشپزخانه",
+            "en": "kitchen scale",
+            "room": "Kitchen",
+            "order": 79
+        }
+    ],
+    "vocabulary": [
+        {
+            "id": "",
+            "de": "die Mülltüte",
+            "fa": "کیسه زباله",
+            "en": "bin bag",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Knoten",
+            "fa": "گره",
+            "en": "knot",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Lichtschalter",
+            "fa": "کلید برق",
+            "en": "light switch",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Schalterwippe",
+            "fa": "صفحه کلید برق",
+            "en": "switch rocker",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Steckdose",
+            "fa": "پریز",
+            "en": "power socket",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Heizkörper",
+            "fa": "رادیاتور",
+            "en": "radiator",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Heizrippe",
+            "fa": "پره رادیاتور",
+            "en": "radiator fin",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Thermostat",
+            "fa": "ترموستات",
+            "en": "thermostat",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Heizungsventil",
+            "fa": "شیر رادیاتور",
+            "en": "radiator valve",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Drehregler",
+            "fa": "پیچ تنظیم",
+            "en": "control dial",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Küchenschere",
+            "fa": "قیچی آشپزخانه",
+            "en": "kitchen scissors",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Scherengriff",
+            "fa": "دسته قیچی",
+            "en": "scissor handle",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Scherenklinge",
+            "fa": "تیغه قیچی",
+            "en": "scissor blade",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Küchenrolle",
+            "fa": "دستمال کاغذی رولی آشپزخانه",
+            "en": "kitchen roll",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Küchenrollenhalter",
+            "fa": "پایه دستمال رولی",
+            "en": "kitchen-roll holder",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Toaster",
+            "fa": "توستر",
+            "en": "toaster",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Toastschlitz",
+            "fa": "شیار نان توستر",
+            "en": "toast slot",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Bedienhebel",
+            "fa": "اهرم کنترل",
+            "en": "control lever",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Bräunungsregler",
+            "fa": "پیچ تنظیم برشتگی",
+            "en": "browning control",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Kaffeemaschine",
+            "fa": "قهوه‌ساز",
+            "en": "coffee machine",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Wassertank",
+            "fa": "مخزن آب",
+            "en": "water tank",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Filterhalter",
+            "fa": "نگهدارنده فیلتر",
+            "en": "filter holder",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Kaffeekanne",
+            "fa": "قوری قهوه‌ساز",
+            "en": "coffee pot",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "der Kannengriff",
+            "fa": "دسته قوری",
+            "en": "pot handle",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Küchenwaage",
+            "fa": "ترازوی آشپزخانه",
+            "en": "kitchen scale",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "die Wiegefläche",
+            "fa": "سطح توزین",
+            "en": "weighing platform",
+            "room": "",
+            "order": 0
+        },
+        {
+            "id": "",
+            "de": "das Display",
+            "fa": "نمایشگر",
+            "en": "display",
+            "room": "",
+            "order": 0
+        }
+    ]
+}

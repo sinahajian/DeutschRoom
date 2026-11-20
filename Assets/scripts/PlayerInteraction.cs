@@ -9,20 +9,40 @@ public sealed class PlayerInteraction : MonoBehaviour
     private CharacterController controller;
     private PlayerControls controls;
     private KitchenInteractable focused;
+    private VocabularyPart focusedPart;
     private RaycastHit focusHit;
     private bool hasHit;
     private float placementYaw;
     private string message;
     private float messageUntil;
     private GUIStyle promptStyle;
+    public LearningProgress Learning { get; private set; }
+
+    public GermanVoice Voice { get; private set; }
+    private string identifiedName;
+    private float nameUntil;
+    public string IdentifiedName => Time.unscaledTime < nameUntil ? identifiedName : "";
 
     public PickupItem HeldItem { get; private set; }
     public KitchenInteractable FocusedObject => focused;
+    public KitchenInteractable IdentificationTarget => focusedPart != null && focusedPart.Owner != null ? focusedPart.Owner : focused;
+    public bool CanIdentify => IdentificationTarget != null || focusedPart != null;
+    public bool CanIdentifyPart => focusedPart != null && IdentificationTarget != null &&
+        !string.IsNullOrEmpty(focusedPart.DisplayName) && focusedPart.DisplayName != IdentificationTarget.DisplayName;
+    public bool CanUseFocused => CanInteract && !(focused is VocabularyObject);
+    public bool CanInteract => focused != null &&
+        (!(focused is PickupItem pickup) || (HeldItem == null && !pickup.IsHeld)) &&
+        (!(focused is Openable door) || !door.IsMoving);
+    public bool CanPlaceHeld => HeldItem != null && hasHit && focusHit.collider != null && focusHit.normal.y >= .25f;
     public string FeedbackText => Time.unscaledTime < messageUntil ? message : "";
 
     private void Awake()
     {
+        Voice = GetComponent<GermanVoice>();
+        if (Voice == null) Voice = gameObject.AddComponent<GermanVoice>();
         controller = GetComponent<CharacterController>();
+        Learning = GetComponent<LearningProgress>();
+        if (Learning == null) Learning = gameObject.AddComponent<LearningProgress>();
         controls = GetComponent<PlayerControls>();
         if (playerCamera == null)
         {
@@ -38,21 +58,31 @@ public sealed class PlayerInteraction : MonoBehaviour
     {
         if (controls == null || !controls.GameplayActive)
         {
-            focused = null;
+            focused = null; focusedPart = null;
             return;
         }
 
         Physics.SyncTransforms();
         hasHit = RaycastWorld(new Ray(playerCamera.position, playerCamera.forward), interactionDistance, out focusHit);
+        focusedPart = hasHit ? focusHit.collider.GetComponentInParent<VocabularyPart>() : null;
         focused = hasHit ? focusHit.collider.GetComponentInParent<KitchenInteractable>() : null;
-        if (controls.InteractPressed && focused != null)
+        if (!controls.UsesTouch && Input.GetKeyDown(KeyCode.F) && (focused != null || focusedPart != null))
+        {
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) IdentifyFocusedPart();
+            else IdentifyFocused();
+        }
+        if (!controls.UsesTouch && Input.GetKeyDown(KeyCode.Return))
+            Learning.StartLessons();
+        if (controls.InteractPressed && CanInteract)
+        {
             focused.Interact(this);
+        }
         if (controls.RotatePressed && HeldItem != null)
             placementYaw += 45f;
         if (controls.PlacePressed && HeldItem != null)
         {
             if (!hasHit || !TryPlaceHeld(focusHit))
-                ShowMessage("Look at a clear, flat surface with room for the item.");
+                ShowMessage("Schau auf eine Oberfläche in deiner Nähe.");
         }
     }
 
@@ -75,53 +105,57 @@ public sealed class PlayerInteraction : MonoBehaviour
     {
         if (item == null || HeldItem != null || item.IsHeld)
         {
-            ShowMessage(controls != null && controls.UsesTouch ? "Place your item first." : "Put down your item first (G).");
+            ShowMessage(controls != null && controls.UsesTouch ? "Lege zuerst den Gegenstand ab." : "Lege zuerst den Gegenstand ab (G).");
             return false;
         }
         placementYaw = item.transform.eulerAngles.y;
+        bool takenFromTable = Learning.IsOnTable(item);
         HeldItem = item;
         item.BeginCarry();
+        Learning.Found(item, takenFromTable);
         return true;
     }
 
     public bool TryPlaceHeld(RaycastHit surface)
     {
-        if (HeldItem == null || surface.collider == null || surface.normal.y < .85f)
+        if (HeldItem == null || surface.collider == null || surface.normal.y < .25f)
             return false;
-        // Moving doors and other loose items are not stable supports.
-        if (surface.collider.GetComponentInParent<KitchenInteractable>() != null)
-            return false;
-
         Quaternion rotation = HeldItem.PlacementRotation(placementYaw);
         Bounds rotated = HeldItem.BoundsAt(Vector3.zero, rotation);
-        Vector3 position = surface.point - new Vector3(rotated.center.x, rotated.min.y, rotated.center.z) + Vector3.up * .006f;
-        Bounds bounds = HeldItem.BoundsAt(position, rotation);
-
-        Collider[] obstacles = Physics.OverlapBox(bounds.center, bounds.extents, Quaternion.identity,
-            Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
-        foreach (Collider obstacle in obstacles)
-            if (!obstacle.transform.IsChildOf(HeldItem.transform))
-                return false;
-
-        // Sample the footprint to keep plates, boards and pans from hanging off a counter.
-        for (int i = 0; i < 5; i++)
-        {
-            Vector3 probe = bounds.center;
-            if (i > 0)
-            {
-                probe.x += ((i & 1) == 0 ? -1f : 1f) * bounds.extents.x * .9f;
-                probe.z += i <= 2 ? -bounds.extents.z * .9f : bounds.extents.z * .9f;
-            }
-            probe.y = bounds.min.y + .025f;
-            if (!RaycastWorld(new Ray(probe, Vector3.down), .075f, out RaycastHit support) ||
-                support.normal.y < .85f || support.collider.GetComponentInParent<KitchenInteractable>() != null)
-                return false;
-        }
-
-        HeldItem.Place(position, rotation);
+        Vector3 position = surface.point - new Vector3(rotated.center.x, rotated.min.y, rotated.center.z) + Vector3.up * .01f;
+        PickupItem placed = HeldItem;
+        placed.PlaceOnSurface(position, rotation, surface.collider.transform);
         HeldItem = null;
-        ShowMessage("Placed.");
+        ShowMessage("Abgelegt.");
+        Learning.Placed(placed);
         return true;
+    }
+
+    public void IdentifyFocused()
+    {
+        if (IdentificationTarget != null) Identify(IdentificationTarget);
+        else if (focusedPart != null) IdentifyPart(focusedPart);
+    }
+
+    public void Identify(KitchenInteractable item)
+    {
+        if (item == null) return;
+        identifiedName = item.DisplayName; nameUntil = Time.unscaledTime + 3.5f;
+        if (!Learning.Identified(item)) Voice.SpeakIdentification(item.DisplayName);
+    }
+
+    public void IdentifyFocusedPart()
+    {
+        if (CanIdentifyPart) IdentifyPart(focusedPart);
+    }
+
+    public void IdentifyPart(VocabularyPart part)
+    {
+        if (part == null) return;
+        identifiedName = part.DisplayName;
+        nameUntil = Time.unscaledTime + 3.5f;
+        // The detail control names only the part; whole-object learning belongs to Anhören.
+        Voice.SpeakIdentification(part.DisplayName);
     }
 
     public bool OverlapsPlayer(Collider[] movingParts)
@@ -170,6 +204,7 @@ public sealed class PlayerInteraction : MonoBehaviour
 
     private void OnGUI()
     {
+        if (GetComponent<RoomExperience>()?.MenuOpen == true) return;
         if (playerCamera == null || (controls != null && controls.UsesTouch))
             return;
         if (promptStyle == null)
@@ -179,15 +214,11 @@ public sealed class PlayerInteraction : MonoBehaviour
         if (Cursor.lockState != CursorLockMode.Locked)
         {
             GUI.Box(new Rect(Screen.width / 2f - 230f, Screen.height - 100f, 460f, 60f),
-                "Click to play | M: touch controls\nWASD: move | Mouse: look | Esc: release cursor", promptStyle);
+                "Klicken zum Spielen | M: Touch-Steuerung\nWASD: Bewegen | Maus: Umsehen | Esc: Maus freigeben", promptStyle);
             return;
         }
         GUI.Label(new Rect(Screen.width / 2f - 5f, Screen.height / 2f - 12f, 20f, 24f), "+");
-        string prompt = focused != null ? "E - " + focused.GetAction(this) + " | " + focused.DisplayName : "Look at a door, drawer, item or faucet";
-        if (HeldItem != null)
-            prompt += "\nG - Place | R - Rotate | " + HeldItem.DisplayName;
-        if (Time.unscaledTime < messageUntil)
-            prompt += "\n" + message;
-        GUI.Box(new Rect(Screen.width / 2f - 290f, Screen.height - 112f, 580f, 94f), prompt, promptStyle);
+        string prompt = "E · Benutzen    G · Ablegen    R · Drehen    Esc · Menü";
+        GUI.Box(new Rect(Screen.width / 2f - 290f, Screen.height - 65f, 580f, 45f), prompt, promptStyle);
     }
 }
