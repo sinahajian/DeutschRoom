@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "E",
+      "title": "Fall E — Komfort und Ressourcen",
+      "pages": [
+        "Mara schreibt: „Wenn niemand einen Raum nutzt, sollten Licht und Geräte ausgeschaltet sein. Gestern lief die Haube noch eine halbe Stunde, obwohl das Kochen beendet war. Auf ihrer Karte stehen 80 W, bei der Leselampe 8 W. Ich möchte unnötigen Betrieb vermeiden, aber nicht jede Nutzung verbieten.“ Nils erwidert: „Die Regel klingt einfach, berücksichtigt aber meinen Abend nicht. Ich lese im zweiten Schlafzimmer.",
+        "Wenn aus Sparsamkeit alles dunkel bleibt, verliere ich einen brauchbaren Arbeitsplatz. Außerdem lässt sich aus einer Wattangabe allein keine monatliche Einsparung ableiten.“\nIm Prüfprotokoll steht: „Küchenwasserhahn fünf Minuten offen beobachtet; Durchflussrate nicht erfasst.",
+        "Kühlschranktür bei Übergabe offen.“ Eine ältere Nachricht behauptet dagegen: „Mit der neuen Regel sparen wir garantiert jeden Abend fünfzig Liter Wasser.“ Für diese Zahl enthält das Paket keinen Beleg. Auf die Bemerkung „Das bringt ohnehin nichts“ hat bisher niemand sachlich geantwortet. Die Gruppe sucht eine Regel, die zwischen genutztem Leselicht, laufender Haube beim Kochen und vergessenen Geräten unterscheidet.",
+        "Über konkrete Eurobeträge soll erst gesprochen werden, wenn Betriebsdauer, Messwerte und Tarif bekannt sind. Heute liest Nils noch; gekocht wird nicht mehr. Die Frage ist also nicht nur, was ausgeschaltet werden kann, sondern welche Entscheidung sich mit den vorhandenen Angaben begründen lässt."
+      ],
+      "source": "Documentation/CurriculumPlan.md"
+    },
+    {
+      "id": "M",
+      "title": "Fall M — Beobachtung und Beschwerde",
+      "pages": [
+        "Übergabe am 21. November, 18 Uhr: Eine Schranktür steht in den Laufweg. Beim ersten Öffnungsversuch stand die Spielfigur unmittelbar im Schwenkbereich; der Vorgang wurde abgebrochen. Nach dem Zurücktreten ließ sich die Tür öffnen. Das Protokoll belegt damit einen Platzkonflikt, aber keinen mechanischen Defekt. Eine Bewohnerin sagt dennoch: „Hier funktioniert nie etwas.",
+        "Wer das zuletzt benutzt hat, war bestimmt unachtsam.“ Eine zweite Person bittet indirekt: „Zum Lesen könnte ich hier etwas mehr Licht gebrauchen.“ Gemeint ist die Leselampe im zweiten Schlafzimmer. Eine Notiz zum Küchenhahn lautet: „Wasser lief bei Ankunft. Nach dem Zudrehen kein sichtbarer Strahl.“ Ob zuvor ein technischer Fehler oder bloß eine nicht beendete Nutzung vorlag, wurde nicht untersucht.",
+        "Die Kühlschranktür wurde offen vorgefunden; eine defekte Dichtung ist nicht nachgewiesen. In einer Nachricht werden außerdem Waschmaschinentür, Trommel und Waschmittelfach verwechselt. Eine Reparatur soll nicht allein aufgrund dieser Wortwahl beauftragt werden. Für die Übergabe werden ein geschlossener Kühlschrank, eine geschlossene Schranktür, abgestelltes Küchenwasser und Leselicht vereinbart.",
+        "Der Hausmeister benötigt beobachtbare Symptome und Zeitangaben, keine persönlichen Vorwürfe. Die Bewohner wünschen sich eine verständliche Nachricht ohne unnötige Fachwörter. Wer beide Empfänger anspricht, muss also dieselben Tatsachen unterschiedlich gewichten, ohne eine Ursache, Zuständigkeit oder Rechtsfolge zu erfinden."
+      ],
+      "source": "Documentation/CurriculumPlan.md"
+    },
+    {
+      "id": "W",
+      "title": "Fall W — WG-Vereinbarung",
+      "pages": [
+        "Sara möchte ab 22 Uhr Ruhe und wenig Licht im Wohnzimmer, weil sie morgens früh aufsteht. Ben arbeitet abends im zweiten Schlafzimmer und braucht dort eine Leselampe. Lina kocht gelegentlich später; sie möchte die Haube während des Kochens nutzen dürfen und sie danach ausschalten. Alle drei akzeptieren, dass ungenutzte Geräte nicht weiterlaufen sollen.",
+        "Sie sind sich aber nicht einig, ob eine Regel besser als Verbot oder als Vereinbarung mit begrenzten Ausnahmen formuliert wird. Der bisherige Vorschlag lautet: „Ab 22 Uhr Wohnzimmerlicht aus; belegtes Leselicht im zweiten Schlafzimmer zulässig; Haube während des Kochens, danach aus.“ Sara wendet ein, Ausnahmen könnten zur Gewohnheit werden. Ben antwortet, ein absolutes Verbot würde eine berechtigte Nutzung verhindern.",
+        "Lina schlägt vor, nach einer Woche gemeinsam zu prüfen, ob die Ausnahmen klar genug beschrieben sind. Dieser Vorschlag zur Nachprüfung ist noch kein einstimmiger Beschluss. Eine Küchennotiz bestätigt den geschlossenen Wasserhahn, enthält jedoch weder Verbrauchsmessung noch Namen eines Verursachers früherer Vorfälle. „Du lässt immer alles offen“ ist daher eine persönliche Verallgemeinerung, keine belegte Häufigkeit.",
+        "Ein weiteres Thema bleibt die Kühlschranktür, die beim Treffen offen steht. In der letzten Aufgabe kommt eine neue Bitte: zehn Minuten Wohnzimmerlicht, um verlorene Unterlagen zu suchen. Eine gute Lösung muss Dauer und Anlass begrenzen und anschließend den vereinbarten Zustand wiederherstellen; die Aufgabe bewertet zunächst die ausdrücklich bestätigte Ausnahme."
+      ],
+      "source": "Documentation/CurriculumPlan.md"
+    },
+    {
+      "id": "H",
+      "title": "Fall H — Übergabe aus mehreren Quellen",
+      "pages": [
+        "Drei Nachrichten müssen zusammengeführt werden. Die erste, 18 Uhr: „Alles wie immer. Wasser aus, Kühlschrank zu. Nils liest noch im zweiten Schlafzimmer.“ Die zweite, 18:15 Uhr: „Haube läuft noch, gekocht wird nicht mehr. Die Schranktür steht im Weg.“ Das Prüfblatt von 18:20 Uhr zeigt dagegen laufendes Küchenwasser und eine offene Kühlschranktür. Die erste Nachricht kann daher nicht ungeprüft als aktueller Zustandsnachweis gelten.",
+        "Auf Nachfrage erklärt die zuständige Person: „Die 18-Uhr-Notiz beschrieb den Sollzustand, nicht eine abgeschlossene Kontrolle.“\nDas Übergabeziel lautet zunächst: Küchenwasser und Haube aus, Kühlschrank und markierter Schrank geschlossen, Wohnzimmerlicht aus, Leselampe an, solange Nils liest. Der Zählerstand wurde nicht geprüft. Weder eine bestimmte Einsparung noch eine technische Fehlerursache kann aus diesen Angaben garantiert werden.",
+        "Der Hausmeister erwartet eine förmliche Übergabe mit bestätigten Maßnahmen und offenen Punkten; eine neue Bewohnerin braucht dieselbe Vereinbarung ohne interne Kürzel. Eine bloße Nachricht „Erledigt“ reicht beiden nicht. Während der Übergabe können neue Nachrichten eintreffen. Ob noch jemand liest oder überhaupt in der Wohnung ist, darf nicht aus einer älteren Notiz abgeleitet werden.",
+        "Vor einer endgültigen Entscheidung muss die aktuelle Nutzung geklärt werden. Wer den alten Plan unverändert wiederholt, könnte eine relevante Änderung übersehen. Eine überzeugende Übergabe erklärt deshalb nicht nur das Ergebnis, sondern auch die aktualisierte Annahme und die verbleibenden Grenzen des Wissens."
+      ],
+      "source": "Documentation/CurriculumPlan.md"
+    }
+  ]
+}

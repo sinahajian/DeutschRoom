@@ -14,6 +14,11 @@ public sealed class PickupItem : KitchenInteractable
 
     public Bounds LocalBounds { get; private set; }
     public bool IsHeld { get; private set; }
+    public uint CarrySequence { get; private set; }
+
+    public uint PlacementSequence { get; private set; }
+    public uint LastPlacedCarrySequence { get; private set; }
+    public Transform LastPlacementSurface { get; private set; }
 
     private void Awake()
     {
@@ -57,6 +62,7 @@ public sealed class PickupItem : KitchenInteractable
 
     public void BeginCarry()
     {
+        CarrySequence = unchecked(CarrySequence + 1);
         previousParent = transform.parent;
         previousPosition = transform.position;
         previousRotation = transform.rotation;
@@ -98,6 +104,9 @@ public sealed class PickupItem : KitchenInteractable
 
     public void PlaceOnSurface(Vector3 position, Quaternion rotation, Transform surface)
     {
+        PlacementSequence = unchecked(PlacementSequence + 1);
+        LastPlacedCarrySequence = CarrySequence;
+        LastPlacementSurface = surface;
         Openable movingSurface = surface != null ? surface.GetComponentInParent<Openable>() : null;
         Transform parent = movingSurface != null ? movingSurface.transform :
             previousParent != null && previousParent.GetComponentInParent<Openable>() == null ? previousParent : null;

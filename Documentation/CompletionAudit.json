@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-22",
+  "catalogTasks": 430,
+  "portableTargets": 53,
+  "fixedTargets": 80,
+  "voiceAudit": {
+    "phrases": 1762,
+    "valid": 1762,
+    "missing": 0,
+    "invalid": 0
+  },
+  "nativeAttempt": {
+    "isolatedProject": "/tmp/deutschroom-completion-playmode-20261122",
+    "editor": "6000.6.7f1-arm64",
+    "exitCode": -9,
+    "testExecutionStarted": false,
+    "unityLogCreated": false,
+    "codeSignatureChecks": {
+      "6000.6.7f1": "invalid signature",
+      "6000.6.7f1-arm64": "invalid signature"
+    }
+  },
+  "editorBinariesModified": false,
+  "deviceTested": false,
+  "freeProductionImplemented": false,
+  "onboardingCleanupAudit": {
+    "date": "2026-11-22",
+    "runtimeScriptsCompiled": 30,
+    "editorScriptsCompiled": 22,
+    "compileErrors": 0,
+    "existingCompilerWarningsRemain": true,
+    "assetAndDocumentChecks": "passed",
+    "managedCatalogSaveAndRuleChecks": "passed",
+    "voicePhrasesValid": 1762,
+    "removedAssets": "Unreferenced URP template Readme.asset and TutorialInfo, including metadata",
+    "removedRuntimeUI": "Two permanently empty mobile Text labels",
+    "deletedAssetReferenceCheck": "passed",
+    "onboarding": {
+      "language": "English",
+      "pages": 6,
+      "firstLaunch": true,
+      "menuReplay": true,
+      "touchAndKeyboardInstructions": true,
+      "completionPreference": "DeutschRoom.ControlsTutorial.v1",
+      "nativeRenderingVerified": false
+    },
+    "nativeSandboxAttempt": {
+      "timeoutSeconds": 25,
+      "testsStarted": false,
+      "log": "/tmp/deutschroom-onboarding-validation-20261122.log",
+      "lastObservedBlocker": "Licensing IPC and macOS service connection"
+    },
+    "deviceTested": false,
+    "nativeServiceAccessAttempt": {
+      "timeoutSeconds": 50,
+      "testsStarted": false,
+      "log": "/tmp/deutschroom-onboarding-native-20261122.log",
+      "lastObservedBlocker": "Licensing is not yet initialized",
+      "result": "timed out; no native pass"
+    }
+  }
+}

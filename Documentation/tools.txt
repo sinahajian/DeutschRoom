@@ -612,3 +612,24 @@ der Turnschuh | کفش ورزشی | sneaker
 این‌ها اجزای نمایشی شخصیت‌اند؛ هدف واژه، دکمهٔ نام یا مرحلهٔ تازه نیستند و جزو صف وسایل F01–F16 شمرده نمی‌شوند.
 These are avatar visuals, not vocabulary targets, naming controls or new stages; they are outside the F01–F16 furnishing queue.
 Dies sind Teile der Spielfigur, keine Vokabelziele, Benennungstasten oder neuen Aufgaben; sie zählen nicht zum Einrichtungsplan F01–F16.
+
+راهنمای تمرین مکانی — 2026-11-22 / Spatial practice aids / Räumliche Übungshilfen
+Deutsch | فارسی | English
+die Zielzone | محدودهٔ هدف | target zone
+der Richtungspfeil | فلش جهت | direction arrow
+این دو فقط نشانهٔ آموزشی موقت روی میز موجود در CUR-251–270 هستند؛ مبلمان یا هدف واژگانِ تازه نیستند و شمار ۵۳ قابل حمل/۸۰ ثابت و وضعیت F01–F16 را تغییر نمی‌دهند.
+Temporary teaching markers on the existing table in CUR-251–270; no furniture/vocabulary targets or inventory-count changes.
+Temporäre Lernmarkierungen auf dem vorhandenen Tisch in CUR-251–270; keine neuen Möbel/Wortziele oder Bestandsänderungen.
+
+کنترل‌های تمرین وسایل — 2026-11-22 / Device practice controls / Geräteübungssteuerung
+Deutsch | فارسی | English
+der Bedienknopf der Dunstabzugshaube | دکمهٔ کنترل هود | range hood control button
+die Flurzone | محدودهٔ راهرو | hall zone
+کنترل هود و محدودهٔ راهرو نشانه/کنترل آموزشی زمان اجرا هستند؛ مبلمان و هدف واژگان ثابت اضافه نشده است. فلاش، شیر روشویی، دوش، چراغ پاتختی و درپوش روی مدل‌های موجود عمل می‌کنند؛ نام اجزا و مالک شناسایی حفظ‌اند.
+Hood control and hall zone are runtime teaching controls/markers, not additional furniture/fixed vocabulary targets. Flush, basin tap, shower, bedside lamp and lid actions use existing models and preserve part/owner labels.
+Haubenbedienung und Flurzone sind Laufzeit-Lernbedienungen/-markierungen, keine zusätzlichen Möbel/festen Wortziele. Spülung, Waschtischarmatur, Dusche, Nachttischlampe und Deckel nutzen vorhandene Modelle und erhalten Teil-/Ganzobjektbenennung.
+
+کنترل‌های مرحلهٔ ۳۳۱–۳۸۰ — 2026-11-22 / Stage 331–380 controls / Steuerung 331–380
+چراغ مطالعهٔ موجود اتاق دوم و درِ موجود جاکفشی راهرو کنترل می‌شوند؛ مبلمان و هدف واژهٔ تازه ساخته نشده است. پرونده‌ها رابط متنی/صوتی‌اند، نه شیء معماری. همهٔ وضعیت‌های F01–F16 و شمار ۵۳/۸۰ حفظ است.
+Existing second-bedroom desk lamp and hall shoe-cabinet door gain action bindings; no furniture/vocabulary targets added. Case packets are text/audio UI, not architecture. F01–F16 and 53/80 populations remain.
+Vorhandene Leselampe im zweiten Schlafzimmer und Flur-Schuhschranktür erhalten Bedienbindungen; keine neuen Möbel/Wortziele. Fallpakete sind Text-/Audiooberfläche, keine Architektur. F01–F16 und Bestand 53/80 bleiben.

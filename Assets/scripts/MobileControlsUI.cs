@@ -15,8 +15,6 @@ public sealed class MobileControlsUI : MonoBehaviour
     private Image hearButton;
     private Image partButton;
     private Text interactText;
-    private Text status;
-    private Text feedback;
     private Font font;
     private Sprite circle;
     private Vector2 lastSize;
@@ -56,17 +54,6 @@ public sealed class MobileControlsUI : MonoBehaviour
         rotateButton = ActionButton("Rotate", new Vector2(-265, 265), "DREHEN", out _);
         hearButton = ActionButton("Hear object", new Vector2(-265, 130), "ANHÖREN", out _);
         partButton = ActionButton("Hear part", new Vector2(-405, 130), "DETAIL", out _);
-        status = Label("Target and held item", safeRoot, "", 22);
-        status.rectTransform.anchorMin = new Vector2(.17f, 1);
-        status.rectTransform.anchorMax = new Vector2(.83f, 1);
-        status.rectTransform.pivot = new Vector2(.5f, 1);
-        status.rectTransform.anchoredPosition = new Vector2(0, -14);
-        status.rectTransform.sizeDelta = new Vector2(0, 76);
-        feedback = Label("Placement feedback", safeRoot, "", 20);
-        feedback.rectTransform.anchorMin = new Vector2(.28f, 0);
-        feedback.rectTransform.anchorMax = new Vector2(.66f, 0);
-        feedback.rectTransform.anchoredPosition = new Vector2(0, 65);
-        feedback.rectTransform.sizeDelta = new Vector2(0, 96);
         Text reticle = Label("Aim", root.transform, "+", 30);
         Anchor(reticle.rectTransform, new Vector2(.5f, .5f), Vector2.zero, new Vector2(36, 36));
         RefreshLayout();
@@ -137,12 +124,8 @@ public sealed class MobileControlsUI : MonoBehaviour
             return;
         RefreshLayout();
         knob.anchoredPosition = controls.JoystickValue * 69f;
-        bool holding = interaction != null && interaction.HeldItem != null;
         bool targeting = interaction != null && interaction.CanUseFocused;
         interactText.text = targeting ? interaction.FocusedObject.GetAction(interaction) : "BENUTZEN";
-        status.text = "";
-
-        feedback.text = "";
     }
 
     private Image ActionButton(string name, Vector2 position, string caption, out Text text)

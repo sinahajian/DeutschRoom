@@ -40,3 +40,8 @@ LivingHallFurnishingBuilder generates F05–F08 in LivingHallFurnishings, fixed 
 HouseAccessoryBuilder generates HouseAccessories, fixed orders 50–69; preserve it with all other furnishing roots. HouseAccessoryContent.json records F09, F12, F13 and the first four F14 items. Washing machine/basket/detergent are in the bathroom northeast; drying rack/peg in bedroom 2; cleaning tools on the bathroom south wall. All are fixed identification targets, with two washer Openables. All eighty planned instances are now built.
 
 FinalFurnishingBuilder generates FinalFurnishings at orders 70–79, catalog FinalFurnishingContent.json. Preserve all five furnishing roots. RoomLightSwitch is the child action owner for the hallway rocker and toggles three living-room lights; its parent is the fixed learning target. All 80 F01–F16 item rows are built. Device testing is performed by the user; do not install onto their phone as part of furnishing work.
+
+
+## Keep the player guide current
+
+For every new or changed player-facing feature, update the English How to play guide in Assets/scripts/RoomExperience.cs in the same task. Explain how the player accesses and uses it, with accurate touch and keyboard/mouse instructions where applicable. Also maintain the existing trilingual GDD/GameStages updates. New or changed lesson instructions must include a matching englishInstruction in IntroA11.json; translation help must not complete tasks or reveal answer choices.

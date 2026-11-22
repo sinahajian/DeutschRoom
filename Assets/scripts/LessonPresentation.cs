@@ -12,7 +12,8 @@ public sealed class LessonPresentation : MonoBehaviour
     public bool PersistenceEnabled { get; set; } = true;
     public bool WantsVoice => Mode != OutputMode.Text;
     public bool AudioUnavailable => DeviceMuted || ReportedNoSound || VoiceVolume <= .001f || AudioListener.volume <= .001f || AudioListener.pause;
-    public bool ShowText => Mode != OutputMode.Voice || AudioUnavailable;
+    public bool ShowText => Mode != OutputMode.Voice || AudioUnavailable ||
+        GetComponent<GermanVoice>()?.NeedsTextFallback == true;
     public bool PlayVoice => WantsVoice && !AudioUnavailable;
     public bool ShowAudioWarning => WantsVoice && AudioUnavailable;
     public string WarningText => "Kein Ton: Prüfe Medienlautstärke und Lautlosmodus. Die Aufgaben werden als Text angezeigt.";

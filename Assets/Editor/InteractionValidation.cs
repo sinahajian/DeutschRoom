@@ -81,6 +81,8 @@ public static class InteractionValidation
             {
                 player = UnityEngine.Object.FindFirstObjectByType<PlayerInteraction>();
                 player.Learning.PersistenceEnabled = false;
+                IntroLessonValidation.Run(player);
+                IntroLessonValidation.SelectLegacyForValidation(player);
                 controls = player.GetComponent<PlayerControls>();
                 Check(controls != null, "Shared desktop/touch controls missing.");
                 player.GetComponent<RoomExperience>().SetMenu(false);

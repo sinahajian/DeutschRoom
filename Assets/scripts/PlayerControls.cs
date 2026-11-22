@@ -23,7 +23,7 @@ public sealed class PlayerControls : MonoBehaviour
 
     public bool UsesTouch { get; private set; }
     public bool GameplayActive => hasFocus && !suspended && !menuOpen &&
-        (experience == null || !experience.MapExpanded) &&
+        (experience == null || !experience.MapExpanded && !experience.ModalOpen) &&
         (UsesTouch || Cursor.lockState == CursorLockMode.Locked);
     public Vector2 Movement { get; private set; }
     public Vector2 LookDelta { get; private set; }
@@ -49,7 +49,7 @@ public sealed class PlayerControls : MonoBehaviour
     public void SetMenuOpen(bool value)
     {
         menuOpen = value; ResetInput(); ApplyCursor();
-        if (overlay != null) overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded));
+        if (overlay != null) overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded && !experience.ModalOpen));
     }
 
     private void Start()
@@ -79,8 +79,8 @@ public sealed class PlayerControls : MonoBehaviour
             ResetInput();
             ApplyCursor();
         }
-        if (overlay != null && overlay.IsVisible != (UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded)))
-            overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded));
+        if (overlay != null && overlay.IsVisible != (UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded && !experience.ModalOpen)))
+            overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded && !experience.ModalOpen));
     }
 
     private void Update()
@@ -199,11 +199,18 @@ public sealed class PlayerControls : MonoBehaviour
         LookDelta = touches.LookDelta * (touchLookSensitivity * 720f / Mathf.Max(1, Mathf.Min(Screen.width, Screen.height)));
     }
 
+    public void RefreshContext()
+    {
+        ResetInput(); ApplyCursor();
+        if (overlay != null) overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded && !experience.ModalOpen));
+    }
+
     private void ApplyCursor()
     {
-        Cursor.lockState = UsesTouch || menuOpen ? CursorLockMode.None : CursorLockMode.Locked;
+        bool modal = experience != null && experience.ModalOpen;
+        Cursor.lockState = UsesTouch || menuOpen || modal ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = true;
-        if (!UsesTouch && !menuOpen)
+        if (!UsesTouch && !menuOpen && !modal)
             Cursor.visible = false;
     }
 
@@ -243,6 +250,6 @@ public sealed class PlayerControls : MonoBehaviour
     private void OnEnable()
     {
         if (overlay != null)
-            overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded));
+            overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded && !experience.ModalOpen));
     }
 }

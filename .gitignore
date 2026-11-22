@@ -112,3 +112,6 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Hand-authored managed lesson checks (not Unity-generated project files).
+!Tools/Lessons/ManagedChecks/ManagedChecks.csproj

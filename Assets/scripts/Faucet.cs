@@ -9,6 +9,8 @@ public sealed class Faucet : KitchenInteractable
     private Quaternion closedLeverRotation;
     private Vector3 streamScale;
 
+    public uint InteractionSequence { get; private set; }
+    public void SetLessonState(bool value) => SetRunning(value);
     public bool IsRunning { get; private set; }
     public GameObject WaterStream => waterStream;
 
@@ -25,6 +27,7 @@ public sealed class Faucet : KitchenInteractable
 
     public override void Interact(PlayerInteraction player)
     {
+        InteractionSequence = unchecked(InteractionSequence + 1);
         SetRunning(!IsRunning);
     }
 

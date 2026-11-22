@@ -11,6 +11,7 @@ public sealed class GermanVoice : MonoBehaviour
     public string[] LastRequest { get; private set; } = new string[0];
     public string CurrentCaption { get; private set; } = "";
     public bool IsIdentification { get; private set; }
+    public bool NeedsTextFallback { get; private set; }
     private bool testPlaying;
     private void Awake()
     {
@@ -33,8 +34,11 @@ public sealed class GermanVoice : MonoBehaviour
     public void SpeakIdentification(params string[] lines) { Begin(false, lines, true); }
     public void PlayTest()
     {
-        Begin(true, new[] { "Du hast den Löffel gefunden. Jetzt kannst du ihn ablegen." });
+        Begin(true, new[] { UsesIntroPack ? "Nimm den Löffel." : "Du hast den Löffel gefunden. Jetzt kannst du ihn ablegen." });
     }
+    private bool UsesIntroPack => GetComponent<LearningProgress>()?.IsIntroCourse == true;
+    public bool IntroAudioPending => UsesIntroPack && ClipFor("Nimm den Löffel.") == null;
+    public AudioClip ClipFor(string text) => Resources.Load<AudioClip>((UsesIntroPack ? "VoiceIntroA11/" : "Voice/") + Key(text));
     private void Begin(bool test, string[] lines, bool identification = false)
     {
         if (speaker == null) { speaker = GetComponent<AudioSource>(); speaker.playOnAwake = false; speaker.spatialBlend = 0; }
@@ -42,6 +46,9 @@ public sealed class GermanVoice : MonoBehaviour
         IsIdentification = identification;
         testPlaying = test;
         LastRequest = lines != null ? (string[])lines.Clone() : new string[0];
+        // Keep the new course on its own voice pack; any missing recording needs readable guidance.
+        NeedsTextFallback = UsesIntroPack && System.Array.Exists(LastRequest, line =>
+            !string.IsNullOrEmpty(line) && ClipFor(line) == null);
         routine = StartCoroutine(Play(LastRequest));
     }
     private IEnumerator Play(string[] lines)
@@ -51,7 +58,7 @@ public sealed class GermanVoice : MonoBehaviour
             if (string.IsNullOrEmpty(text)) continue;
             CurrentCaption = text;
             bool audible = testPlaying || presentation.PlayVoice;
-            AudioClip clip = audible ? Resources.Load<AudioClip>("Voice/" + Key(text)) : null;
+            AudioClip clip = audible ? ClipFor(text) : null;
             float duration = Mathf.Clamp(text.Length * .045f + 1, 2.5f, 12);
             if (clip != null)
             {
@@ -60,7 +67,7 @@ public sealed class GermanVoice : MonoBehaviour
                 speaker.Play();
                 duration = clip.length;
             }
-            else if (audible) Debug.LogWarning("Missing German voice: " + text);
+            else if (audible && !UsesIntroPack) Debug.LogWarning("Missing German voice: " + text);
             yield return new WaitForSecondsRealtime(duration + .15f);
         }
         CurrentCaption = "";
@@ -73,6 +80,7 @@ public sealed class GermanVoice : MonoBehaviour
         routine = null;
         CurrentCaption = "";
         testPlaying = false;
+        NeedsTextFallback = false;
         if (speaker != null) speaker.Stop();
     }
 }

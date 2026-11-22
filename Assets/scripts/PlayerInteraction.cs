@@ -73,6 +73,8 @@ public sealed class PlayerInteraction : MonoBehaviour
         }
         if (!controls.UsesTouch && Input.GetKeyDown(KeyCode.Return))
             Learning.StartLessons();
+        if (!controls.UsesTouch && Input.GetKeyDown(KeyCode.H))
+            Learning.RevealReviewTarget();
         if (controls.InteractPressed && CanInteract)
         {
             focused.Interact(this);
@@ -103,6 +105,13 @@ public sealed class PlayerInteraction : MonoBehaviour
 
     public bool TryPickUp(PickupItem item)
     {
+        if (Learning.IsPlacementReference(item))
+        {
+            Voice.Speak("Dieser Gegenstand bleibt als Bezugspunkt auf dem Tisch.");
+            return false;
+        }
+        if (!Learning.CanScenarioPickup(item))
+        { ShowMessage(Learning.ScenarioSession.Status); return false; }
         if (item == null || HeldItem != null || item.IsHeld)
         {
             ShowMessage(controls != null && controls.UsesTouch ? "Lege zuerst den Gegenstand ab." : "Lege zuerst den Gegenstand ab (G).");
@@ -195,16 +204,19 @@ public sealed class PlayerInteraction : MonoBehaviour
         return nearest < float.PositiveInfinity;
     }
 
-    private void OnDisable()
+    public void CancelCarry()
     {
         if (HeldItem != null)
             HeldItem.ReturnToPreviousPose();
         HeldItem = null;
     }
 
+    private void OnDisable() => CancelCarry();
+
     private void OnGUI()
     {
-        if (GetComponent<RoomExperience>()?.MenuOpen == true) return;
+        var experience = GetComponent<RoomExperience>();
+        if (experience != null && (experience.MenuOpen || experience.ModalOpen)) return;
         if (playerCamera == null || (controls != null && controls.UsesTouch))
             return;
         if (promptStyle == null)
