@@ -74,7 +74,7 @@ public static class HomePresentationValidation
             settings.SetVoiceVolume(0);
             Check(settings.ShowAudioWarning && settings.ShowText && !settings.PlayVoice, "App voice-volume zero left the learner without feedback.");
             for (int stage = 1; stage <= player.Learning.TotalStages; stage++)
-                Check(Resources.Load<AudioClip>("Voice/" + GermanVoice.Key(GermanLessonSpeech.Stage(stage))) != null, "Missing new stage voice: " + stage);
+                Check(Resources.Load<AudioClip>("VoiceIntroA11/" + GermanVoice.Key(GermanLessonSpeech.Stage(stage))) != null, "Missing new stage voice: " + stage);
             Debug.Log("HOME_PRESENTATION_VALIDATION_PASS: empty connected rooms, standing doorway clearance; text/voice/both, system mute and recovery, manual no-sound fallback, app volume and all stage announcements.");
         }
         finally

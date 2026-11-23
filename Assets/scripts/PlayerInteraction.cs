@@ -6,8 +6,43 @@ public sealed class PlayerInteraction : MonoBehaviour
     [SerializeField] private Transform playerCamera;
     [SerializeField, Min(0.5f)] private float interactionDistance = 2.7f;
 
+    private readonly RaycastHit[] worldHits = new RaycastHit[32];
     private CharacterController controller;
     private PlayerControls controls;
+    private RoomExperience experience;
+    private HandsOnTutorial Practice => experience != null && experience.HandsOnActive ? experience.HandsOn : null;
+    public uint RotationSequence { get; private set; }
+    private float pickupElapsed = 1, placeElapsed, releaseElapsed = 1;
+    private Vector3 pickupStart, placeStart, placeLocalPosition, placeLocalNormal, releasePosition;
+    private Quaternion pickupStartRotation, placeStartRotation, placeLocalRotation;
+    private Collider placementCollider;
+    private Transform placementSurface;
+    private bool placing;
+    public bool IsPlacing => placing;
+    public bool CanRotateHeld => HeldItem != null && !placing;
+    public bool HandEngaged => HeldItem != null || releaseElapsed < .24f;
+    public float HandBlend => HeldItem==null ? 1-ManipulationMotion.Ease(releaseElapsed/.24f) : placing ? 1 : ManipulationMotion.Ease(pickupElapsed/.16f);
+    public float HandClosure => HeldItem == null ? 0 : placing ?
+        1-ManipulationMotion.Ease((placeElapsed/ManipulationMotion.PlaceSeconds-.5f)*2) : ManipulationMotion.Ease((pickupElapsed-.10f)/.18f);
+    public Vector3 HandPosition
+    {
+        get
+        {
+            if(HeldItem==null)return releasePosition;
+            Vector3 centre=HeldItem.transform.position+HeldItem.transform.rotation*HeldItem.LocalBounds.center;
+            return centre+playerCamera.right*Mathf.Min(.09f,HeldItem.LocalBounds.extents.x*.55f)-
+                playerCamera.forward*Mathf.Min(.10f,HeldItem.LocalBounds.extents.z*.6f)-Vector3.up*.018f;
+        }
+    }
+    internal void RestorePracticeRotation(uint sequence) => RotationSequence = sequence;
+    internal void ClearPracticeFeedback() { identifiedName = message = ""; nameUntil = messageUntil = 0; }
+    internal float PracticeCarryYaw => placementYaw;
+    internal void ResumePracticeCarry(PickupItem item, float yaw, PickupItem.PracticeInteractionState state)
+    {
+        HeldItem = item; placementYaw = yaw;
+        item.BeginCarry(); item.RestorePracticeInteractions(state);
+        pickupElapsed=ManipulationMotion.PickupSeconds; releaseElapsed=1;
+    }
     private KitchenInteractable focused;
     private VocabularyPart focusedPart;
     private RaycastHit focusHit;
@@ -26,14 +61,17 @@ public sealed class PlayerInteraction : MonoBehaviour
     public PickupItem HeldItem { get; private set; }
     public KitchenInteractable FocusedObject => focused;
     public KitchenInteractable IdentificationTarget => focusedPart != null && focusedPart.Owner != null ? focusedPart.Owner : focused;
-    public bool CanIdentify => IdentificationTarget != null || focusedPart != null;
-    public bool CanIdentifyPart => focusedPart != null && IdentificationTarget != null &&
+    public bool CanIdentify => !placing && (IdentificationTarget != null || focusedPart != null) &&
+        (Practice == null || Practice.AllowsIdentification(IdentificationTarget));
+    public bool CanIdentifyPart => !placing && Practice == null && focusedPart != null && IdentificationTarget != null &&
         !string.IsNullOrEmpty(focusedPart.DisplayName) && focusedPart.DisplayName != IdentificationTarget.DisplayName;
     public bool CanUseFocused => CanInteract && !(focused is VocabularyObject);
-    public bool CanInteract => focused != null &&
+    public bool CanInteract => !placing && focused != null &&
+        (Practice == null || Practice.AllowsPickup(focused)) &&
         (!(focused is PickupItem pickup) || (HeldItem == null && !pickup.IsHeld)) &&
         (!(focused is Openable door) || !door.IsMoving);
-    public bool CanPlaceHeld => HeldItem != null && hasHit && focusHit.collider != null && focusHit.normal.y >= .25f;
+    public bool CanPlaceHeld => !placing && HeldItem != null && hasHit && focusHit.collider != null && focusHit.normal.y >= .25f &&
+        (Practice == null || Practice.AllowsPlacement(focusHit.collider.transform));
     public string FeedbackText => Time.unscaledTime < messageUntil ? message : "";
 
     private void Awake()
@@ -44,6 +82,7 @@ public sealed class PlayerInteraction : MonoBehaviour
         Learning = GetComponent<LearningProgress>();
         if (Learning == null) Learning = gameObject.AddComponent<LearningProgress>();
         controls = GetComponent<PlayerControls>();
+        experience = GetComponent<RoomExperience>();
         if (playerCamera == null)
         {
             Camera cameraComponent = GetComponentInChildren<Camera>();
@@ -79,9 +118,9 @@ public sealed class PlayerInteraction : MonoBehaviour
         {
             focused.Interact(this);
         }
-        if (controls.RotatePressed && HeldItem != null)
-            placementYaw += 45f;
-        if (controls.PlacePressed && HeldItem != null)
+        if (controls.RotatePressed && CanRotateHeld && (Practice == null || Practice.AllowsRotation))
+        { placementYaw += 45f; RotationSequence = unchecked(RotationSequence + 1); }
+        if (controls.PlacePressed && HeldItem != null && !placing)
         {
             if (!hasHit || !TryPlaceHeld(focusHit))
                 ShowMessage("Schau auf eine Oberfläche in deiner Nähe.");
@@ -90,27 +129,34 @@ public sealed class PlayerInteraction : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (HeldItem == null || playerCamera == null)
-            return;
+        releaseElapsed+=Time.deltaTime;
+        if (playerCamera == null) return;
+        if(placing) {AdvancePlacement(Time.deltaTime);return;}
+        if(HeldItem==null)return;
+        pickupElapsed+=Time.deltaTime;
         Quaternion rotation = playerCamera.rotation * Quaternion.Euler(0f, placementYaw - transform.eulerAngles.y, 0f);
-        Vector3 offset = playerCamera.TransformVector(new Vector3(.22f, -.19f, .78f));
+        Vector3 offset = playerCamera.TransformVector(new Vector3(.22f, -.27f, .60f));
         float radius = Mathf.Max(.04f, HeldItem.LocalBounds.extents.magnitude);
         if (Physics.SphereCast(playerCamera.position, radius, offset.normalized, out RaycastHit obstacle,
             offset.magnitude, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore) &&
             !obstacle.transform.IsChildOf(transform))
             offset = offset.normalized * Mathf.Max(.12f, obstacle.distance - .03f);
         Vector3 center = playerCamera.position + offset;
-        HeldItem.SetCarriedPose(center - rotation * HeldItem.LocalBounds.center, rotation);
+        float t=Mathf.Clamp01(pickupElapsed/ManipulationMotion.PickupSeconds), ease=ManipulationMotion.Ease(t);
+        Vector3 target=center-rotation*HeldItem.LocalBounds.center;
+        HeldItem.SetCarriedPose(Vector3.Lerp(pickupStart,target,ease)+Vector3.up*ManipulationMotion.Lift(t,.065f),
+            Quaternion.Slerp(pickupStartRotation,rotation,ease));
     }
 
     public bool TryPickUp(PickupItem item)
     {
-        if (Learning.IsPlacementReference(item))
+        if (Practice != null && !Practice.AllowsPickup(item)) return false;
+        if (Practice == null && Learning.IsPlacementReference(item))
         {
             Voice.Speak("Dieser Gegenstand bleibt als Bezugspunkt auf dem Tisch.");
             return false;
         }
-        if (!Learning.CanScenarioPickup(item))
+        if (Practice == null && !Learning.CanScenarioPickup(item))
         { ShowMessage(Learning.ScenarioSession.Status); return false; }
         if (item == null || HeldItem != null || item.IsHeld)
         {
@@ -118,26 +164,52 @@ public sealed class PlayerInteraction : MonoBehaviour
             return false;
         }
         placementYaw = item.transform.eulerAngles.y;
-        bool takenFromTable = Learning.IsOnTable(item);
+        pickupStart=item.transform.position;pickupStartRotation=item.transform.rotation;pickupElapsed=0;releaseElapsed=1;
         HeldItem = item;
         item.BeginCarry();
-        Learning.Found(item, takenFromTable);
+        Learning.Found(item);
         return true;
     }
 
     public bool TryPlaceHeld(RaycastHit surface)
     {
-        if (HeldItem == null || surface.collider == null || surface.normal.y < .25f)
+        if (placing || HeldItem == null || surface.collider == null || surface.normal.y < .25f)
             return false;
+        if (Practice != null && !Practice.AllowsPlacement(surface.collider.transform)) return false;
         Quaternion rotation = HeldItem.PlacementRotation(placementYaw);
         Bounds rotated = HeldItem.BoundsAt(Vector3.zero, rotation);
         Vector3 position = surface.point - new Vector3(rotated.center.x, rotated.min.y, rotated.center.z) + Vector3.up * .01f;
-        PickupItem placed = HeldItem;
-        placed.PlaceOnSurface(position, rotation, surface.collider.transform);
-        HeldItem = null;
-        ShowMessage("Abgelegt.");
-        Learning.Placed(placed);
+        placementCollider=surface.collider;placementSurface=surface.collider.transform;
+        placeLocalPosition=placementSurface.InverseTransformPoint(position);
+        placeLocalRotation=Quaternion.Inverse(placementSurface.rotation)*rotation;
+        placeLocalNormal=placementSurface.InverseTransformDirection(surface.normal);
+        placeStart=HeldItem.transform.position;placeStartRotation=HeldItem.transform.rotation;
+        placeElapsed=0;placing=true;
         return true;
+    }
+
+    private void AdvancePlacement(float deltaTime)
+    {
+        if(!placing)return;
+        if(HeldItem==null || placementCollider==null || !placementCollider.enabled || !placementCollider.gameObject.activeInHierarchy ||
+            placementSurface.TransformDirection(placeLocalNormal).y<.25f)
+        {
+            placing=false;placementCollider=null;placementSurface=null;
+            if(HeldItem!=null){pickupStart=HeldItem.transform.position;pickupStartRotation=HeldItem.transform.rotation;pickupElapsed=0;}
+            return;
+        }
+        placeElapsed+=Mathf.Max(0,deltaTime);
+        float t=Mathf.Clamp01(placeElapsed/ManipulationMotion.PlaceSeconds),ease=ManipulationMotion.Ease(t);
+        Vector3 position=placementSurface.TransformPoint(placeLocalPosition);
+        Quaternion rotation=placementSurface.rotation*placeLocalRotation;
+        HeldItem.SetCarriedPose(Vector3.Lerp(placeStart,position,ease)+Vector3.up*ManipulationMotion.Lift(t,.04f),
+            Quaternion.Slerp(placeStartRotation,rotation,ease));
+        if(t<1)return;
+        releasePosition=HandPosition;releaseElapsed=0;
+        PickupItem placed=HeldItem;Transform surface=placementSurface;
+        placing=false;placementCollider=null;placementSurface=null;HeldItem=null;
+        placed.PlaceOnSurface(position,rotation,surface);
+        ShowMessage("Abgelegt.");Learning.Placed(placed);
     }
 
     public void IdentifyFocused()
@@ -148,8 +220,10 @@ public sealed class PlayerInteraction : MonoBehaviour
 
     public void Identify(KitchenInteractable item)
     {
-        if (item == null) return;
+        if (placing || item == null) return;
+        if (Practice != null && !Practice.AllowsIdentification(item)) return;
         identifiedName = item.DisplayName; nameUntil = Time.unscaledTime + 3.5f;
+        if (Practice != null) Practice.Named(item);
         if (!Learning.Identified(item)) Voice.SpeakIdentification(item.DisplayName);
     }
 
@@ -160,6 +234,7 @@ public sealed class PlayerInteraction : MonoBehaviour
 
     public void IdentifyPart(VocabularyPart part)
     {
+        if (placing || Practice != null) return;
         if (part == null) return;
         identifiedName = part.DisplayName;
         nameUntil = Time.unscaledTime + 3.5f;
@@ -190,8 +265,14 @@ public sealed class PlayerInteraction : MonoBehaviour
     {
         closest = default;
         float nearest = float.PositiveInfinity;
-        foreach (RaycastHit hit in Physics.RaycastAll(ray, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+        int count = Physics.RaycastNonAlloc(ray, worldHits, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+        // A full buffer may omit the nearest valid hit: preserve exact behavior in crowded areas.
+        RaycastHit[] hits = count == worldHits.Length
+            ? Physics.RaycastAll(ray, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore) : worldHits;
+        if (hits != worldHits) count = hits.Length;
+        for (int i = 0; i < count; i++)
         {
+            RaycastHit hit = hits[i];
             if (hit.collider.transform.IsChildOf(transform) ||
                 (HeldItem != null && hit.collider.transform.IsChildOf(HeldItem.transform)))
                 continue;
@@ -206,6 +287,7 @@ public sealed class PlayerInteraction : MonoBehaviour
 
     public void CancelCarry()
     {
+        placing=false;placementCollider=null;placementSurface=null;releaseElapsed=1;
         if (HeldItem != null)
             HeldItem.ReturnToPreviousPose();
         HeldItem = null;

@@ -8,18 +8,19 @@ public static class GermanLessonSpeech
     public const string ReleaseOptional = "Du kannst den getragenen Gegenstand jetzt ablegen.";
     public const string IdentifyHelp = "Feste Gegenstände bleiben an ihrem Platz. Schau das Ziel an und tippe auf Anhören oder drücke F.";
     public const string PickupHelp = "Gehe zum Gegenstand und schau ihn an. Tippe auf Aufheben oder drücke E.";
+    public const string PickupHelpTouch = "Gehe zum Gegenstand und schau ihn an. Tippe auf Aufheben.";
+    public const string PickupHelpKeyboard = "Gehe zum Gegenstand und schau ihn an. Drücke E zum Aufheben.";
+    public const string IdentifyHelpTouch = "Feste Gegenstände bleiben an ihrem Platz. Schau das Ziel an und tippe auf Anhören.";
+    public const string IdentifyHelpKeyboard = "Feste Gegenstände bleiben an ihrem Platz. Schau das Ziel an und drücke F.";
+    public static string PickupGuidance(bool touch) => touch ? PickupHelpTouch : PickupHelpKeyboard;
+    public static string IdentifyGuidance(bool touch) => touch ? IdentifyHelpTouch : IdentifyHelpKeyboard;
+    public static bool StillRelevant(string line, bool holding, bool placing, bool touch)
+    {
+        if(line==ReleaseBeforeNext || line==ReleaseOptional)return holding && !placing;
+        if(line==PickupHelpTouch || line==IdentifyHelpTouch)return touch;
+        if(line==PickupHelpKeyboard || line==IdentifyHelpKeyboard)return !touch;
+        return true;
+    }
     public static string Stage(int number) => "Aufgabe " + number + ".";
     public static string Accusative(string name) => name.StartsWith("der ", System.StringComparison.Ordinal) ? "den " + name.Substring(4) : name;
-    public static string Pronoun(string name) => name.StartsWith("der ", System.StringComparison.Ordinal) ? "ihn" : name.StartsWith("die ", System.StringComparison.Ordinal) ? "sie" : "es";
-    public static string Find(string name) => "Finde als Nächstes " + Accusative(name) + ".";
-    public static string Found(string name) => "Du hast " + Accusative(name) + " gefunden. Jetzt kannst du " + Pronoun(name) + " ablegen.";
-    public static string FixedFound(string name) => "Richtig! Du hast " + Accusative(name) + " gefunden.";
-    public static string Placed(string name) => "Du hast " + Accusative(name) + " auf den Tisch gelegt.";
-    public static string Remove(string name) => "Nimm " + Accusative(name) + " vom Tisch und lege " + Pronoun(name) + " woanders ab.";
-    public static string Count(int count) => count == 1 ? "Auf dem Tisch liegt jetzt ein passender Gegenstand." :
-        "Auf dem Tisch liegen jetzt " + count + " passende Gegenstände.";
-    public const string ClearTable = "Bevor wir anfangen, räume den Tisch leer.";
-    public const string PutElsewhere = "Lege den Gegenstand außerhalb des Tisches ab.";
-    public const string TableReady = "Der Tisch ist jetzt leer. Los geht's!";
-    public const string Finished = "Gut gemacht! Diese Aufgabe ist geschafft.";
 }

@@ -10,6 +10,14 @@ public sealed class IntroLessonCatalog
     public string id;
     public int version;
     public Task[] tasks;
+    public ControlsPracticeStep[] controlsPractice;
+    public ControlGuidance[] controlGuidance;
+    [Serializable] public sealed class ControlGuidance { public string id, instruction, englishInstruction; }
+
+    [Serializable] public sealed class ControlsPracticeStep
+    {
+        public string id, title, instruction, englishInstruction, touchHelp, keyboardHelp;
+    }
 
     [Serializable]
     public sealed class Task
@@ -72,6 +80,20 @@ public sealed class IntroLessonCatalog
     {
         if (version != 1 || tasks == null || tasks.Length != ImplementedTaskCount)
             throw new InvalidOperationException("Expected the implemented " + ImplementedTaskCount + "-task A1 catalog.");
+        if (controlsPractice == null || controlsPractice.Length != 7)
+            throw new InvalidOperationException("Expected seven stage-zero controls practice steps.");
+        var practiceIds = new HashSet<string>(StringComparer.Ordinal);
+        if(controlGuidance==null || controlGuidance.Length!=4)throw new InvalidOperationException("Expected four translated control-mode hints.");
+        foreach(var hint in controlGuidance)
+            if(hint==null || string.IsNullOrWhiteSpace(hint.id) || !practiceIds.Add(hint.id) ||
+                string.IsNullOrWhiteSpace(hint.instruction) || string.IsNullOrWhiteSpace(hint.englishInstruction))
+                throw new InvalidOperationException("Control guidance requires unique IDs and matching English instructions.");
+        foreach (var step in controlsPractice)
+            if (step == null || string.IsNullOrWhiteSpace(step.id) || !practiceIds.Add(step.id) ||
+                string.IsNullOrWhiteSpace(step.title) || string.IsNullOrWhiteSpace(step.instruction) ||
+                string.IsNullOrWhiteSpace(step.englishInstruction) || string.IsNullOrWhiteSpace(step.touchHelp) ||
+                string.IsNullOrWhiteSpace(step.keyboardHelp))
+                throw new InvalidOperationException("Controls practice requires unique IDs and German/English instructions with touch/keyboard help.");
         var ids = new HashSet<string>(StringComparer.Ordinal);
         var targets = new HashSet<string>(StringComparer.Ordinal);
         var earlier = new Dictionary<string, Task>(StringComparer.Ordinal);

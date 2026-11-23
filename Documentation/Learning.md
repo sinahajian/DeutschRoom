@@ -5,18 +5,16 @@ Design reference: [GDD](GDD.md). Player-facing sequence from stage 0: [Game stag
 Play SampleScene. LearningProgress is added automatically by PlayerInteraction.
 
 - Entry: a menu offers Start/Continue, Restart (clears the local learning save and reloads the room), and Touch/Mouse control selection. Escape pauses and reopens the menu. Start begins spoken lessons. Aim within 2.7 metres. E uses or picks up; F speaks and briefly displays the German name including its article. Nearby visible objects show mint dots with generous touch targets: tap to hear and see the name. On desktop, aim at a dot and click. The top right task card shows the stage number and repeats its spoken instruction. The top left pause and music controls use the device safe area and scaled 58-unit touch targets. Each new stage shows an animated card and progress bar. Pause freezes world animation and movement.
-- Original tasks 1–17: find and pick up each object, starting with der Löffel. A wrong pickup does not advance the task. Put down the current item with G before picking up another. R rotates it. On touch, use appears only for a usable target; rotate appears only while holding an item; place appears only while aiming at a nearby upward-facing surface. Hidden controls have no active hit area.
-- After the original 17 objects, 36 new pickup objects are introduced (53 pickup tasks, then 10 bathroom, 20 bedroom and 20 living-room/hallway and 20 house-accessory and 10 final-furnishing fixed identification tasks), followed by three article tasks. New items are appended so original task IDs/order stay stable. Existing saves on article tasks/completion migrate to the same article stage.
-- Article tasks: place objects with der, die, then das on TableTop. Each article task first asks the player to clear all pre-existing items, naming the next item to remove. After cleanup, only matching, unheld objects resting within the table footprint count. Every placement is named aloud; wrong articles are explicitly named for removal and block completion. Moving an object off the table removes it from the current count. Targets use up to ten matching objects actually available: the expanded scene has 21 der, 18 die and 14 das pickup objects.
+- Only the authored A1.1–C1.2 course runs: CUR-001–430. It begins with spoon-first pickup introductions, then fixed-object identification, review, grammar and integrated scenarios. Follow each task's specific instruction; old article-sorting tasks and the old-course switch are removed.
 - Placement accepts nearby upward facing surfaces, including floor, table edges and other items. Footprint and overlap rejection have been removed for free placement; objects can overlap if placed at the same point. Vertical walls are excluded.
-- Progress and placed object positions are saved locally with PlayerPrefs, key DeutschRoom.Learning.v1. A returning player continues their saved task. This is one local profile, not an account or cloud save. Held objects return to their last saved/initial placement on reload. Door and faucet states are not saved.
+- Progress and placed object positions are saved locally with PlayerPrefs, key DeutschRoom.Learning.IntroA11.v1 with completedTasks. A returning player continues their saved task. This is one local profile, not an account or cloud save. Held objects return to their last saved/initial placement on reload. Door and faucet states are not saved.
 
 ## Next content steps
 
 1. Play through the preview and spoon task on desktop and touch.
 2. Give every new pickup a unique GameObject name and a German displayName beginning with der, die or das.
-3. For a larger curriculum, replace the generated task sequence with authored task assets and stable task IDs before shipping saved progress to players.
-4. German task prompts, pronunciation and correct/incorrect feedback use bundled offline WAV clips in Assets/Resources/Voice. Documentation/Voice.json maps each hashed filename to its spoken text. Replace these clips with matching recordings to customize the voice. New object names require matching clips; GermanVoice.Key(text) defines filenames.
+3. Maintain the authored IntroA11.json catalog and stable CUR IDs when extending the course.
+4. German task prompts, pronunciation and correct/incorrect feedback use bundled offline WAV clips in Assets/Resources/VoiceIntroA11. Documentation/IntroVoice.json maps each hashed filename to its spoken text. Replace these clips with matching recordings to customize the voice. New object names require matching clips; GermanVoice.Key(text) defines filenames.
 
 ## Validation
 
@@ -50,7 +48,7 @@ GermanLessonSpeech produces accusative names (den Löffel) and matching pronouns
 
 ## Neural voice pack
 
-The game voice is regenerated with `de-DE-KatjaNeural`, at `-8%` rate for language learning. Clips remain mono PCM WAV at 24 kHz, bundled offline under their original hashed filenames. Existing `.meta` GUIDs and German lesson text stay stable. `Documentation/VoiceProfile.json` records the profile; `Documentation/VoicePreview.mp3` previews it.
+The single course uses de-DE-TanjaNeural at -8% rate, with offline mono PCM16 24-kHz clips in Assets/Resources/VoiceIntroA11. Documentation/IntroVoiceProfile.json records the profile and Documentation/IntroVoicePreview.wav previews it. The old Katja pack and its files have been removed.
 
 To regenerate on macOS, create a Python virtual environment, install `Tools/Voice/requirements.txt`, then run `python Tools/Voice/generate.py`. Generation uses the online Microsoft Edge speech service via [edge-tts](https://github.com/rany2/edge-tts); playback in the game requires no internet or Python dependency. The script stages and validates the full pack before replacing anything, preserves `.meta` files, and backs up the preceding WAVs in the system temporary folder. Voice availability is documented by [Microsoft](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=text-to-speech).
 
@@ -60,7 +58,7 @@ The opening/pause menu includes Text & Stimme settings: Nur Text, Nur Stimme or 
 
 [Unity's Mobile.muteState](https://docs.unity.com/en-us/engine/6000.6/script-reference/unityengine/audiosettings/mobile/mutestate) and its mute-change event detect zero media volume on Android/iOS. A detected mute, app narration volume of zero, or manual no-sound report displays a written warning and enables text even in voice-only mode. Restoring media volume restores the chosen mode. iOS's hardware Silent switch is not exposed by this API; the written sound-check hint and manual fallback cover that case without claiming automatic switch detection. Physical devices still need validation.
 
-Stage announcements now use the same Katja Neural voice as the rest of the lesson, including all 136 stage numbers. Captions follow each queued sentence; when a message ends, the current instruction remains visible in text-enabled modes.
+Stage announcements use the same Tanja Neural voice as the 430-task course. Captions follow each queued sentence; when a message ends, the current instruction remains visible in text-enabled modes.
 
 ## Empty home shell
 
@@ -215,3 +213,11 @@ Latest isolated launch used the alternate arm64 Editor without `-nographics`, wi
 Removed the unreferenced URP template Readme.asset/TutorialInfo assets and their metadata, and the two permanently empty mobile status/feedback Text objects. All 30 runtime and 22 Editor scripts compile with existing warnings and no errors. Managed 430-task/save/answer/scenario checks, scene/document consistency and all 1762 voice files pass. Deleted-asset GUIDs have no remaining references. Native/device visual verification is still separate; see CompletionAudit.json.
 
 Manual native/device checks still required: first launch → all six pages → Finish → next launch skips the guide; early Menu/Escape exit → next launch shows it again; menu replay → Back/Next/text scroll; Touch and Mouse + Keyboard modes show matching instructions; pause/cursor/joystick stay inactive during guide; short landscape safe areas can scroll the main menu to its help button; completing/replaying the guide preserves both course profiles. Verify on Samsung A34/Android 13 as well as desktop/iPhone before claiming visual approval.
+
+## Object-name voice coverage — 2026-11-22
+
+Every authored whole-object/part name and runtime device name must be in the active IntroVoice manifest and have a valid offline recording. Run `python3 Tools/Voice/check_object_coverage.py` to check scene vocabulary against actual WAV files. When adding names, run it with `--sync-manifest`, then run `Tools/Voice/generate.py --pack intro` and repeat the audit. The asset validator also enforces coverage. Use Anhören/F for the whole object and Detail/Shift+F for a part; select Stimme or Text + Stimme to hear names. Text mode intentionally shows names without narration.
+
+## Spotlight tutorial — 2026-11-22
+
+The English How to play tour opens over the game on the first launch only, or when requested from the main menu. Each of 21 steps dims everything except its control. Next/Enter/Right Arrow advances; Back/Left Arrow returns; Skip/Escape exits. Finish resumes the same task. The game pauses and all underlying actions are blocked. Contextual controls are previews; the tour does not move objects, choose answers or complete lessons. First display is saved immediately under DeutschRoom.ControlsTutorial.v1, so skipping/interruption does not reopen it on later launches. Restarting lessons does not reset this preference. Touch and mouse instructions are selected for the current control mode. The Play Mode harness includes tour input, navigation, replay and same-task regression checks; compilation passed, actual Play Mode/device visuals remain unverified.

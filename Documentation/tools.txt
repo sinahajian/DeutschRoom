@@ -633,3 +633,35 @@ Haubenbedienung und Flurzone sind Laufzeit-Lernbedienungen/-markierungen, keine 
 چراغ مطالعهٔ موجود اتاق دوم و درِ موجود جاکفشی راهرو کنترل می‌شوند؛ مبلمان و هدف واژهٔ تازه ساخته نشده است. پرونده‌ها رابط متنی/صوتی‌اند، نه شیء معماری. همهٔ وضعیت‌های F01–F16 و شمار ۵۳/۸۰ حفظ است.
 Existing second-bedroom desk lamp and hall shoe-cabinet door gain action bindings; no furniture/vocabulary targets added. Case packets are text/audio UI, not architecture. F01–F16 and 53/80 populations remain.
 Vorhandene Leselampe im zweiten Schlafzimmer und Flur-Schuhschranktür erhalten Bedienbindungen; keine neuen Möbel/Wortziele. Fallpakete sind Text-/Audiooberfläche, keine Architektur. F01–F16 und Bestand 53/80 bleiben.
+
+
+راهنمای تمرین عملی کنترل‌ها — 2026-11-23 / Hands-on controls practice aids / Interaktive Steuerungsübung
+Deutsch | فارسی | English
+die Weglinie | خط مسیر روی زمین | floor route line
+der Zielring | حلقهٔ محل ایستادن | standing destination ring
+die Objektmarkierung | نشانگر شیء | object highlight
+این نشانگرها موقت و فقط برای تمرین واقعی مرحلهٔ ۰ هستند؛ میز و قاشق همان اشیای موجودند. مبلمان/هدف واژگان یا CUR تازه‌ای نیست و شمار ۵۳ قابل حمل/۸۰ ثابت و تکمیل F01–F16 حفظ است.
+Temporary markers for real stage-zero controls practice; table and spoon are existing objects. No new furniture/vocabulary target or CUR task; 53 portable/80 fixed populations and completed F01–F16 remain.
+Temporäre Markierungen für die echte Steuerungsübung in Stufe 0; Tisch und Löffel sind bestehende Objekte. Keine neuen Möbel/Vokabelziele oder CUR-Aufgaben; Bestand 53 tragbar/80 fest und abgeschlossene F01–F16 bleiben erhalten.
+
+
+جزئیات نمایشی صورت و دست — 2026-11-23 / Visual face and hand details / Sichtbare Gesichts- und Handdetails
+Deutsch | فارسی | English
+das Gesicht | صورت | face
+der Kiefer | فک | jaw
+das Ohr | گوش | ear
+das Augenlid | پلک | eyelid
+die Augenbraue | ابرو | eyebrow
+die Iris | عنبیه | iris
+die Pupille | مردمک | pupil
+die Lippe | لب | lip
+der Finger | انگشت | finger
+der Zeigefinger | انگشت اشاره | index finger
+der Mittelfinger | انگشت میانی | middle finger
+der Ringfinger | انگشت حلقه | ring finger
+der kleine Finger | انگشت کوچک | little finger
+die Handfläche | کف دست | palm
+das Handgelenk | مچ دست | wrist
+این‌ها فقط جزئیات نمایشی شخصیت موجودند؛ واژهٔ قابل آزمون، هدف ثابت/قابل حمل یا مبلمان جدید نیستند. شمار ۵۳/۸۰، CUR-001–430 و F01–F16 حفظ است.
+Visual details of the existing avatar only; no tested vocabulary, fixed/portable targets or furniture added. 53/80 populations, CUR-001–430 and F01–F16 remain.
+Nur visuelle Details der bestehenden Figur; keine neuen geprüften Wörter, festen/tragbaren Ziele oder Möbel. Bestand 53/80, CUR-001–430 und F01–F16 bleiben erhalten.

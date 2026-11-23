@@ -1,6 +1,86 @@
 {
   "id": "intro-a1-1",
   "version": 1,
+  "controlGuidance": [
+    {
+      "id": "GUIDE-TOUCH-PICKUP",
+      "instruction": "Gehe zum Gegenstand und schau ihn an. Tippe auf Aufheben.",
+      "englishInstruction": "Walk to the object, look at it and tap Aufheben."
+    },
+    {
+      "id": "GUIDE-KEYBOARD-PICKUP",
+      "instruction": "Gehe zum Gegenstand und schau ihn an. Drücke E zum Aufheben.",
+      "englishInstruction": "Walk to the object, look at it and press E to pick it up."
+    },
+    {
+      "id": "GUIDE-TOUCH-IDENTIFY",
+      "instruction": "Feste Gegenstände bleiben an ihrem Platz. Schau das Ziel an und tippe auf Anhören.",
+      "englishInstruction": "Fixed objects stay in place. Look at the target and tap Anhören."
+    },
+    {
+      "id": "GUIDE-KEYBOARD-IDENTIFY",
+      "instruction": "Feste Gegenstände bleiben an ihrem Platz. Schau das Ziel an und drücke F.",
+      "englishInstruction": "Fixed objects stay in place. Look at the target and press F."
+    }
+  ],
+  "controlsPractice": [
+    {
+      "id": "CTRL-MOVE",
+      "title": "Try walking",
+      "instruction": "Gehe ein kleines Stück vorwärts.",
+      "englishInstruction": "Walk a short distance to try the movement controls.",
+      "touchHelp": "Drag the left joystick. Move at least 0.65 metres.",
+      "keyboardHelp": "Click the game, then use W A S D or arrow keys. Move at least 0.65 metres. Hold Alt to click Skip, or press Escape at any time."
+    },
+    {
+      "id": "CTRL-TABLE",
+      "title": "Follow the floor line",
+      "instruction": "Folge der Linie zum markierten Platz neben dem Tisch.",
+      "englishInstruction": "Follow the green floor line to the ring beside the table.",
+      "touchHelp": "Walk with the joystick; drag empty space on the right to look.",
+      "keyboardHelp": "Walk with W A S D; move the mouse to look."
+    },
+    {
+      "id": "CTRL-AIM",
+      "title": "Find the highlighted spoon",
+      "instruction": "Richte die Bildschirmmitte auf den markierten Löffel.",
+      "englishInstruction": "Aim the centre mark at the highlighted spoon on the table.",
+      "touchHelp": "Drag empty space on the right to look down at the table.",
+      "keyboardHelp": "Move the mouse to look down at the table."
+    },
+    {
+      "id": "CTRL-NAME",
+      "title": "See the German name",
+      "instruction": "Benenne den Löffel mit Anhören.",
+      "englishInstruction": "Use Anhören to see the spoon’s German name with its article.",
+      "touchHelp": "Keep aiming at the spoon, then tap ANHÖREN. Voice plays if enabled.",
+      "keyboardHelp": "Keep aiming at the spoon, then press F. Voice plays if enabled."
+    },
+    {
+      "id": "CTRL-PICKUP",
+      "title": "Pick it up",
+      "instruction": "Hebe den markierten Löffel auf; die Hand greift automatisch zu.",
+      "englishInstruction": "Pick up the highlighted spoon; the hand reaches automatically.",
+      "touchHelp": "Keep aiming at it, then tap AUFHEBEN.",
+      "keyboardHelp": "Keep aiming at it, then press E."
+    },
+    {
+      "id": "CTRL-ROTATE",
+      "title": "Turn the spoon",
+      "instruction": "Drehe den getragenen Löffel einmal.",
+      "englishInstruction": "Rotate the spoon while you are carrying it.",
+      "touchHelp": "Tap DREHEN once.",
+      "keyboardHelp": "Press R once."
+    },
+    {
+      "id": "CTRL-PLACE",
+      "title": "Put it on the table",
+      "instruction": "Lege den Löffel wieder auf den Tisch und warte auf das Ende der kurzen Ablegebewegung.",
+      "englishInstruction": "Aim at the tabletop and put the spoon down. Wait for the short release movement to finish.",
+      "touchHelp": "Look at the marked tabletop, then tap ABLEGEN.",
+      "keyboardHelp": "Look at the marked tabletop, then press G."
+    }
+  ],
   "tasks": [
     {
       "id": "CUR-001",

@@ -19,6 +19,7 @@ public sealed class PlayerControls : MonoBehaviour
     private bool menuOpen;
     private RoomExperience experience;
     private bool mouseHeld;
+    private bool practicePointerUnlocked;
     private Rect touchSafeArea;
 
     public bool UsesTouch { get; private set; }
@@ -122,6 +123,11 @@ public sealed class PlayerControls : MonoBehaviour
 
     private void ReadKeyboardAndMouse()
     {
+        bool practicePointer = experience.HandsOnActive && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt));
+        if (practicePointer)
+        { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+        else if (practicePointerUnlocked) ApplyCursor();
+        practicePointerUnlocked = practicePointer;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;

@@ -44,6 +44,16 @@ for b in blocks:
   else:fixtures[name]=int(re.search(r'  order: (\d+)',b)[1])
 assert len(pickups)==53 and len(fixtures)==80 and sorted(fixtures.values())==list(range(80))
 catalog=json.loads(pathlib.Path('Assets/Resources/Lessons/IntroA11.json').read_text())['tasks']
+controls=json.loads(pathlib.Path('Assets/Resources/Lessons/IntroA11.json').read_text())['controlsPractice']
+assert len(controls)==7 and len({step['id'] for step in controls})==7
+assert all(all(step.get(key,'').strip() for key in ('title','instruction','englishInstruction','touchHelp','keyboardHelp')) for step in controls)
+voice_index=set(pathlib.Path('Assets/Resources/VoiceIntroA11Index.txt').read_text().splitlines())
+assert voice_index=={p.stem for p in pathlib.Path('Assets/Resources/VoiceIntroA11').glob('*.wav')},'Runtime voice index is stale'
+guidance=json.loads(pathlib.Path('Assets/Resources/Lessons/IntroA11.json').read_text())['controlGuidance']
+assert len(guidance)==4 and len({hint['id'] for hint in guidance})==4
+assert all(hint['instruction'].strip() and hint['englishInstruction'].strip() for hint in guidance)
+manifest=json.loads(pathlib.Path('Documentation/IntroVoice.json').read_text())
+assert all(hint['instruction'] in manifest.values() for hint in guidance),'Control hints missing from voice manifest'
 plan=json.loads(pathlib.Path('Documentation/CurriculumPlan.json').read_text())['stages']
 assert len(catalog)==430 and len(plan)==430
 assert sum(s['status']=='Done' for s in plan)==430 and sum(s['status']=='Next' for s in plan)==0
@@ -115,4 +125,8 @@ for task,stage in zip(catalog,plan):
  assert task['englishInstruction'].strip() and task['englishInstruction']==stage['en'],task['id']
 intro_names={t['targetName'] for t in catalog[:133]}
 assert intro_names==set(pickups)|set(fixtures)
-print('PASS: all 430 English instructions match authored translations; all 133 legacy targets have translation coverage.')
+print('PASS: all 430 English instructions match authored translations; all 133 scene targets have translation coverage.')
+
+# Every scene/part label must have a valid clip, including vocabulary outside lesson targets.
+import subprocess, sys
+subprocess.run([sys.executable, 'Tools/Voice/check_object_coverage.py'], check=True)

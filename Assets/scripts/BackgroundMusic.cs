@@ -43,4 +43,9 @@ public sealed class BackgroundMusic : MonoBehaviour
         float target = voice != null && voice.IsSpeaking ? .045f : .18f;
         source.volume = Mathf.MoveTowards(source.volume, target, Time.unscaledDeltaTime * .5f);
     }
+
+    private void OnDestroy()
+    {
+        if (source != null) { source.Stop(); Destroy(source.gameObject); }
+    }
 }

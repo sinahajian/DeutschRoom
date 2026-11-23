@@ -82,7 +82,6 @@ public static class InteractionValidation
                 player = UnityEngine.Object.FindFirstObjectByType<PlayerInteraction>();
                 player.Learning.PersistenceEnabled = false;
                 IntroLessonValidation.Run(player);
-                IntroLessonValidation.SelectLegacyForValidation(player);
                 controls = player.GetComponent<PlayerControls>();
                 Check(controls != null, "Shared desktop/touch controls missing.");
                 player.GetComponent<RoomExperience>().SetMenu(false);
@@ -237,6 +236,7 @@ public static class InteractionValidation
         Check(player.TryPickUp(item), "Cannot pick up an object from the open drawer.");
         Check(table.Raycast(new Ray(new Vector3(.6f, 2, 1.1f), Vector3.down), out RaycastHit top, 3) && player.TryPlaceHeld(top),
             "Cannot place drawer contents on a static surface.");
+        IntroLessonValidation.FinishPlacement(player);
         Check(!item.transform.IsChildOf(drawer), "Placed item remains attached to drawer.");
         Vector3 placedPosition = item.transform.position;
         Vector3 drawerPosition = drawer.localPosition;
@@ -248,6 +248,7 @@ public static class InteractionValidation
         Collider bottom = GameObject.Find("Drawer_Bottom").GetComponent<Collider>();
         Check(bottom.Raycast(new Ray(bottom.bounds.center + Vector3.up * .3f, Vector3.down), out RaycastHit inside, 1) && player.TryPlaceHeld(inside),
             "Cannot return item to the drawer.");
+        IntroLessonValidation.FinishPlacement(player);
         Check(item.transform.IsChildOf(drawer), "Returned object does not follow its drawer.");
         item.transform.SetParent(originalParent, true);
         item.transform.SetPositionAndRotation(originalPosition, originalRotation);
@@ -275,9 +276,6 @@ public static class InteractionValidation
         Check(GameObject.Find("Detail_WastePipe").GetComponentsInChildren<Collider>().Length > 0, "Waste pipe has no identifiable geometry.");
         foreach (string chair in new[] { "Stuhl_Chair_Front_Left", "Stuhl_Chair_Front_Right", "Stuhl_Chair_Back_Left", "Stuhl_Chair_Back_Right" })
             Check(GameObject.Find(chair).GetComponent<VocabularyObject>().DisplayName == "der Stuhl", "Unlabeled chair.");
-        Check(LearningProgress.RestoreStage(5, 0, 53) == 5 && LearningProgress.RestoreStage(17, 0, 53) == 53 &&
-              LearningProgress.RestoreStage(20, 17, 53) == 56 && LearningProgress.RestoreStage(53, 53, 53) == 53,
-            "Existing saves lost their current vocabulary/article stage after content expansion.");
     }
 
     private static void TestPostureStages()
@@ -312,8 +310,7 @@ public static class InteractionValidation
         Check(movement.Posture == FirstPersonMovement.BodyPosture.Standing && Mathf.Abs(body.height - originalHeight) < .01f,
             "Standing did not restore original collision height.");
         HomePresentationValidation.CheckPresentation(player);
-        LessonGuidanceValidation.Run(player);
-        Debug.Log("INTERACTION_VALIDATION_PASS: cabinet/fridge contents and moving drawer; labeled furniture/plumbing and narration; saved-stage migration; swipe-hold ownership and cancellation; sitting/lying/standing and blocked headroom; doors, pickup, placement, faucet, mobile controls, pause and music.");
+        Debug.Log("INTERACTION_VALIDATION_PASS: cabinet/fridge contents and moving drawer; labeled furniture/plumbing and narration; swipe-hold ownership and cancellation; sitting/lying/standing and blocked headroom; doors, pickup, placement, faucet, mobile controls, pause and music.");
         Finish(false);
     }
 
@@ -324,6 +321,11 @@ public static class InteractionValidation
         Check(body.VisualRoot.GetComponentsInChildren<Collider>().Length == 0, "Avatar visuals introduced collision or blocked interactions.");
         Check(body.VisualRoot.Find("Left hand") != null && body.VisualRoot.Find("Right hand") != null &&
             body.VisualRoot.Find("Left sneaker") != null && body.VisualRoot.Find("Right sneaker") != null, "Avatar is missing hands or feet.");
+        foreach(string hand in new[]{"Left hand","Right hand"})
+        {
+            var skin=body.VisualRoot.Find(hand).GetComponent<SkinnedMeshRenderer>();
+            Check(skin!=null && skin.bones.Length==16 && skin.sharedMesh.vertexCount>1000,"Hand lacks its articulated fingers or shared skin mesh.");
+        }
         foreach (Renderer renderer in body.VisualRoot.Find("Head").GetComponentsInChildren<Renderer>())
             Check(renderer.shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly, "Own head can obstruct the first-person camera.");
         Debug.Log("PLAYER_BODY_VALIDATION_PASS: visible body, hands/feet, head exclusion and no added physics.");
@@ -333,7 +335,7 @@ public static class InteractionValidation
     {
         Check((ui.Layout.InteractButton.width > 0) == player.CanUseFocused, "Use button visibility does not match usable target.");
         Check((ui.Layout.PlaceButton.width > 0) == player.CanPlaceHeld, "Place button visible without a suitable surface.");
-        Check((ui.Layout.RotateButton.width > 0) == (player.HeldItem != null), "Rotate button visible with empty hands.");
+        Check((ui.Layout.RotateButton.width > 0) == player.CanRotateHeld, "Rotate button does not match carry/placement state.");
         Check((ui.Layout.HearButton.width > 0) == player.CanIdentify, "Whole-object hearing button missing or duplicated.");
         Check((ui.Layout.PartButton.width > 0) == player.CanIdentifyPart, "Detail button does not match the focused part.");
         foreach (Rect rect in new[] { ui.Layout.InteractButton, ui.Layout.PlaceButton, ui.Layout.RotateButton, ui.Layout.HearButton, ui.Layout.PartButton })
@@ -390,7 +392,7 @@ public static class InteractionValidation
         foreach (KitchenInteractable item in UnityEngine.Object.FindObjectsByType<KitchenInteractable>())
         {
             Check(!System.Text.RegularExpressions.Regex.IsMatch(item.DisplayName, @"\d|\b(Left|Right|Prep)\b"), "Technical suffix in vocabulary: " + item.DisplayName);
-            Check(Resources.Load<AudioClip>("Voice/" + GermanVoice.Key(item.DisplayName)) != null, "Missing pronunciation: " + item.DisplayName);
+            IntroLessonValidation.CheckIdentificationVoice(player, item.DisplayName);
         }
     }
 
@@ -464,9 +466,11 @@ public static class InteractionValidation
         Collider table = GameObject.Find("TableTop").GetComponent<Collider>();
         Check(table.Raycast(new Ray(new Vector3(.8f, 2, 1.39f), Vector3.down), out RaycastHit occupied, 3), "Test table missing.");
         Check(player.TryPlaceHeld(occupied), "Tabletop rejected free placement.");
+        IntroLessonValidation.FinishPlacement(player);
         Check(player.TryPickUp(plate), "Cannot pick up after tabletop placement.");
         Check(table.Raycast(new Ray(new Vector3(.98f, 2, .9f), Vector3.down), out RaycastHit edge, 3), "Test table edge missing.");
         Check(player.TryPlaceHeld(edge), "Table edge rejected free placement.");
+        IntroLessonValidation.FinishPlacement(player);
         plate.transform.position = originalPosition;
         Check(player.TryPickUp(plate), "Cannot pick up after edge placement.");
         player.enabled = false;
@@ -476,11 +480,17 @@ public static class InteractionValidation
 
         Check(player.TryPickUp(plate), "Repeated pickup failed.");
         Check(Physics.Raycast(new Vector3(1.4f, 3, -1.5f), Vector3.down, out RaycastHit floor, 5), "Test floor missing.");
-        Check(player.TryPlaceHeld(floor) && !plate.IsHeld && player.HeldItem == null, "Clear flat surface rejected placement.");
+        Check(player.TryPlaceHeld(floor), "Clear flat surface rejected placement.");
+        IntroLessonValidation.FinishPlacement(player);
+        Check(!plate.IsHeld && player.HeldItem==null,"Placement animation kept the item attached.");
         foreach (Collider collider in plate.GetComponentsInChildren<Collider>())
             Check(collider.enabled, "Placed item collider was not restored.");
         Check(player.TryPickUp(plate), "Placed object cannot be picked up again.");
+        uint placementSequence=plate.PlacementSequence;
+        Check(player.TryPlaceHeld(floor) && player.IsPlacing,"Cannot test cancellation during release.");
         player.enabled = false;
+        Check(!player.IsPlacing && player.HeldItem==null && !plate.IsHeld && plate.PlacementSequence==placementSequence,
+            "Disabling mid-release committed or retained a pending placement.");
         player.enabled = true;
     }
 

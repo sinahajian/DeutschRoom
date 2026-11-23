@@ -132,6 +132,13 @@ public static class LivingHallFurnishingBuilder
     {
         string path="Assets/Art/LivingHall/"+name+".asset";var mesh=AssetDatabase.LoadAssetAtPath<Mesh>(path);
         bool create=mesh==null;if(create)mesh=new Mesh{name=name};
+        if(!hanging)
+        {
+            var draped=FurnishingSoftness.ThrowMesh();
+            EditorUtility.CopySerialized(draped,mesh);UnityEngine.Object.DestroyImmediate(draped);
+            if(create)AssetDatabase.CreateAsset(mesh,path);else EditorUtility.SetDirty(mesh);
+        }
+        else
         {
             const int nx=30,ny=28;var v=new List<Vector3>();var uv=new List<Vector2>();var triangles=new List<int>();
             for(int j=0;j<=ny;j++)for(int i=0;i<=nx;i++)

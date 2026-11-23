@@ -14,6 +14,7 @@ public static class ScenarioLessonValidation
     {
         if(p.HeldItem==null)Check(p.TryPickUp(i),"Cannot take scenario item " + i.name);
         Check(surface.Raycast(new Ray(at+Vector3.up*2,Vector3.down),out RaycastHit hit,4)&&p.TryPlaceHeld(hit),"Cannot place scenario target " + i.name);
+        IntroLessonValidation.FinishPlacement(p);
     }
     public static void RunTask(PlayerInteraction player,RoomExperience room,IntroLessonCatalog.Task task,int index)
     {

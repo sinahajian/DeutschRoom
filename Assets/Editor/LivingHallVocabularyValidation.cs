@@ -11,23 +11,21 @@ public static class LivingHallVocabularyValidation
         Check(root!=null,"Missing living/hall furnishing root.");
         var targets=root.GetComponentsInChildren<FixedLearningTarget>().OrderBy(t=>t.Order).ToArray();
         Check(targets.Length==20&&targets.Select(t=>t.Order).SequenceEqual(Enumerable.Range(30,20)),"F05-F08 must append twenty stable targets at 30-49.");
-        Check(player.Learning.SearchCount==133&&player.Learning.TotalStages==136,"Expected 53 pickups, 80 fixed identifications and three article tasks.");
+        Check(player.Learning.TotalStages==IntroLessonCatalog.ImplementedTaskCount,"Unexpected curriculum size.");
         foreach(var target in targets)
         {
             var p=target.transform.position;bool hall=target.name.StartsWith("Hall_");
             Check(hall?(p.x>1.88f&&p.x<3.72f&&p.z>-15.92f&&p.z< -5.08f):(p.x> -4.92f&&p.x<1.72f&&p.z> -10.42f&&p.z< -5.08f),"Target outside assigned room: "+target.name);
             Check(target.GetComponentInChildren<Collider>()!=null,"No identification surface: "+target.name);
-            foreach(string phrase in new[]{target.Item.DisplayName,GermanLessonSpeech.Find(target.Item.DisplayName),GermanLessonSpeech.FixedFound(target.Item.DisplayName)})
-                Check(Resources.Load<AudioClip>("Voice/"+GermanVoice.Key(phrase))!=null,"Missing voice: "+phrase);
+            foreach(string phrase in new[]{target.Item.DisplayName})
+                IntroLessonValidation.CheckIdentificationVoice(player, phrase);
         }
         foreach(var part in root.GetComponentsInChildren<VocabularyPart>())
         {
             Check(part.Owner!=null&&part.GetComponent<KitchenInteractable>()==null,"Part annotation overrides functional owner: "+part.name);
-            Check(Resources.Load<AudioClip>("Voice/"+GermanVoice.Key(part.DisplayName))!=null,"Missing component voice: "+part.DisplayName);
+            IntroLessonValidation.CheckIdentificationVoice(player, part.DisplayName);
         }
         Check(root.GetComponentsInChildren<Openable>().Length==2,"Shoe cabinet requires two opening doors.");
-        Check(LearningProgress.RestoreStage(83,53,53,30,50)==103&&LearningProgress.RestoreStage(85,53,53,30,50)==105&&LearningProgress.RestoreStage(86,53,53,30,50)==106,"Old article/completion saves lost equivalent phase.");
-        Check(LearningProgress.RestoreStage(72,53,53,30,50)==72,"Old bedroom progress changed.");
         // A continuous standing route down the corridor, through both occupied-room entrances,
         // and through the living room remains clear with storage closed.
         for(float z=-5.5f;z>=-15.3f;z-=.2f)Clear(player,new Vector3(2.8f,0,z));

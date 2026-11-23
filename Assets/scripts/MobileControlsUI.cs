@@ -21,6 +21,7 @@ public sealed class MobileControlsUI : MonoBehaviour
     private Rect lastSafeArea;
     private bool visible;
     private readonly Vector3[] corners = new Vector3[4];
+    private TouchControlLayout geometry;
 
     public TouchControlLayout Layout { get; private set; }
     public bool IsVisible => canvas != null && canvas.gameObject.activeSelf;
@@ -89,33 +90,46 @@ public sealed class MobileControlsUI : MonoBehaviour
             lastSize = size;
             lastSafeArea = area;
             Canvas.ForceUpdateCanvases();
+            Rect stick=ScreenRect(joystick);
+            geometry=new TouchControlLayout { SafeArea=area,JoystickCenter=stick.center,JoystickRadius=stick.width/2,
+                InteractButton=ScreenRect(interactButton.rectTransform),PlaceButton=ScreenRect(placeButton.rectTransform),
+                RotateButton=ScreenRect(rotateButton.rectTransform),HearButton=ScreenRect(hearButton.rectTransform),PartButton=ScreenRect(partButton.rectTransform) };
         }
         bool targeting = interaction != null && interaction.CanUseFocused;
         bool holding = interaction != null && interaction.HeldItem != null;
         bool canPlace = interaction != null && interaction.CanPlaceHeld;
         bool canHear = interaction != null && interaction.CanIdentify;
         bool canDetail = interaction != null && interaction.CanIdentifyPart;
-        hearButton.rectTransform.anchoredPosition = new Vector2(targeting ? -265 : -125, 130);
-        partButton.rectTransform.anchoredPosition = new Vector2(targeting ? -405 : -265, 130);
-        interactButton.gameObject.SetActive(targeting);
-        hearButton.gameObject.SetActive(canHear);
-        partButton.gameObject.SetActive(canDetail);
-        placeButton.gameObject.SetActive(canPlace);
-        rotateButton.gameObject.SetActive(holding);
-        Tint(interactButton, true);
-        Tint(placeButton, true);
-        Tint(rotateButton, true);
-        Tint(hearButton, true);
-        Tint(partButton, true);
-        Rect stick = ScreenRect(joystick);
+        // Keep each action in its initialized slot when neighboring controls are hidden.
+        SetActionVisible(interactButton,targeting);
+        SetActionVisible(hearButton,canHear);
+        SetActionVisible(partButton,canDetail);
+        SetActionVisible(placeButton,canPlace);
+        SetActionVisible(rotateButton,holding && interaction.CanRotateHeld);
         Layout = new TouchControlLayout {
-            SafeArea = area, JoystickCenter = stick.center, JoystickRadius = stick.width / 2,
-            InteractButton = targeting ? ScreenRect(interactButton.rectTransform) : UnityEngine.Rect.zero,
-            PlaceButton = canPlace ? ScreenRect(placeButton.rectTransform) : UnityEngine.Rect.zero,
-            RotateButton = holding ? ScreenRect(rotateButton.rectTransform) : UnityEngine.Rect.zero,
-            HearButton = canHear ? ScreenRect(hearButton.rectTransform) : UnityEngine.Rect.zero,
-            PartButton = canDetail ? ScreenRect(partButton.rectTransform) : UnityEngine.Rect.zero
+            SafeArea = area, JoystickCenter = geometry.JoystickCenter, JoystickRadius = geometry.JoystickRadius,
+            InteractButton = targeting ? geometry.InteractButton : UnityEngine.Rect.zero,
+            PlaceButton = canPlace ? geometry.PlaceButton : UnityEngine.Rect.zero,
+            RotateButton = holding && interaction.CanRotateHeld ? geometry.RotateButton : UnityEngine.Rect.zero,
+            HearButton = canHear ? geometry.HearButton : UnityEngine.Rect.zero,
+            PartButton = canDetail ? geometry.PartButton : UnityEngine.Rect.zero
         };
+    }
+
+    // Read actual Canvas geometry even when the modal tour hides gameplay input.
+    public Rect TutorialScreenRect(string control)
+    {
+        if (canvas == null) return UnityEngine.Rect.zero;
+        bool active = canvas.gameObject.activeSelf;
+        canvas.gameObject.SetActive(true);
+        RefreshLayout();
+        Canvas.ForceUpdateCanvases();
+        RectTransform target = control == "Move" ? joystick :
+            control == "Interact" ? interactButton.rectTransform : control == "Hear" ? hearButton.rectTransform :
+            control == "Part" ? partButton.rectTransform : control == "Place" ? placeButton.rectTransform : rotateButton.rectTransform;
+        Rect result = ScreenRect(target);
+        canvas.gameObject.SetActive(active);
+        return result;
     }
 
     private void LateUpdate()
@@ -123,10 +137,14 @@ public sealed class MobileControlsUI : MonoBehaviour
         if (!visible || controls == null)
             return;
         RefreshLayout();
-        knob.anchoredPosition = controls.JoystickValue * 69f;
+        Vector2 position=controls.JoystickValue*69f;
+        if(knob.anchoredPosition!=position)knob.anchoredPosition=position;
         bool targeting = interaction != null && interaction.CanUseFocused;
-        interactText.text = targeting ? interaction.FocusedObject.GetAction(interaction) : "BENUTZEN";
+        string caption=targeting ? interaction.FocusedObject.GetAction(interaction) : "BENUTZEN";
+        if(interactText.text!=caption)interactText.text=caption;
     }
+    private static void SetActionVisible(Image action,bool show)
+    {if(action.gameObject.activeSelf!=show)action.gameObject.SetActive(show);}
 
     private Image ActionButton(string name, Vector2 position, string caption, out Text text)
     {

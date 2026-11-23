@@ -3,12 +3,12 @@
   "rate": "-8%",
   "sample_rate": 24000,
   "generator": "edge-tts 7.3.1",
-  "clips": 1762,
+  "clips": 1881,
   "course": "intro-a1-1",
   "installed_voice": "de-DE-TanjaNeural",
   "resource_folder": "VoiceIntroA11",
   "status": "Installed",
-  "updated": "2026-11-22",
+  "updated": "2026-11-23",
   "previous_requested_voice": "Sonna (unavailable)",
   "selection": "User authorized another available German voice"
 }

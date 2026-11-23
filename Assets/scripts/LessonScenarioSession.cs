@@ -182,6 +182,7 @@ public sealed class LessonScenarioSession : MonoBehaviour
     { if(Active && task.id==taskId && NeedsConfirmation && (string.IsNullOrEmpty(CurrentStep.key)||devices.State(CurrentStep.key)==CurrentStep.state))confirmed=true; }
     private void Update()
     {
+        if (learning != null && learning.ControlsPracticeActive) return;
         if(!Active||Time.timeScale<=0)return;
         foreach(var pair in unchangedVersions)if(devices.Sequence(pair.Key)!=pair.Value)Fail();
         if(CaseReaderOpen)return;

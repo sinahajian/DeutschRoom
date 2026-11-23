@@ -19,6 +19,19 @@ public sealed class PickupItem : KitchenInteractable
     public uint PlacementSequence { get; private set; }
     public uint LastPlacedCarrySequence { get; private set; }
     public Transform LastPlacementSurface { get; private set; }
+    internal struct PracticeInteractionState
+    {
+        public uint carry, place, placedCarry;
+        public Transform surface;
+    }
+    internal PracticeInteractionState CapturePracticeInteractions() => new PracticeInteractionState {
+        carry = CarrySequence, place = PlacementSequence, placedCarry = LastPlacedCarrySequence, surface = LastPlacementSurface
+    };
+    internal void RestorePracticeInteractions(PracticeInteractionState state)
+    {
+        CarrySequence = state.carry; PlacementSequence = state.place;
+        LastPlacedCarrySequence = state.placedCarry; LastPlacementSurface = state.surface;
+    }
 
     private void Awake()
     {

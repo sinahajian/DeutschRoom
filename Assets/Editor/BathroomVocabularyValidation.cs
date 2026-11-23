@@ -9,16 +9,16 @@ public static class BathroomVocabularyValidation
     {
         var fixtures=UnityEngine.Object.FindObjectsByType<FixedLearningTarget>().Where(item=>item.Order<10).OrderBy(item=>item.Order).ToArray();
         Check(fixtures.Length==10 && fixtures.Select(item=>item.Order).SequenceEqual(Enumerable.Range(0,10)),"Bathroom needs exactly 10 ordered fixture targets.");
-        Check(player.Learning.SearchCount==133 && player.Learning.TotalStages==136,"Expanded curriculum count mismatch.");
+        Check(player.Learning.TotalStages==IntroLessonCatalog.ImplementedTaskCount,"Expanded curriculum count mismatch.");
         foreach(var fixture in fixtures)
         {
             Check(fixture.GetComponentInChildren<Collider>()!=null,"Unreachable fixture without collider: "+fixture.name);
-            Check(Resources.Load<AudioClip>("Voice/"+GermanVoice.Key(fixture.Item.DisplayName))!=null,"Missing fixture name voice.");
+            IntroLessonValidation.CheckIdentificationVoice(player, fixture.Item.DisplayName);
         }
         foreach(var part in UnityEngine.Object.FindObjectsByType<VocabularyPart>())
         {
             Check(!string.IsNullOrEmpty(part.DisplayName),"Unnamed component: "+part.name);
-            Check(Resources.Load<AudioClip>("Voice/"+GermanVoice.Key(part.DisplayName))!=null,"Missing component voice: "+part.DisplayName);
+            IntroLessonValidation.CheckIdentificationVoice(player, part.DisplayName);
         }
         var hood=GameObject.Find("Dunstabzug_Hood").GetComponent<KitchenInteractable>();
         Check(hood!=null && hood.DisplayName=="die Dunstabzugshaube","Hood remains unidentified.");
@@ -32,8 +32,6 @@ public static class BathroomVocabularyValidation
         Check(player.Voice.LastRequest.Length == 1 && player.Voice.LastRequest[0] == handle.DisplayName,
             "Detail button should speak only the precise part name.");
         Check(player.Learning.Stage == stageBeforeDetail,"Detail lookup unexpectedly advanced the whole-object lesson.");
-        Check(LearningProgress.RestoreStage(54,53,53,0,10)==64 && LearningProgress.RestoreStage(56,53,53,0,10)==66 &&
-              LearningProgress.RestoreStage(57,53,53,10,10)==57,"Bathroom insertion damaged existing article/completion/fixed-stage saves.");
         // Standing positions in front of the fixtures and shower opening remain free.
         foreach(Vector3 at in new[]{new Vector3(4.95f,0,-14.25f),new Vector3(6.15f,0,-12.55f),new Vector3(8.95f,0,-13.75f)})
             foreach(Collider obstacle in Physics.OverlapCapsule(at+Vector3.up*.43f,at+Vector3.up*1.43f,.30f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore))

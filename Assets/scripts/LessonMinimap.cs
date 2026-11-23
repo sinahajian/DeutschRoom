@@ -57,7 +57,7 @@ public sealed class LessonMinimap : MonoBehaviour
     }
     public void Draw(Rect panel)
     {
-        if (player == null || floors == null || circle == null) return;
+        if (Event.current.type != EventType.Repaint || player == null || floors == null || circle == null) return;
         if (label == null)
         {
             label = new GUIStyle(GUI.skin.label) { fontSize = 11, alignment = TextAnchor.MiddleCenter };
@@ -103,7 +103,12 @@ public sealed class LessonMinimap : MonoBehaviour
     private const float RouteCell = .25f;
     private bool[] walkable;
     private int columns, rows;
+    private int[] previous;
+    private Queue<int> pending;
     private int cachedStart = -1, cachedGoal = -1;
+    private Vector3 nearestStartPosition, nearestGoalPosition;
+    private int nearestStart = -1, nearestGoal = -1;
+    private bool hasNearest;
     private readonly List<Vector3> route = new List<Vector3>();
 
     private Vector3 CellWorld(int index) => new Vector3(WorldArea.xMin + (index % columns + .5f) * RouteCell,
@@ -114,6 +119,8 @@ public sealed class LessonMinimap : MonoBehaviour
         columns = Mathf.CeilToInt(WorldArea.width / RouteCell);
         rows = Mathf.CeilToInt(WorldArea.height / RouteCell);
         walkable = new bool[columns * rows];
+        previous = new int[walkable.Length];
+        pending = new Queue<int>(walkable.Length);
         for (int i = 0; i < walkable.Length; i++)
         {
             Vector3 point = CellWorld(i);
@@ -147,14 +154,19 @@ public sealed class LessonMinimap : MonoBehaviour
     private void DrawRoute(Vector3 start, Vector3 goal, Rect map)
     {
         if (walkable == null) BuildRouteGrid();
-        int first = NearestCell(start), last = NearestCell(goal);
+        // The grid is static; exact unchanged positions have the same nearest cell.
+        if (!hasNearest || !start.Equals(nearestStartPosition))
+        { nearestStart = NearestCell(start); nearestStartPosition = start; }
+        if (!hasNearest || !goal.Equals(nearestGoalPosition))
+        { nearestGoal = NearestCell(goal); nearestGoalPosition = goal; }
+        hasNearest = true;
+        int first = nearestStart, last = nearestGoal;
         if (first != cachedStart || last != cachedGoal)
         {
             cachedStart = first; cachedGoal = last; route.Clear();
             if (first < 0 || last < 0) return;
-            int[] previous = new int[walkable.Length];
             for (int i = 0; i < previous.Length; i++) previous[i] = -1;
-            Queue<int> pending = new Queue<int>();
+            pending.Clear();
             previous[first] = first; pending.Enqueue(first);
             while (pending.Count > 0 && previous[last] < 0)
             {

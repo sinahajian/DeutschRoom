@@ -17,6 +17,35 @@ public class FirstPersonMovement : MonoBehaviour
     public BodyPosture Posture { get; private set; }
     private float standingHeight, standingEye, feetOffset;
     private Vector3 standingCenter;
+    public Vector3 InitialPosition { get; private set; }
+    public Quaternion InitialRotation { get; private set; }
+    public struct PracticeView
+    {
+        public Vector3 position, cameraPosition, center;
+        public Quaternion rotation;
+        public float pitch, height;
+        public BodyPosture posture;
+    }
+    public PracticeView CapturePracticeView() => new PracticeView {
+        position = transform.position, rotation = transform.rotation, pitch = verticalRotation,
+        cameraPosition = playerCamera.localPosition, height = controller.height, center = controller.center, posture = Posture
+    };
+    public void RestorePracticeView(PracticeView view)
+    {
+        bool active = controller.enabled; controller.enabled = false;
+        transform.SetPositionAndRotation(view.position, view.rotation);
+        verticalRotation = view.pitch; verticalVelocity = 0; Posture = view.posture;
+        controller.height = view.height; controller.center = view.center;
+        playerCamera.localPosition = view.cameraPosition;
+        playerCamera.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
+        controller.enabled = active; Physics.SyncTransforms();
+    }
+    public void StartPracticeView()
+    {
+        RestorePracticeView(new PracticeView { position = InitialPosition, rotation = InitialRotation,
+            pitch = 0, posture = BodyPosture.Standing, height = standingHeight, center = standingCenter,
+            cameraPosition = new Vector3(playerCamera.localPosition.x, standingEye, playerCamera.localPosition.z) });
+    }
 
     public bool ChangePosture(int direction)
     {
@@ -57,6 +86,7 @@ public class FirstPersonMovement : MonoBehaviour
 
     void Start()
     {
+        InitialPosition = transform.position; InitialRotation = transform.rotation;
         controller = GetComponent<CharacterController>();
         controls = GetComponent<PlayerControls>();
         standingHeight = controller.height;

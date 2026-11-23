@@ -32,7 +32,7 @@ def validate(path):
 
 async def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--pack', choices=('legacy', 'intro'), default='legacy')
+    parser.add_argument('--pack', choices=('intro',), default='intro')
     parser.add_argument('--voice', help='Exact provider voice ID; defaults to the selected pack voice.')
     parser.add_argument('--rate', default='-8%')
     parser.add_argument('--jobs', type=int, default=2)
@@ -42,12 +42,11 @@ async def main():
     parser.add_argument('--destination', type=Path)
     parser.add_argument('--audit-only', action='store_true', help='Validate installed clips without network, synthesis or writes.')
     args = parser.parse_args()
-    intro = args.pack == 'intro'
-    expected_manifest = ROOT / 'Documentation' / ('IntroVoice.json' if intro else 'Voice.json')
-    expected_destination = ROOT / 'Assets/Resources' / ('VoiceIntroA11' if intro else 'Voice')
+    expected_manifest = ROOT / 'Documentation' / 'IntroVoice.json'
+    expected_destination = ROOT / 'Assets/Resources' / 'VoiceIntroA11'
     args.manifest = args.manifest or expected_manifest
     args.destination = args.destination or expected_destination
-    args.voice = args.voice or ('de-DE-TanjaNeural' if intro else 'de-DE-KatjaNeural')
+    args.voice = args.voice or 'de-DE-TanjaNeural'
     manifest = json.loads(args.manifest.read_text())
     if args.audit_only:
         missing, invalid = [], []
@@ -70,16 +69,15 @@ async def main():
               f'{len(missing)} missing, {len(invalid)} invalid. No files changed.')
         return
     if args.manifest.resolve() != expected_manifest.resolve() or args.destination.resolve() != expected_destination.resolve():
-        raise ValueError('Generation only supports the configured legacy/intro pack; other paths are audit-only.')
+        raise ValueError('Generation only supports the configured intro pack; other paths are audit-only.')
     import edge_tts
     profile = {'voice': args.voice, 'rate': args.rate, 'sample_rate': 24000,
                'generator': 'edge-tts 7.3.1', 'clips': len(manifest)}
-    if intro:
-        profile.update(course='intro-a1-1', installed_voice=args.voice,
+    profile.update(course='intro-a1-1', installed_voice=args.voice,
                        resource_folder='VoiceIntroA11', status='Installed',
                        updated=args.document_date.isoformat(), previous_requested_voice='Sonna (unavailable)',
                        selection='User authorized another available German voice')
-    profile_path = ROOT / 'Documentation' / ('IntroVoiceProfile.json' if intro else 'VoiceProfile.json')
+    profile_path = ROOT / 'Documentation' / 'IntroVoiceProfile.json'
     installed = json.loads(profile_path.read_text()) if profile_path.exists() else {}
     reuse_installed = all(installed.get(key) == profile[key] for key in ('voice', 'rate', 'sample_rate', 'generator'))
     identity = {key: profile[key] for key in ('voice', 'rate', 'sample_rate', 'generator')}
@@ -163,6 +161,11 @@ async def main():
                 Path(str(target) + '.meta').unlink(missing_ok=True)
         raise
     print(f'Installed {len(staged)} neural recordings; Unity filenames and .meta GUIDs preserved.', flush=True)
+    # Runtime availability checks must not decode every queued/muted recording.
+    index = ROOT / 'Assets/Resources/VoiceIntroA11Index.txt'
+    index.write_text('\n'.join(sorted(manifest)) + '\n')
+    index_meta = Path(str(index) + '.meta')
+    if not index_meta.exists(): index_meta.write_text('fileFormatVersion: 2\nguid: ' + uuid.uuid4().hex + '\n')
     print(f'Previous recordings backed up at {backup}', flush=True)
 
 

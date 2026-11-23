@@ -24,6 +24,7 @@ public sealed class LessonDevice : KitchenInteractable
     }
     public void AddFlow(Vector3 from, Vector3 to, bool hood = false)
     {
+        ClearFlow();
         effect = new GameObject("LessonDeviceEffect") { hideFlags = HideFlags.DontSave };
         effect.transform.SetParent(transform, true);
         var template = Resources.Load<Material>("Lessons/PlacementZone");
@@ -65,5 +66,10 @@ public sealed class LessonDevice : KitchenInteractable
         transform.localPosition = Vector3.Lerp(new Vector3(0,.515f,0), openPosition, lidProgress);
         transform.localRotation = Quaternion.Slerp(Quaternion.Euler(90,0,0), openRotation, lidProgress);
     }
-    private void OnDestroy() { if (effectMaterial != null) Destroy(effectMaterial); }
+    private void ClearFlow()
+    {
+        if (effect != null) { effect.SetActive(false); Destroy(effect); effect = null; }
+        if (effectMaterial != null) { Destroy(effectMaterial); effectMaterial = null; }
+    }
+    private void OnDestroy() => ClearFlow();
 }

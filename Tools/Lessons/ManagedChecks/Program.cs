@@ -105,3 +105,62 @@ Console.WriteLine("PASS: W/H packets, 50 source-based stages, 380/400 save conti
 Check(catalog.tasks.All(t => !string.IsNullOrWhiteSpace(t.englishInstruction)), "Missing English instruction");
 Reject(c => c.tasks[0].englishInstruction = " ", "Blank English instruction accepted");
 Console.WriteLine("PASS: English instruction coverage and missing-translation rejection.");
+
+Check(catalog.controlsPractice.Length == 7 && catalog.controlsPractice.All(s => !string.IsNullOrWhiteSpace(s.englishInstruction)),
+    "Hands-on guide is missing translated controls instructions");
+Reject(c => c.controlsPractice[0].englishInstruction = "", "Missing practice translation accepted");
+Reject(c => c.controlsPractice[1].id = c.controlsPractice[0].id, "Duplicate practice ID accepted");
+for (int step = 0; step < 7; step++)
+{
+    Check(!HandsOnTutorialRules.Ready(step, 0, 10, false, false, false, false, false), "Idle guide advanced " + step);
+    for (int action = 0; action < 7; action++)
+        Check(HandsOnTutorialRules.Ready(step, action == 0 ? .65f : 0, action == 1 ? .4f : 10,
+            action == 2, action == 3, action == 4, action == 5, action == 6) == (action == step),
+            "Wrong action advanced hands-on step " + step);
+}
+Check(!HandsOnTutorialRules.Ready(7, 100, 0, true, true, true, true, true), "Completed practice advanced again");
+Check(!HandsOnTutorialRules.Ready(0, .64f, 0, true, true, true, true, true), "Movement threshold skipped");
+Check(!HandsOnTutorialRules.Ready(1, 100, .41f, true, true, true, true, true), "Table distance threshold skipped");
+bool[] cells = Enumerable.Repeat(true, 25).ToArray();
+cells[2] = cells[7] = cells[12] = cells[17] = false;
+var previousCells = new int[cells.Length]; var frontier = new Queue<int>(); var routeCells = new List<int>();
+Check(TutorialRouteSearch.Find(cells, 5, 0, 4, previousCells, frontier, routeCells), "Route failed to go around obstacle wall");
+Check(routeCells[0] == 0 && routeCells[^1] == 4 && routeCells.Contains(22), "Route cut through barrier");
+for (int i = 0; i < routeCells.Count; i++)
+{
+    Check(cells[routeCells[i]], "Route crossed an occupied cell");
+    if (i > 0) Check(Math.Abs(routeCells[i] % 5 - routeCells[i-1] % 5) + Math.Abs(routeCells[i] / 5 - routeCells[i-1] / 5) == 1,
+        "Route jumped or cut a diagonal corner");
+}
+cells[22] = false;
+Check(!TutorialRouteSearch.Find(cells, 5, 0, 4, previousCells, frontier, routeCells) && routeCells.Count == 0, "Blocked route left a misleading line");
+Check(!TutorialRouteSearch.Find(cells, 5, -1, 4, previousCells, frontier, routeCells), "Invalid start accepted");
+Check(TutorialRouteSearch.Find(cells, 5, 0, 0, previousCells, frontier, routeCells) && routeCells.SequenceEqual(new[] {0}), "Same-cell arrival failed");
+Console.WriteLine("PASS: seven translated hands-on steps; real-action gates and distance boundaries; obstacle detours, cardinal adjacency, blocked/invalid/same-cell routes.");
+
+Check(ManipulationMotion.Ease(-1)==0 && ManipulationMotion.Ease(1)==1 && ManipulationMotion.Ease(2)==1,"Manipulation easing endpoints/clamps failed");
+float previousEase=0;
+for(int sample=0;sample<=100;sample++)
+{
+    float t=sample/100f,ease=ManipulationMotion.Ease(t);
+    Check(ease>=previousEase && ease>=0 && ease<=1,"Manipulation overshot or reversed");previousEase=ease;
+    Check(ManipulationMotion.Lift(t,.04f)>=0 && ManipulationMotion.Lift(t,.04f)<=.040001f,"Release lift exceeded its arc");
+}
+Check(ManipulationMotion.Lift(0,.04f)==0 && ManipulationMotion.Lift(1,.04f)==0,"Manipulation moved its endpoints");
+Check(ManipulationMotion.Lift(.001f,.04f)/.001f<.01f && ManipulationMotion.Lift(.999f,.04f)/.001f<.01f,"Manipulation arc has an abrupt endpoint velocity");
+Check(ManipulationMotion.PickupSeconds>.2f && ManipulationMotion.PlaceSeconds>.2f,"Manipulation lost its visible transition");
+Console.WriteLine("PASS: pickup/release motion endpoint stability, monotonic easing, bounded lift and visible duration; native timing/cancellation checks remain separate.");
+
+Check(!GermanLessonSpeech.PickupGuidance(true).Contains("drücke",StringComparison.OrdinalIgnoreCase) &&
+    !GermanLessonSpeech.IdentifyGuidance(true).Contains("drücke",StringComparison.OrdinalIgnoreCase),"Phone guidance mentions keyboard presses");
+Check(GermanLessonSpeech.PickupGuidance(false).Contains("E") && GermanLessonSpeech.IdentifyGuidance(false).Contains("F"),"Desktop controls missing");
+foreach(bool holding in new[]{false,true})foreach(bool placing in new[]{false,true})foreach(bool touch in new[]{false,true})
+{
+    Check(GermanLessonSpeech.StillRelevant(GermanLessonSpeech.ReleaseBeforeNext,holding,placing,touch)==(holding&&!placing),"Stale mandatory release warning");
+    Check(GermanLessonSpeech.StillRelevant(GermanLessonSpeech.ReleaseOptional,holding,placing,touch)==(holding&&!placing),"Stale optional release warning");
+    Check(GermanLessonSpeech.StillRelevant(GermanLessonSpeech.PickupHelpTouch,holding,placing,touch)==touch,"Wrong touch guidance");
+    Check(GermanLessonSpeech.StillRelevant(GermanLessonSpeech.PickupHelpKeyboard,holding,placing,touch)==!touch,"Wrong keyboard guidance");
+}
+Console.WriteLine("PASS: mode-specific speech and queued/current release relevance across holding/placing/input states.");
+Check(catalog.controlGuidance.Length==4 && catalog.controlGuidance.All(h=>!string.IsNullOrWhiteSpace(h.englishInstruction)),"Control guidance translation missing");
+Reject(c=>c.controlGuidance[0].englishInstruction="","Untranslated control hint accepted");

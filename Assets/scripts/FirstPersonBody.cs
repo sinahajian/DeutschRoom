@@ -6,6 +6,11 @@ using UnityEngine.Rendering;
 [RequireComponent(typeof(FirstPersonMovement), typeof(CharacterController))]
 public sealed class FirstPersonBody : MonoBehaviour
 {
+    internal static readonly System.Collections.Generic.List<FirstPersonBody> ActiveBodies = new System.Collections.Generic.List<FirstPersonBody>();
+    private Renderer[] headRenderers;
+    private void OnEnable() => ActiveBodies.Add(this);
+    private void OnDisable() => ActiveBodies.Remove(this);
+
     private FirstPersonMovement movement;
     private PlayerControls controls;
     private PlayerInteraction interaction;
@@ -14,7 +19,11 @@ public sealed class FirstPersonBody : MonoBehaviour
     private readonly Transform[] upperArms = new Transform[2], forearms = new Transform[2], hands = new Transform[2];
     private readonly Transform[] thighs = new Transform[2], shins = new Transform[2], shoes = new Transform[2];
     private readonly Transform[] knees = new Transform[2], elbows = new Transform[2];
-    private readonly Material[] materials = new Material[5];
+    private readonly Material[] materials = new Material[8];
+    private readonly System.Collections.Generic.List<Mesh> ownedMeshes = new System.Collections.Generic.List<Mesh>();
+    private readonly AvatarAnatomy.Hand[] handRigs = new AvatarAnatomy.Hand[2];
+    private readonly Transform[] eyes = new Transform[2];
+    private readonly float[] grip = new float[2];
     private float standingHeight, feet, phase, stride;
     private Vector3 previousPosition;
 
@@ -34,35 +43,49 @@ public sealed class FirstPersonBody : MonoBehaviour
         materials[2] = Surface("Avatar skin", new Color(.64f, .39f, .25f), .3f);
         materials[3] = Surface("Avatar sneakers", new Color(.79f, .82f, .79f), .28f);
         materials[4] = Surface("Avatar hair", new Color(.065f, .045f, .035f), .15f);
+        materials[5] = Surface("Warm eye whites", new Color(.86f,.84f,.78f), .5f);
+        materials[6] = Surface("Brown irises",new Color(.15f,.08f,.035f),.48f);
+        materials[7] = Surface("Muted lips",new Color(.40f,.20f,.15f),.26f);
         root = new GameObject("Player Avatar").transform; root.SetParent(transform, false);
         torso = Part("Sweatshirt", PrimitiveType.Capsule, root, materials[0]);
         waist = Part("Waist", PrimitiveType.Sphere, root, materials[1]);
-        head = Part("Head", PrimitiveType.Sphere, root, materials[2]);
-        hair = Part("Hair", PrimitiveType.Sphere, head, materials[4]);
-        hair.localPosition = new Vector3(0, .34f, -.1f); hair.localScale = new Vector3(1.03f, .45f, 1.03f);
+        head = new GameObject("Head").transform; head.SetParent(root,false);
+        Transform face = new GameObject("Face and hair").transform; face.SetParent(head,false);
+        Mesh skull = AvatarAnatomy.Head(false), haircut = AvatarAnatomy.Head(true);
+        MeshPart("Shaped face",face,skull,materials[2]); hair=MeshPart("Hair",face,haircut,materials[4]);
         for (int i = 0; i < 2; i++)
         {
-            Transform eye = Part(i == 0 ? "Left eye" : "Right eye", PrimitiveType.Sphere, head, materials[3]);
-            eye.localPosition = new Vector3(i == 0 ? -.21f : .21f, .10f, .43f);
-            eye.localScale = new Vector3(.19f, .16f, .12f);
-            Transform pupil = Part("Pupil", PrimitiveType.Sphere, eye, materials[4]);
-            pupil.localPosition = new Vector3(0, 0, .42f); pupil.localScale = new Vector3(.5f,.65f,.45f);
+            float side=i==0?-1:1;
+            eyes[i]=new GameObject(i==0?"Left eye":"Right eye").transform;eyes[i].SetParent(head,false);
+            eyes[i].localPosition=new Vector3(side*.185f,.085f,.4f);
+            FacialPart("Eye white",eyes[i],Vector3.zero,new Vector3(.155f,.074f,.035f),materials[5]);
+            FacialPart("Iris",eyes[i],new Vector3(0,0,.022f),new Vector3(.052f,.057f,.015f),materials[6]);
+            FacialPart("Pupil",eyes[i],new Vector3(0,0,.031f),new Vector3(.025f,.032f,.008f),materials[4]);
+            FacialPart("Upper eyelid",face,new Vector3(side*.185f,.125f,.408f),new Vector3(.17f,.026f,.028f),materials[2]);
+            FacialPart("Lower eyelid",face,new Vector3(side*.185f,.049f,.408f),new Vector3(.15f,.019f,.025f),materials[2]);
+            var brow=FacialPart("Eyebrow",face,new Vector3(side*.185f,.183f,.389f),new Vector3(.18f,.024f,.028f),materials[4]);
+            brow.localRotation=Quaternion.Euler(0,0,-side*6);
+            FacialPart("Ear",face,new Vector3(side*.47f,-.015f,-.015f),new Vector3(.14f,.24f,.12f),materials[2]);
         }
-        Transform nose = Part("Nose", PrimitiveType.Sphere, head, materials[2]);
-        nose.localPosition = new Vector3(0, -.07f, .47f); nose.localScale = new Vector3(.15f,.18f,.16f);
-        Transform neck = Part("Neck", PrimitiveType.Sphere, head, materials[2]);
+        FacialPart("Nose bridge",face,new Vector3(0,.015f,.427f),new Vector3(.085f,.22f,.085f),materials[2]);
+        FacialPart("Nose tip",face,new Vector3(0,-.075f,.48f),new Vector3(.12f,.09f,.10f),materials[2]);
+        FacialPart("Upper lip",face,new Vector3(0,-.20f,.383f),new Vector3(.20f,.018f,.035f),materials[7]);
+        FacialPart("Lower lip",face,new Vector3(0,-.223f,.381f),new Vector3(.19f,.024f,.034f),materials[7]);
+        Transform neck = Part("Neck", PrimitiveType.Sphere, face, materials[2]);
         neck.localPosition = new Vector3(0, -.55f, -.05f); neck.localScale = new Vector3(.5f, .65f, .5f);
+        AvatarAnatomy.CombineStatic(face,ownedMeshes); Destroy(skull); Destroy(haircut);
         // Own head cannot block the camera, including at the lowest posture and maximum pitch.
-        foreach (Renderer renderer in head.GetComponentsInChildren<Renderer>()) renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+        var visibleHead = new System.Collections.Generic.List<Renderer>();
+        foreach(var renderer in head.GetComponentsInChildren<Renderer>()) if(renderer.enabled)visibleHead.Add(renderer);
+        headRenderers = visibleHead.ToArray();
+        foreach (Renderer renderer in headRenderers) renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
         for (int i = 0; i < 2; i++)
         {
             string side = i == 0 ? "Left " : "Right ";
             upperArms[i] = Part(side + "sleeve", PrimitiveType.Capsule, root, materials[0]);
             forearms[i] = Part(side + "forearm", PrimitiveType.Capsule, root, materials[0]);
-            hands[i] = Part(side + "hand", PrimitiveType.Sphere, root, materials[2]);
-            Transform thumb = Part(side + "thumb", PrimitiveType.Sphere, hands[i], materials[2]);
-            thumb.localPosition = new Vector3(i == 0 ? .38f : -.38f, -.06f, .15f);
-            thumb.localScale = new Vector3(.36f, .56f, .55f);
+            hands[i] = new GameObject(side+"hand").transform; hands[i].SetParent(root,false);
+            handRigs[i]=new AvatarAnatomy.Hand(hands[i],materials[2],i==0); ownedMeshes.Add(handRigs[i].mesh);
             thighs[i] = Part(side + "trouser thigh", PrimitiveType.Capsule, root, materials[1]);
             shins[i] = Part(side + "trouser shin", PrimitiveType.Capsule, root, materials[1]);
             knees[i] = Part(side + "knee", PrimitiveType.Sphere, root, materials[1]);
@@ -71,6 +94,22 @@ public sealed class FirstPersonBody : MonoBehaviour
         }
         Pose(0, 0);
     }
+
+    // Called synchronously around the offscreen mirror render; the main view keeps its head hidden.
+    public void ShowHeadInMirror(bool visible)
+    {
+        if (head == null) return;
+        foreach (var renderer in headRenderers)
+            if(renderer!=null)renderer.shadowCastingMode = visible ? ShadowCastingMode.On : ShadowCastingMode.ShadowsOnly;
+    }
+
+    private static Transform MeshPart(string name,Transform parent,Mesh mesh,Material material)
+    {
+        var part=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));part.transform.SetParent(parent,false);
+        part.GetComponent<MeshFilter>().sharedMesh=mesh;part.GetComponent<MeshRenderer>().sharedMaterial=material;return part.transform;
+    }
+    private static Transform FacialPart(string name,Transform parent,Vector3 position,Vector3 scale,Material material)
+    {var part=Part(name,PrimitiveType.Sphere,parent,material);part.localPosition=position;part.localScale=scale;return part;}
 
     private static Material Surface(string name, Color color, float smoothness)
     {
@@ -115,6 +154,11 @@ public sealed class FirstPersonBody : MonoBehaviour
         waist.localPosition = hip; waist.localScale = new Vector3(.32f, .22f, .23f);
         head.localPosition = new Vector3(0, eye - .015f, -.12f);
         head.localScale = new Vector3(.22f, .28f, .23f);
+        float pitch=movement.playerCamera!=null?Mathf.DeltaAngle(0,movement.playerCamera.localEulerAngles.x):0;
+        head.localRotation=Quaternion.Euler(Mathf.Clamp(pitch*.65f,-35,45),0,0);
+        float blinkTime=Mathf.Repeat(Time.time,4.7f);
+        float blink=blinkTime<.16f?1-Mathf.Sin(blinkTime/.16f*Mathf.PI)*.965f:1;
+        foreach(var eyeRoot in eyes)if(eyeRoot.localScale.y!=blink)eyeRoot.localScale=new Vector3(1,blink,1);
         for (int i = 0; i < 2; i++)
         {
             float side = i == 0 ? -1 : 1;
@@ -135,28 +179,45 @@ public sealed class FirstPersonBody : MonoBehaviour
             Vector3 wrist = new Vector3(side * .245f, eye - .28f - swing * .025f, .48f + swing * .035f);
             elbow = Vector3.Lerp(elbow, new Vector3(side * .26f, hipY + .18f, -.04f), lookDown);
             wrist = Vector3.Lerp(wrist, new Vector3(side * .24f, hipY - .07f, .05f), lookDown);
-            if (interaction != null && interaction.HeldItem != null && i == 1 && movement.playerCamera != null)
-                wrist = transform.InverseTransformPoint(movement.playerCamera.TransformPoint(new Vector3(.20f, -.29f, .58f)));
             if (lie > 0) { elbow = Vector3.Lerp(elbow, new Vector3(side * .25f, .17f + feet, .26f), lie); wrist.y = Mathf.Lerp(wrist.y, .15f + feet, lie); }
+            Quaternion handRotation=Quaternion.Euler(15,-side*12,0);
+            bool reaching=i==1 && interaction!=null && interaction.HandEngaged;
+            if(reaching)
+            {
+                float reach=interaction.HandBlend;
+                Vector3 target=transform.InverseTransformPoint(interaction.HandPosition);
+                Vector3 direction=(target-armShoulder).normalized;
+                Vector3 reachedWrist=armShoulder+Vector3.ClampMagnitude(target-direction*.075f-armShoulder,.61f);
+                Vector3 bend=Vector3.Cross(Vector3.up,direction)*side;
+                float distance=Vector3.Distance(armShoulder,reachedWrist);
+                Vector3 reachedElbow=(armShoulder+reachedWrist)*.5f+bend.normalized*Mathf.Sqrt(Mathf.Max(.002f,.31f*.31f-distance*distance*.25f));
+                wrist=Vector3.Lerp(wrist,reachedWrist,reach);elbow=Vector3.Lerp(elbow,reachedElbow,reach);
+                handRotation=Quaternion.Slerp(handRotation,Quaternion.LookRotation(direction,Vector3.up),reach);
+            }
             Segment(upperArms[i], armShoulder, elbow, .115f, .12f);
             Segment(forearms[i], elbow, wrist, .09f, .095f);
             elbows[i].localPosition = elbow; elbows[i].localScale = Vector3.one * .105f;
-            hands[i].localPosition = wrist + new Vector3(0, -.005f, .025f);
-            hands[i].localRotation = Quaternion.Euler(15, -side * 12, 0);
-            hands[i].localScale = new Vector3(.075f, .07f, .13f);
+            if(!hands[i].localPosition.Equals(wrist))hands[i].localPosition = wrist;
+            if(!hands[i].localRotation.Equals(handRotation))hands[i].localRotation = handRotation;
+            grip[i]=Mathf.MoveTowards(grip[i],reaching?interaction.HandClosure:.12f,Time.deltaTime*7);
+            handRigs[i].Pose(grip[i]);
         }
     }
 
     private static void Segment(Transform part, Vector3 from, Vector3 to, float width, float depth)
     {
-        part.localPosition = (from + to) / 2;
-        part.localRotation = Quaternion.FromToRotation(Vector3.up, to - from);
-        part.localScale = new Vector3(width, Mathf.Max(width, Vector3.Distance(from, to) + width * .25f) / 2, depth);
+        Vector3 position=(from+to)/2;
+        Quaternion rotation=Quaternion.FromToRotation(Vector3.up,to-from);
+        Vector3 scale=new Vector3(width,Mathf.Max(width,Vector3.Distance(from,to)+width*.25f)/2,depth);
+        if(!part.localPosition.Equals(position))part.localPosition=position;
+        if(!part.localRotation.Equals(rotation))part.localRotation=rotation;
+        if(!part.localScale.Equals(scale))part.localScale=scale;
     }
 
     private void OnDestroy()
     {
         if (root != null) Destroy(root.gameObject);
         foreach (Material material in materials) if (material != null) Destroy(material);
+        foreach (Mesh mesh in ownedMeshes) if(mesh!=null)Destroy(mesh);
     }
 }

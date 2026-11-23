@@ -1,7 +1,0 @@
-{
-  "voice": "de-DE-KatjaNeural",
-  "rate": "-8%",
-  "sample_rate": 24000,
-  "generator": "edge-tts 7.3.1",
-  "clips": 901
-}
