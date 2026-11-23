@@ -170,6 +170,7 @@ public sealed class PlayerControls : MonoBehaviour
             {
                 case TouchPhase.Began:
                     if (experience.TryPointer(touch.position)) break;
+                    overlay.ShowPress(touch.position);
                     touches.Press(touch.fingerId, touch.position, layout, canInteract, isHolding);
                     break;
                 case TouchPhase.Moved:
@@ -189,6 +190,7 @@ public sealed class PlayerControls : MonoBehaviour
             {
                 if (experience.TryPointer(position)) return;
                 mouseHeld = true;
+                overlay.ShowPress(position);
                 touches.Press(-100, position, layout, canInteract, isHolding);
             }
             else if (mouseHeld && Input.GetMouseButton(0))

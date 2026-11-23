@@ -6,7 +6,7 @@ public static class AvatarAnatomy
 {
     public static Mesh Head(bool hair)
     {
-        const int sides = 32, rows = 20;
+        const int sides = 64, rows = 40;
         var vertices = new List<Vector3>(); var uv = new List<Vector2>(); var indices = new List<int>();
         for (int row = 0; row <= rows; row++) for (int side = 0; side <= sides; side++)
         {
@@ -17,7 +17,24 @@ public static class AvatarAnatomy
             float jaw = Mathf.Lerp(.72f, 1, Mathf.InverseLerp(-.46f, -.06f, y));
             float x = Mathf.Sin(latitude) * Mathf.Sin(angle) * .5f * jaw;
             float z = Mathf.Sin(latitude) * Mathf.Cos(angle) * (Mathf.Cos(angle) > 0 ? .43f : .48f);
-            if (hair) { x *= 1.035f; z *= 1.035f; y += .015f + .018f * Mathf.Sin(latitude); }
+            if (!hair && Mathf.Cos(angle) > 0)
+            {
+                float front = Mathf.Pow(Mathf.Max(0, Mathf.Cos(angle)), 6);
+                // Continuous cheek/chin volumes and recessed eye sockets.
+                float cheek = .022f * Mathf.Exp(-Mathf.Pow((y + .045f) / .13f, 2));
+                float socket = .018f * Mathf.Exp(-Mathf.Pow((y - .085f) / .065f, 2));
+                float chin = .035f * Mathf.Exp(-Mathf.Pow((y + .34f) / .09f, 2));
+                float bridge = .055f * Mathf.Exp(-Mathf.Pow(x/.062f,2)-Mathf.Pow((y-.005f)/.18f,2));
+                float tip = .078f * Mathf.Exp(-Mathf.Pow(x/.075f,2)-Mathf.Pow((y+.085f)/.055f,2));
+                z += front * (cheek - socket + chin) + bridge + tip;
+            }
+            if (hair)
+            {
+                float sweep = Mathf.Sin(latitude) * Mathf.Max(0, Mathf.Cos(angle));
+                x = x * 1.045f + .035f * sweep;
+                z *= 1.045f;
+                y += .025f + .045f * sweep * (.65f + .35f * Mathf.Sin(angle));
+            }
             vertices.Add(new Vector3(x, y, z)); uv.Add(new Vector2((float)side / sides, (float)row / rows));
         }
         for (int row = 0; row < rows; row++) for (int side = 0; side < sides; side++)
@@ -28,7 +45,57 @@ public static class AvatarAnatomy
         }
         var mesh = new Mesh { name = hair ? "Swept hair cap" : "Shaped jaw and cranium" };
         mesh.SetVertices(vertices); mesh.SetUVs(0, uv); mesh.SetTriangles(indices, 0);
-        mesh.RecalculateNormals(); mesh.RecalculateBounds(); return mesh;
+        mesh.RecalculateNormals();
+        var normals=mesh.normals;
+        for(int row=0;row<=rows;row++)
+        {
+            int first=row*(sides+1),last=first+sides;
+            Vector3 n=(normals[first]+normals[last]).normalized;
+            normals[first]=normals[last]=n;
+        }
+        // Pole triangles are degenerate; an explicit normal avoids a pinched light seam.
+        for(int i=0;i<=sides;i++)normals[i]=Vector3.up;
+        if(!hair)for(int i=rows*(sides+1);i<normals.Length;i++)normals[i]=Vector3.down;
+        mesh.normals=normals;mesh.RecalculateBounds();return mesh;
+    }
+
+    // Curved facial strips sit on the skin instead of floating sphere-shaped features.
+    public static Mesh Feature(float width, float height, float arch, float depth)
+    {
+        const int steps=24;
+        var v=new List<Vector3>();var t=new List<int>();
+        for(int i=0;i<=steps;i++)
+        {
+            float x=(float)i/steps*2-1;
+            float taper=Mathf.Sqrt(Mathf.Max(.015f,1-x*x));
+            for(int edge=0;edge<2;edge++)
+                v.Add(new Vector3(x*width*.5f,arch*(1-x*x)+(edge==0?-1:1)*height*.5f*taper,depth*(1-x*x)));
+            if(i==steps)continue;
+            int a=i*2;t.Add(a);t.Add(a+2);t.Add(a+1);t.Add(a+1);t.Add(a+2);t.Add(a+3);
+        }
+        var mesh=new Mesh {name="Curved facial contour"};mesh.SetVertices(v);mesh.SetTriangles(t,0);
+        mesh.RecalculateNormals();mesh.RecalculateBounds();return mesh;
+    }
+
+    // Tailored shirt silhouette: rounded shoulders, chest and waist without capsule ends.
+    public static Mesh Shirt()
+    {
+        float[] heights = {-.5f,-.46f,-.12f,.22f,.37f,.47f,.5f};
+        float[] widths = {.43f,.46f,.48f,.55f,.58f,.44f,.24f};
+        float[] depths = {.42f,.45f,.48f,.50f,.46f,.34f,.25f};
+        const int sides = 40;
+        var v = new List<Vector3>(); var triangles = new List<int>();
+        for (int r=0;r<heights.Length;r++) for (int i=0;i<=sides;i++)
+        {
+            float a=i*Mathf.PI*2/sides;
+            v.Add(new Vector3(Mathf.Sin(a)*widths[r],heights[r],Mathf.Cos(a)*depths[r]));
+            if(r==0 || i==sides)continue;
+            int b=r*(sides+1)+i, a0=b-sides-1;
+            triangles.Add(a0);triangles.Add(a0+1);triangles.Add(b);
+            triangles.Add(a0+1);triangles.Add(b+1);triangles.Add(b);
+        }
+        var mesh=new Mesh {name="Tailored sweatshirt silhouette"};
+        mesh.SetVertices(v);mesh.SetTriangles(triangles,0);mesh.RecalculateNormals();mesh.RecalculateBounds();return mesh;
     }
 
     public sealed class Hand

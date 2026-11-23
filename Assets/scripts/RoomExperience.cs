@@ -29,7 +29,7 @@ public sealed class RoomExperience : MonoBehaviour
     public Rect CaseCloseRect => new Rect(GrammarPanel.xMax-110,GrammarPanel.y+6,100,32);
     public Rect CasePageButtonRect(int index) => new Rect(GrammarPanel.x+12+index*(GrammarPanel.width-24)/3,GrammarPanel.y+242,(GrammarPanel.width-36)/3,44);
     private bool entered;
-    private bool settingsOpen;
+    private bool settingsOpen, resetConfirmation;
     private const string TutorialSeenKey = "DeutschRoom.ControlsTutorial.v1";
     private const string HandsOnSeenKey = "DeutschRoom.HandsOnTutorial.v1";
     private bool tutorialOpen, tutorialAutoPending;
@@ -56,7 +56,7 @@ public sealed class RoomExperience : MonoBehaviour
     private bool transitionComplete;
     private float previousTimeScale = 1;
     private readonly Color mint = new Color(.3f, .94f, .75f);
-    private readonly Color panel = new Color(.035f, .09f, .12f, .96f);
+    private readonly Color panel = new Color(.045f, .065f, .10f, .97f);
 
     private void Awake()
     {
@@ -118,7 +118,8 @@ public sealed class RoomExperience : MonoBehaviour
                 { if (DialogueOpen) player.Learning.ScenarioSession.SubmitDialogue(player.Learning.CurrentTaskId,i); else player.Learning.SubmitGrammarAnswer(player.Learning.GrammarTask.id, i); break; }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (settingsOpen) settingsOpen = false;
+            if(resetConfirmation)resetConfirmation=false;
+            else if (settingsOpen) settingsOpen = false;
             else SetMenu(!MenuOpen);
         }
         if (!MenuOpen)
@@ -140,6 +141,7 @@ public sealed class RoomExperience : MonoBehaviour
         MenuOpen = open;
         if (!open) settingsOpen = false;
         Time.timeScale = open ? 0 : previousTimeScale;
+        if(!open)resetConfirmation=false;
         controls.SetMenuOpen(open);
         if (open && player.Voice != null) player.Voice.Stop();
     }
@@ -311,7 +313,8 @@ public sealed class RoomExperience : MonoBehaviour
     {
         Color previous = GUI.color;
         GUI.color = new Color(color.r, color.g, color.b, color.a * previous.a);
-        GUI.DrawTexture(rect, Texture2D.whiteTexture);
+        GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0,
+            Color.white, 0, Mathf.Min(12, Mathf.Min(rect.width,rect.height)*.2f));
         GUI.color = previous;
     }
 
@@ -337,8 +340,13 @@ public sealed class RoomExperience : MonoBehaviour
 
     private bool MenuButton(Rect rect, string caption, bool primary = false)
     {
-        Fill(rect, primary ? new Color(.1f, .43f, .36f) : new Color(.08f, .17f, .21f));
-        Fill(new Rect(rect.x, rect.y, 3, rect.height), primary ? mint : new Color(.2f, .36f, .4f));
+        bool hover=rect.Contains(Event.current.mousePosition);
+        bool press=hover && Input.GetMouseButton(0);
+        Color fill=primary?new Color(.075f,.36f,.30f):new Color(.09f,.13f,.19f);
+        if(hover)fill=Color.Lerp(fill,primary?mint:new Color(.29f,.40f,.53f),press?.30f:.14f);
+        Fill(new Rect(rect.x,rect.y+3,rect.width,rect.height),new Color(0,0,0,.22f));
+        Fill(rect,fill);
+        Fill(new Rect(rect.x+12,rect.y+12,3,rect.height-24),primary?mint:new Color(.32f,.44f,.58f));
         return GUI.Button(rect, caption, button);
     }
 
@@ -468,11 +476,11 @@ public sealed class RoomExperience : MonoBehaviour
                 case 0: return touch ? "Drag the joystick to walk. For real practice, choose How to play (hands-on) in the menu. Tap Skip at any step to return to your lesson. This controls reference is paused: tap Next, Back or Skip. Scroll the card for more detail." : "Use W A S D or the arrow keys to walk around the house. Choose How to play (hands-on) from the menu for real walking, naming, pickup, rotation and placement practice with a floor route and Skip at every step. Your lesson is preserved; use Skip at any step (Escape, or hold Alt to click on desktop). In this controls reference, the game is paused and controls are previews. The line points to the highlighted control; the progress strip shows your place. Scroll this card for more detail. Use Next or Enter/Right Arrow, Back or Left Arrow, and Skip or Escape. Replay from Controls reference (English) in the menu.";
                 case 1: return touch ? "Drag on empty space to look. Aim the centre of the screen at a nearby object. Walk in front of a hallway or bathroom mirror and look at it to see your live reflection; no tap is needed. Your reflection stays upright and reverses your left and right as a real mirror does." : "Move the mouse to look. Click in the game to capture it. Aim at a nearby object. Walk in front of a hallway or bathroom mirror and look at it to see your live reflection; no key or click is needed. Your reflection stays upright and reverses your left and right as a real mirror does.";
                 case 2: return touch ? "Swipe down on empty space and hold for 0.6 seconds to sit. Release and repeat to lie down. Swipe up and hold to rise. Obstacles can block standing." : "Press C to sit, then C again to lie down. Press X to rise one posture. Obstacles can block standing.";
-                case 3: return touch ? "Aim at a nearby object, then tap AUFHEBEN or BENUTZEN. The same action button opens doors and operates devices. Carry one object at a time. Your hand reaches and closes automatically; no extra gesture is needed. Your avatar has articulated fingers and a more detailed face, visible in the existing mirrors. Rice, pasta and coffee are in glass jars with visible grains, pasta tubes and coffee beans. Use the same pickup action to carry each jar." : "Aim at a nearby object and press E to pick it up or use it. This also opens doors and operates devices. Carry one object at a time. Your hand reaches and closes automatically; no extra gesture is needed. Your avatar has articulated fingers and a more detailed face, visible in the existing mirrors. Rice, pasta and coffee are in glass jars with visible grains, pasta tubes and coffee beans. Use the same pickup action to carry each jar.";
+                case 3: return touch ? "Aim at a nearby object, then tap AUFHEBEN or BENUTZEN. The same action button opens doors and operates devices. Carry one object at a time. Your hand reaches and closes automatically; no extra gesture is needed. Your avatar has relaxed arms when empty-handed, articulated fingers, a sculpted nose, curved eyelids/lips, swept hair and fitted clothing, visible in the existing mirrors. Rice, pasta and coffee are in glass jars with visible grains, pasta tubes and coffee beans. Use the same pickup action to carry each jar." : "Aim at a nearby object and press E to pick it up or use it. This also opens doors and operates devices. Carry one object at a time. Your hand reaches and closes automatically; no extra gesture is needed. Your avatar has relaxed arms when empty-handed, articulated fingers, a sculpted nose, curved eyelids/lips, swept hair and fitted clothing, visible in the existing mirrors. Rice, pasta and coffee are in glass jars with visible grains, pasta tubes and coffee beans. Use the same pickup action to carry each jar.";
                 case 4: return touch ? "The draped sofa throw and soft furnishings are fixed objects. Tap ANHÖREN to identify the whole object with its German article. Choose voice or both in sound settings to hear it." : "The draped sofa throw and soft furnishings are fixed objects. Press F or click Anhören to identify the whole object with its German article. Choose voice or both in sound settings to hear it.";
                 case 5: return touch ? "Aim at an annotated part and tap DETAIL to hear only that part's name. This appears when a separate part name exists." : "Aim at an annotated part and press Shift + F or click Detail to hear only the part's name.";
                 case 6: return touch ? "While carrying an object, aim at a nearby upward-facing surface and tap ABLEGEN. The button appears when placement is available. The hand releases the object in a short, smooth movement; wait for it to finish. No extra tap is needed." : "While carrying an object, aim at a nearby upward-facing surface and press G to place it. Wait for the short release movement to finish; no extra key is needed.";
-                case 7: return touch ? "While carrying an object, tap DREHEN to rotate it by 45 degrees. Touch action buttons keep their positions: pickup/use at the bottom right, ANHÖREN to its left, DETAIL farther left, ABLEGEN above pickup/use and DREHEN above ANHÖREN. Unavailable actions are hidden; other buttons stay in place." : "While carrying an object, press R to rotate it by 45 degrees.";
+                case 7: return touch ? "While carrying an object, tap DREHEN to rotate it by 45 degrees. Touch actions use rounded dark cards with line icons, teal pickup/place buttons and light labels; a brief colour flash acknowledges a press. Buttons keep their positions: pickup/use at the bottom right, ANHÖREN to its left, DETAIL farther left, ABLEGEN above pickup/use and DREHEN above ANHÖREN. Unavailable actions are hidden; other buttons stay in place." : "While carrying an object, press R to rotate it by 45 degrees.";
                 case 8: return touch ? "Tap the map to enlarge it, then tap again to close it. It shows your position, the target and a route through doorways. Movement stops while enlarged." : "Tap or click the map to enlarge it, then again to close it. It shows your position, the target and a route through doorways. Movement stops while it is enlarged.";
                 case 9: return touch ? "Tap the task card to repeat the current instruction. Carrying and placing use the action buttons. Spoken guidance follows what you still need to do; task numbers remain on the card." : "This card shows your task number. Click it to repeat the current instruction. Automatic speech gives the next instruction without repeatedly announcing numbers. Placement reminders stop once you put the object down. Follow the requested action: hearing a name alone does not complete a pickup task. The first task asks you to pick up the spoon.";
                 case 10: return touch ? "Tap i to read the current task in English. Tap Back to task to close it. Translation does not answer or complete the task." : "Tap or click i, or press I, to read the current task in English. Back to task, I or Escape closes it. Translation does not answer or complete the task.";
@@ -485,7 +493,7 @@ public sealed class RoomExperience : MonoBehaviour
                 case 17: return touch ? "Tap Menü to open Pause and Musik." : "Tap or click Menü to open the quick controls for Pause and Musik.";
                 case 18: return touch ? "Tap Pause to open the main menu. The world pauses; Weiter spielen resumes." : "Choose Pause to open the main menu. On a keyboard, Escape also pauses. Pausing freezes movement and world animation; Weiter spielen resumes.";
                 case 19: return "Musik toggles background music separately from the spoken German instructions. Your choice is saved.";
-                case 20: return touch ? "In the main menu, Einstellungen: Text & Stimme selects text, voice or both and tests sound. Progress saves locally. Weiter spielen continues; Diesen Lernpfad neu starten resets. Replay the practical guide from How to play (hands-on) or this reference from Controls reference (English). Tap Next, Back or Skip." : "In the main menu, Einstellungen: Text & Stimme selects text, voice or both and tests sound. You can also change touch/mouse controls. Progress saves locally; Weiter spielen continues it, and Diesen Lernpfad neu starten resets it. Replay this reference from Controls reference (English); choose How to play (hands-on) for real practice. Hands-on practice opens automatically once; both guides can be replayed from the menu. Next/Enter advances, Back/Left Arrow goes back, and Skip/Escape closes the tour.";
+                case 20: return touch ? "In the main menu, Einstellungen: Text & Stimme selects text, voice or both and tests sound. Progress saves locally. The task card shows a progress bar. Weiter spielen continues; Diesen Lernpfad neu starten asks for confirmation. Choose Fortschritt behalten to cancel or Ja, neu starten to reset. Replay the practical guide from How to play (hands-on) or this reference from Controls reference (English). Tap Next, Back or Skip." : "In the main menu, Einstellungen: Text & Stimme selects text, voice or both and tests sound. You can also change touch/mouse controls. Progress saves locally; the task card shows a progress bar. Weiter spielen continues it; Diesen Lernpfad neu starten asks for confirmation. Click Fortschritt behalten to cancel or Ja, neu starten to reset. Replay this reference from Controls reference (English); choose How to play (hands-on) for real practice. Hands-on practice opens automatically once; both guides can be replayed from the menu. Next/Enter advances, Back/Left Arrow goes back, and Skip/Escape closes the tour.";
                 default: return "";
             }
         }
@@ -780,6 +788,8 @@ public sealed class RoomExperience : MonoBehaviour
             if (settingsOpen) DrawSettings(area);
             else
             {
+                bool menuEnabled=GUI.enabled;
+                GUI.enabled=menuEnabled && !resetConfirmation;
                 float width = Mathf.Min(380, area.width - 36), x = (area.width - width) / 2;
                 float viewportHeight = Mathf.Min(478, area.height - 16);
                 float top = Mathf.Max(8, (area.height - viewportHeight) / 2);
@@ -792,11 +802,7 @@ public sealed class RoomExperience : MonoBehaviour
                 GUI.Label(new Rect(x, y + 68, width, 36), player.Learning.CourseName +
                     (player.Voice.IntroAudioPending ? "\nText · Neue Stimme folgt" : ""), small);
                 if (MenuButton(new Rect(x, y + 108, width, 44), entered || !player.Learning.IsPreview ? "Weiter spielen" : "Spiel starten", true)) Begin();
-                if (MenuButton(new Rect(x, y + 160, width, 44), "Diesen Lernpfad neu starten"))
-                {
-                    LearningProgress.ClearSavedProgress();
-                    SceneManager.LoadScene(gameObject.scene.path);
-                }
+                if (MenuButton(new Rect(x, y + 160, width, 44), "Diesen Lernpfad neu starten")) resetConfirmation=true;
 
                 if (MenuButton(new Rect(x, y + 212, width, 44), "Einstellungen: Text & Stimme")) settingsOpen = true;
                 if (MenuButton(new Rect(x, y + 264, width, 44), controls.UsesTouch ? "Steuerung: Touch" : "Steuerung: Maus + Tastatur"))
@@ -805,6 +811,18 @@ public sealed class RoomExperience : MonoBehaviour
                 if (MenuButton(new Rect(x, y + 368, width, 44), "How to play (hands-on)")) OpenTutorial();
                 if (MenuButton(new Rect(x, y + 420, width, 44), "Controls reference (English)")) OpenControlsReference();
                 GUI.EndScrollView();
+                GUI.enabled=menuEnabled;
+                if(resetConfirmation)
+                {
+                    Fill(new Rect(0,0,area.width,area.height),new Color(.015f,.025f,.045f,.98f));
+                    float w=Mathf.Min(420,area.width-36),left=(area.width-w)/2,topY=Mathf.Max(16,(area.height-248)/2);
+                    Fill(new Rect(left-10,topY-10,w+20,248),panel);
+                    GUI.Label(new Rect(left,topY,w,42),"Lernpfad neu starten?",nameStyle);
+                    GUI.Label(new Rect(left+12,topY+52,w-24,60),"Der gespeicherte Fortschritt dieses Lernpfads wird gelöscht.",subtitle);
+                    if(MenuButton(new Rect(left,topY+124,w,44),"Fortschritt behalten",true))resetConfirmation=false;
+                    if(MenuButton(new Rect(left,topY+178,w,44),"Ja, neu starten"))
+                    {LearningProgress.ClearSavedProgress();SceneManager.LoadScene(gameObject.scene.path);}
+                }
             }
         }
         else if (translationOpen) DrawTranslation(area);
@@ -832,6 +850,9 @@ public sealed class RoomExperience : MonoBehaviour
             while (taskNumber.fontSize > 10 && taskNumber.CalcSize(taskContent).x > TaskRect.width - 16)
                 taskNumber.fontSize--;
             GUI.Label(new Rect(TaskRect.x + 8, TaskRect.y + 5, TaskRect.width - 16, 27), taskContent, taskNumber);
+            float taskProgress=player.Learning.IsComplete?1:(float)player.Learning.Stage/Mathf.Max(1,player.Learning.TotalStages);
+            Fill(new Rect(TaskRect.x+10,TaskRect.yMax-5,TaskRect.width-20,3),new Color(.17f,.23f,.31f));
+            Fill(new Rect(TaskRect.x+10,TaskRect.yMax-5,(TaskRect.width-20)*taskProgress,3),mint);
             GUI.Label(new Rect(TaskRect.x, TaskRect.y + 31, TaskRect.width, 21), presentation.Mode == LessonPresentation.OutputMode.Text ? "Aufgabe wiederholen" : "Noch einmal hören", small);
             if (!mapExpanded && player.Learning.IsReviewTask && !player.Learning.ReviewHintRequested)
             {

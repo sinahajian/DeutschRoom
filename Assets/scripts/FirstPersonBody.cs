@@ -40,14 +40,15 @@ public sealed class FirstPersonBody : MonoBehaviour
         previousPosition = transform.position;
         materials[0] = Surface("Avatar teal sweatshirt", new Color(.12f, .39f, .38f), .28f);
         materials[1] = Surface("Avatar navy trousers", new Color(.075f, .12f, .19f), .18f);
-        materials[2] = Surface("Avatar skin", new Color(.64f, .39f, .25f), .3f);
+        materials[2] = Surface("Avatar skin", new Color(.64f, .43f, .31f), .22f);
         materials[3] = Surface("Avatar sneakers", new Color(.79f, .82f, .79f), .28f);
         materials[4] = Surface("Avatar hair", new Color(.065f, .045f, .035f), .15f);
         materials[5] = Surface("Warm eye whites", new Color(.86f,.84f,.78f), .5f);
         materials[6] = Surface("Brown irises",new Color(.15f,.08f,.035f),.48f);
-        materials[7] = Surface("Muted lips",new Color(.40f,.20f,.15f),.26f);
+        materials[7] = Surface("Muted lips",new Color(.46f,.27f,.22f),.26f);
         root = new GameObject("Player Avatar").transform; root.SetParent(transform, false);
-        torso = Part("Sweatshirt", PrimitiveType.Capsule, root, materials[0]);
+        Mesh shirt = AvatarAnatomy.Shirt(); ownedMeshes.Add(shirt);
+        torso = MeshPart("Sweatshirt", root, shirt, materials[0]);
         waist = Part("Waist", PrimitiveType.Sphere, root, materials[1]);
         head = new GameObject("Head").transform; head.SetParent(root,false);
         Transform face = new GameObject("Face and hair").transform; face.SetParent(head,false);
@@ -58,19 +59,21 @@ public sealed class FirstPersonBody : MonoBehaviour
             float side=i==0?-1:1;
             eyes[i]=new GameObject(i==0?"Left eye":"Right eye").transform;eyes[i].SetParent(head,false);
             eyes[i].localPosition=new Vector3(side*.185f,.085f,.4f);
-            FacialPart("Eye white",eyes[i],Vector3.zero,new Vector3(.155f,.074f,.035f),materials[5]);
-            FacialPart("Iris",eyes[i],new Vector3(0,0,.022f),new Vector3(.052f,.057f,.015f),materials[6]);
+            FacialPart("Eye white",eyes[i],Vector3.zero,new Vector3(.135f,.060f,.035f),materials[5]);
+            FacialPart("Iris",eyes[i],new Vector3(0,0,.022f),new Vector3(.049f,.051f,.015f),materials[6]);
             FacialPart("Pupil",eyes[i],new Vector3(0,0,.031f),new Vector3(.025f,.032f,.008f),materials[4]);
-            FacialPart("Upper eyelid",face,new Vector3(side*.185f,.125f,.408f),new Vector3(.17f,.026f,.028f),materials[2]);
-            FacialPart("Lower eyelid",face,new Vector3(side*.185f,.049f,.408f),new Vector3(.15f,.019f,.025f),materials[2]);
-            var brow=FacialPart("Eyebrow",face,new Vector3(side*.185f,.183f,.389f),new Vector3(.18f,.024f,.028f),materials[4]);
+            FacialPart("Eye catchlight",eyes[i],new Vector3(-.009f,.011f,.037f),new Vector3(.009f,.009f,.004f),materials[5]);
+            Contour("Upper eyelid",eyes[i],new Vector3(0,.022f,.023f),.145f,.018f,.012f,.008f,materials[2]);
+            Contour("Lower eyelid",eyes[i],new Vector3(0,-.023f,.023f),.135f,.012f,-.007f,.006f,materials[2]);
+            var brow=Contour("Eyebrow",face,new Vector3(side*.185f,.17f,.399f),.17f,.019f,.018f,.011f,materials[4]);
             brow.localRotation=Quaternion.Euler(0,0,-side*6);
-            FacialPart("Ear",face,new Vector3(side*.47f,-.015f,-.015f),new Vector3(.14f,.24f,.12f),materials[2]);
+            FacialPart("Ear",face,new Vector3(side*.47f,-.015f,-.015f),new Vector3(.12f,.22f,.10f),materials[2]);
+            FacialPart("Ear contour",face,new Vector3(side*.485f,-.015f,.033f),new Vector3(.055f,.13f,.025f),materials[7]);
         }
-        FacialPart("Nose bridge",face,new Vector3(0,.015f,.427f),new Vector3(.085f,.22f,.085f),materials[2]);
-        FacialPart("Nose tip",face,new Vector3(0,-.075f,.48f),new Vector3(.12f,.09f,.10f),materials[2]);
-        FacialPart("Upper lip",face,new Vector3(0,-.20f,.383f),new Vector3(.20f,.018f,.035f),materials[7]);
-        FacialPart("Lower lip",face,new Vector3(0,-.223f,.381f),new Vector3(.19f,.024f,.034f),materials[7]);
+        for(int i=0;i<2;i++)
+            FacialPart("Nostril",face,new Vector3((i==0?-1:1)*.037f,-.114f,.472f),new Vector3(.027f,.013f,.012f),materials[7]);
+        Contour("Upper lip",face,new Vector3(0,-.202f,.403f),.18f,.014f,.008f,.012f,materials[7]);
+        Contour("Lower lip",face,new Vector3(0,-.22f,.403f),.17f,.018f,-.004f,.014f,materials[7]);
         Transform neck = Part("Neck", PrimitiveType.Sphere, face, materials[2]);
         neck.localPosition = new Vector3(0, -.55f, -.05f); neck.localScale = new Vector3(.5f, .65f, .5f);
         AvatarAnatomy.CombineStatic(face,ownedMeshes); Destroy(skull); Destroy(haircut);
@@ -101,6 +104,12 @@ public sealed class FirstPersonBody : MonoBehaviour
         if (head == null) return;
         foreach (var renderer in headRenderers)
             if(renderer!=null)renderer.shadowCastingMode = visible ? ShadowCastingMode.On : ShadowCastingMode.ShadowsOnly;
+    }
+
+    private Transform Contour(string name,Transform parent,Vector3 position,float width,float height,float arch,float depth,Material material)
+    {
+        Mesh mesh=AvatarAnatomy.Feature(width,height,arch,depth);ownedMeshes.Add(mesh);
+        Transform part=MeshPart(name,parent,mesh,material);part.localPosition=position;return part;
     }
 
     private static Transform MeshPart(string name,Transform parent,Mesh mesh,Material material)
@@ -150,7 +159,10 @@ public sealed class FirstPersonBody : MonoBehaviour
         float hipZ = Mathf.Lerp(-.14f - .02f * sit, .30f, lie);
         Vector3 hip = new Vector3(0, hipY, hipZ);
         Vector3 shoulder = new Vector3(0, eye - .24f, -.16f);
-        Segment(torso, hip + Vector3.up * .10f, shoulder, .36f, .24f);
+        Vector3 shirtBottom = hip + Vector3.up * .035f;
+        torso.localPosition = (shirtBottom + shoulder) * .5f;
+        torso.localRotation = Quaternion.FromToRotation(Vector3.up, shoulder-shirtBottom);
+        torso.localScale = new Vector3(.78f, Vector3.Distance(shirtBottom,shoulder), .57f);
         waist.localPosition = hip; waist.localScale = new Vector3(.32f, .22f, .23f);
         head.localPosition = new Vector3(0, eye - .015f, -.12f);
         head.localScale = new Vector3(.22f, .28f, .23f);
@@ -173,14 +185,14 @@ public sealed class FirstPersonBody : MonoBehaviour
             knees[i].localPosition = knee; knees[i].localScale = new Vector3(.125f,.125f,.13f);
             shoes[i].localPosition = ankle + new Vector3(0, -.045f, .065f);
             shoes[i].localRotation = Quaternion.Euler(90, 0, 0);
-            shoes[i].localScale = new Vector3(.125f, .13f, .08f);
+            shoes[i].localScale = new Vector3(.105f, .145f, .075f);
             Vector3 armShoulder = shoulder + new Vector3(side * .215f, -.025f, 0);
-            Vector3 elbow = new Vector3(side * .265f, eye - .49f, .14f - swing * .035f);
-            Vector3 wrist = new Vector3(side * .245f, eye - .28f - swing * .025f, .48f + swing * .035f);
+            Vector3 elbow = new Vector3(side * .265f, eye - .48f, -.035f - swing * .05f);
+            Vector3 wrist = new Vector3(side * .245f, eye - .74f - swing * .025f, -.015f + swing * .06f);
             elbow = Vector3.Lerp(elbow, new Vector3(side * .26f, hipY + .18f, -.04f), lookDown);
             wrist = Vector3.Lerp(wrist, new Vector3(side * .24f, hipY - .07f, .05f), lookDown);
             if (lie > 0) { elbow = Vector3.Lerp(elbow, new Vector3(side * .25f, .17f + feet, .26f), lie); wrist.y = Mathf.Lerp(wrist.y, .15f + feet, lie); }
-            Quaternion handRotation=Quaternion.Euler(15,-side*12,0);
+            Quaternion handRotation=Quaternion.Euler(80,-side*12,0);
             bool reaching=i==1 && interaction!=null && interaction.HandEngaged;
             if(reaching)
             {

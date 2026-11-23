@@ -16,8 +16,16 @@ public sealed class HouseMirror : MonoBehaviour
     private bool[] hidden = System.Array.Empty<bool>();
     private readonly UniversalRenderPipeline.SingleCameraRequest renderRequest = new UniversalRenderPipeline.SingleCameraRequest();
 
-    private void OnEnable() => mirrors.Add(this);
-    private void OnDisable() => mirrors.Remove(this);
+    private void OnEnable()
+    {
+        mirrors.Add(this);
+        RenderPipelineManager.beginCameraRendering += BeforeCamera;
+    }
+    private void OnDisable()
+    {
+        mirrors.Remove(this);
+        RenderPipelineManager.beginCameraRendering -= BeforeCamera;
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Install()
@@ -45,9 +53,11 @@ public sealed class HouseMirror : MonoBehaviour
         data.renderPostProcessing = false;
     }
 
-    private void LateUpdate()
+    // Render before the main camera configures its own URP lighting/camera globals.
+    // Submitting from LateUpdate leaves reflection state visible to other camera work.
+    private void BeforeCamera(ScriptableRenderContext context, Camera source)
     {
-        var source = Camera.main;
+        if (source != Camera.main) return;
         if (rendering || source == null || reflection == null || !surface.enabled) return;
         Vector3 normal = -transform.forward;
         Vector3 point = transform.position + normal * (transform.lossyScale.z * .5f);
@@ -63,6 +73,8 @@ public sealed class HouseMirror : MonoBehaviour
         reflection.targetTexture = texture;
         reflection.allowMSAA = false;
         reflection.allowHDR = false;
+        reflection.rect = new Rect(0, 0, 1, 1);
+        reflection.ResetProjectionMatrix();
         // Reflection about the actual front plane; no dependence on the mirror's size or yaw.
         Matrix4x4 reflect = Matrix4x4.identity;
         float d = -Vector3.Dot(normal, point);
