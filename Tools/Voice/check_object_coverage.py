@@ -23,7 +23,11 @@ def object_names():
     names = set()
     for pattern in ('*.unity', '*.prefab'):
         for path in (ROOT / 'Assets').rglob(pattern):
-            for scalar in re.findall(r'^  displayName: (.+)$', path.read_text(), re.M):
+            data = path.read_bytes()
+            # Imported binary Unity assets have no searchable YAML fields.
+            if not data.startswith(b'%YAML'):
+                continue
+            for scalar in re.findall(r'^  displayName: (.+)$', data.decode('utf-8'), re.M):
                 if scalar.startswith('"'):
                     # Unity YAML uses hexadecimal escapes unsupported by JSON.
                     scalar = json.loads(re.sub(r'\\x([0-9a-fA-F]{2})', r'\\u00\1', scalar))

@@ -316,19 +316,22 @@ public static class InteractionValidation
 
     private static void CheckPlayerBody()
     {
-        FirstPersonBody body = player.GetComponent<FirstPersonBody>();
+        ImportedPlayerBody body = player.GetComponent<ImportedPlayerBody>();
         Check(body != null && body.VisualRoot != null, "Player avatar was not initialized.");
         Check(body.VisualRoot.GetComponentsInChildren<Collider>().Length == 0, "Avatar visuals introduced collision or blocked interactions.");
-        Check(body.VisualRoot.Find("Left hand") != null && body.VisualRoot.Find("Right hand") != null &&
-            body.VisualRoot.Find("Left sneaker") != null && body.VisualRoot.Find("Right sneaker") != null, "Avatar is missing hands or feet.");
-        foreach(string hand in new[]{"Left hand","Right hand"})
-        {
-            var skin=body.VisualRoot.Find(hand).GetComponent<SkinnedMeshRenderer>();
-            Check(skin!=null && skin.bones.Length==16 && skin.sharedMesh.vertexCount>1000,"Hand lacks its articulated fingers or shared skin mesh.");
-        }
-        foreach (Renderer renderer in body.VisualRoot.Find("Head").GetComponentsInChildren<Renderer>())
-            Check(renderer.shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly, "Own head can obstruct the first-person camera.");
-        Debug.Log("PLAYER_BODY_VALIDATION_PASS: visible body, hands/feet, head exclusion and no added physics.");
+        Animator animator=body.CharacterAnimator;
+        Check(animator!=null && animator.isHuman && animator.avatar.isValid,"Imported humanoid rig is not valid.");
+        Check(!animator.applyRootMotion,"Imported animation took ownership of player movement.");
+        foreach(var bone in new[]{HumanBodyBones.Head,HumanBodyBones.LeftHand,HumanBodyBones.RightHand,HumanBodyBones.LeftFoot,HumanBodyBones.RightFoot})
+            Check(animator.GetBoneTransform(bone)!=null,"Imported avatar is missing "+bone);
+        var skins=body.VisualRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
+        Check(skins.Length>=2,"Imported avatar lacks first-person/full mesh views.");
+        Check(body.HeadHidden,"Own imported head is visible in first person.");
+        body.ShowHeadInMirror(true);
+        Check(!body.HeadHidden,"Imported head was not enabled for mirror reflection.");
+        body.ShowHeadInMirror(false);
+        Check(body.HeadHidden,"Imported head visibility was not restored after reflection.");
+        Debug.Log("PLAYER_BODY_VALIDATION_PASS: imported humanoid, retained movement ownership, head masking/mirror restoration and no added physics.");
     }
 
     private static void CheckContextualButtons(MobileControlsUI ui)

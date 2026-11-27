@@ -1,0 +1,24 @@
+# Support-language resources
+
+The runtime never calls a translation service. `SupportLanguages.json` contains exact English source keys and offline Persian (`fa`), Arabic (`ar`) and Ukrainian (`uk`) translations for all task instructions, hands-on training, the controls reference and support-language settings. German lessons, audio, choices and case packets remain authored separately. Existing `englishInstruction` fields in IntroA11.json remain required.
+
+The catalog began as machine translation of instructional strings, with 147 corrected onboarding/basic-instruction entries in `ReviewedOverrides.json`. Full linguistic review of later instructions is still pending. When changing guide or instruction text, update the matching keys in the shipped catalog and any applicable override; do not silently rely on English fallback. `collect_sources.py` exports the active source set. No player profile data is included in the catalog.
+
+From the repository root:
+
+- `python3 Tools/Localization/validate.py` checks complete translation/source coverage, overrides and document IDs/links.
+- `python3 Tools/Localization/check_ui_palette.py` checks the actual opaque UI text colour tokens, close hit-area size and fixed readable notice styles; it does not certify native rendering or physical target size.
+- `dotnet run --project Tools/Localization/Checks/Checks.csproj -p:BaseIntermediateOutputPath=/tmp/deutschroom-language-checks/obj/ -p:OutputPath=/tmp/deutschroom-language-checks/bin/` executes production checkpoint, preference, lookup and RTL shaping/wrapping code. Only Unity persistence/resource/font measurement boundaries are stubbed; this does not test native storage or rendering.
+- `python3 Tools/Lessons/validate_assets.py` checks scene populations, IDs/order, English instructions and voice coverage.
+
+`Fonts/` keeps unmodified Noto Sans and Noto Naskh Arabic sources and their OFL license. `build_font.py` (requires fonttools) merges them into the renamed `Assets/Resources/Localization/Fonts/DeutschRoomSupport.ttf`. Keeping one mixed-script font prevents German button names disappearing from Persian/Arabic instructions. The output font's license is also shipped. RTL line layout shapes joining forms after wrapping and retains Latin button names and number order.
+
+Native review remains required: first-launch language selection before onboarding; each language's training and skip/replay; drag scrolling on a phone; Alt + wheel/pointer on desktop; tiny/safe-area screens; mixed-script glyphs and punctuation; settings after save/reload; checkpoints 50/100/…/400 after both Yes and No, including quitting/reopening while a prompt is pending. No lesson or answer should complete from help or language choices. Test native PlayerPrefs persistence and verify existing CUR saves survive. Phone installation is not part of this work.
+
+RTL screenshot correction (2026-11-27): `Wrap` measures and emits font-specific private-use glyph aliases after visual ordering. `ShapeLine` alone is not render-ready. The font builder supplies 1110 identical-glyph aliases with Unicode bidi class L, preventing a native bidi pass from reversing already arranged glyphs. Logical catalog strings are never encoded this way. Regression checks cover the reported Persian/Arabic picker names, mixed German/numbers and direction controls; actual Unity/device appearance still requires verification.
+
+Task display update (2026-11-27): German task number/instruction and the localized task number/translation now share one temporary centred notice, fading together after 7–24 seconds according to text length. The right-hand task-number card is compact again; tap it (desktop: Alt + click) to repeat speech and redisplay the notice. No task-text scrolling or separate translation window remains; settings/help can still scroll.
+
+Friendly onboarding update (2026-11-27): eight controlsPractice entries now use natural instructions without displaying distance thresholds. Titles/body/German names share a measured scroll area with controls outside it. The last step requires a fresh direct tap/click on a nearby named object; name buttons cannot bypass it. Direct naming uses the nearest raycast owner, not Interact; touch movement, holds/cancellation and HUD/joystick are excluded. Runtime and prepared native checks are distinct; native raycast/touch/layout tests still need Unity/device execution.
+
+UX refinement (2026-11-27): the centred task notice has a compact stage chip, larger German text, a separated RTL-aware translation, scrollable long text, a 44-unit close target and a hold/Alt-hover reading pause. It fades after 9–30 seconds of unblocked time and can be replayed from the compact task badge. Shared menu surfaces and explicit bilingual selection/checkmarks improve consistency. Native rendering/target physical sizes remain unverified; guideline research is recorded in GDD.

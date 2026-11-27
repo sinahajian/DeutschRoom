@@ -403,7 +403,13 @@ public static class IntroLessonValidation
             Check(player.TryPlaceHeld(hit), "Practice table placement failed.");
             Check(player.IsPlacing && player.HeldItem==spoon && !practice.Complete,"Placement committed before its animation finished.");
             FinishPlacement(player); tick();
-            Check(practice.Complete && player.HeldItem == null && player.Learning.Stage == stage, "Placement did not complete isolated practice.");
+            Check(practice.Step==HandsOnTutorial.PracticeStep.Explore && player.HeldItem==null && player.Learning.Stage==stage,"Placement did not unlock object naming.");
+            player.Identify(spoon);tick();
+            Check(!practice.Complete,"The name button bypassed the direct-click lesson.");
+            Camera namingCamera=player.GetComponentInChildren<Camera>();
+            Vector3 namingPoint=spoon.BoundsAt(spoon.transform.position,spoon.transform.rotation).center;
+            Check(player.TryIdentifyAtScreen(namingCamera.WorldToScreenPoint(namingPoint)),"Direct name click failed.");tick();
+            Check(practice.Complete && player.Learning.Stage==stage && player.HeldItem==null,"Direct name click changed pickup/progression or failed to finish.");
             room.CloseTutorial();
             Check(!room.HandsOnActive && !player.Learning.ControlsPracticeActive &&
                 (spoon.transform.position-position).sqrMagnitude < .000001f && Quaternion.Angle(spoon.transform.rotation,rotation)<.01f &&

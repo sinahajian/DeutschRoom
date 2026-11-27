@@ -80,8 +80,8 @@ public sealed class IntroLessonCatalog
     {
         if (version != 1 || tasks == null || tasks.Length != ImplementedTaskCount)
             throw new InvalidOperationException("Expected the implemented " + ImplementedTaskCount + "-task A1 catalog.");
-        if (controlsPractice == null || controlsPractice.Length != 7)
-            throw new InvalidOperationException("Expected seven stage-zero controls practice steps.");
+        if (controlsPractice == null || controlsPractice.Length != 8)
+            throw new InvalidOperationException("Expected eight stage-zero controls practice steps.");
         var practiceIds = new HashSet<string>(StringComparer.Ordinal);
         if(controlGuidance==null || controlGuidance.Length!=4)throw new InvalidOperationException("Expected four translated control-mode hints.");
         foreach(var hint in controlGuidance)

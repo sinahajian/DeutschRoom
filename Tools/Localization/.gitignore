@@ -1,0 +1,4 @@
+__pycache__/
+Checks/obj/
+Checks/bin/
+!Checks/Checks.csproj

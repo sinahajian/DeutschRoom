@@ -45,7 +45,7 @@ for b in blocks:
 assert len(pickups)==53 and len(fixtures)==79 and sorted(fixtures.values())==[n for n in range(80) if n != 48]
 catalog=json.loads(pathlib.Path('Assets/Resources/Lessons/IntroA11.json').read_text())['tasks']
 controls=json.loads(pathlib.Path('Assets/Resources/Lessons/IntroA11.json').read_text())['controlsPractice']
-assert len(controls)==7 and len({step['id'] for step in controls})==7
+assert len(controls)==8 and len({step['id'] for step in controls})==8
 assert all(all(step.get(key,'').strip() for key in ('title','instruction','englishInstruction','touchHelp','keyboardHelp')) for step in controls)
 voice_index=set(pathlib.Path('Assets/Resources/VoiceIntroA11Index.txt').read_text().splitlines())
 assert voice_index=={p.stem for p in pathlib.Path('Assets/Resources/VoiceIntroA11').glob('*.wav')},'Runtime voice index is stale'

@@ -664,3 +664,10 @@ Visual details of the existing avatar only; no tested vocabulary, fixed/portable
 Nur visuelle Details der bestehenden Figur; keine neuen geprüften Wörter, festen/tragbaren Ziele oder Möbel. Bestand 53/80, CUR-001–430 und F01–F16 bleiben erhalten.
 
 2026-11-23 — Hall_Mirror حذف شد / Hall_Mirror removed / Hall_Mirror entfernt: F08 اکنون چهار مورد؛ مجموع فعلی ۷۹ هدف ثابت. F08 now has four items; current total 79 fixed targets. F08 jetzt vier Gegenstände; aktuell 79 feste Ziele. آینهٔ حمام باقی است / bathroom mirror retained / Badspiegel bleibt.
+
+2026-11-27 — جایگزینی مدل شخصیت / Character model replacement / Figurenmodell ersetzt
+Deutsch | فارسی | English
+die Spielfigur | شخصیت بازیکن | player character
+مدل Stylized Player Character جای مدل رویه‌ای قبلی است. نام‌های بدن و اجزای بالا حفظ‌اند؛ این تغییر ظاهر است، نه وسیله/هدف یا مرحلهٔ تازه. جمعیت جاری ۵۳ قابل حمل/۷۹ ثابت است.
+Stylized Player Character replaces the procedural model. Existing body/part vocabulary remains; appearance change only, no new object/target/stage. Current population: 53 portable/79 fixed.
+Stylized Player Character ersetzt prozedurales Modell. Vorhandene Körper-/Teilwörter bleiben; nur Aussehen geändert, keine neuen Objekte/Ziele/Stufen. Aktuell 53 tragbare/79 feste Ziele.

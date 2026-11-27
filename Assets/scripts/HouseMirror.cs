@@ -96,7 +96,7 @@ public sealed class HouseMirror : MonoBehaviour
         reflection.projectionMatrix = source.CalculateObliqueMatrix(new Vector4(clipNormal.x, clipNormal.y, clipNormal.z, -Vector3.Dot(clipPoint, clipNormal)));
         material.SetMatrix("_ReflectionVP", GL.GetGPUProjectionMatrix(reflection.projectionMatrix, true) * reflection.worldToCameraMatrix);
 
-        var bodies = FirstPersonBody.ActiveBodies;
+        var bodies = ImportedPlayerBody.ActiveBodies;
         bool oldInvert = GL.invertCulling;
         if (hidden.Length < mirrors.Count) hidden = new bool[mirrors.Count];
         rendering = true;

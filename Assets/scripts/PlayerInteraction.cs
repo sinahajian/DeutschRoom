@@ -29,10 +29,18 @@ public sealed class PlayerInteraction : MonoBehaviour
         get
         {
             if(HeldItem==null)return releasePosition;
-            Vector3 centre=HeldItem.transform.position+HeldItem.transform.rotation*HeldItem.LocalBounds.center;
-            return centre+playerCamera.right*Mathf.Min(.09f,HeldItem.LocalBounds.extents.x*.55f)-
-                playerCamera.forward*Mathf.Min(.10f,HeldItem.LocalBounds.extents.z*.6f)-Vector3.up*.018f;
+            return HeldItem.transform.TransformPoint(HeldItem.LocalGripPoint);
         }
+    }
+    public Quaternion HandRotation => HeldItem != null ? HeldItem.transform.rotation : releaseRotation;
+    private Quaternion releaseRotation=Quaternion.identity;
+
+    // The imported palm is the visual anchor only after pickup settles. Placement
+    // keeps its validated surface pose and animation path as its sole authority.
+    public void AlignSettledCarryToPalm(Vector3 palm)
+    {
+        if(HeldItem==null || placing || pickupElapsed<ManipulationMotion.PickupSeconds)return;
+        HeldItem.SetCarriedPose(HeldItem.transform.position+palm-HandPosition,HeldItem.transform.rotation);
     }
     internal void RestorePracticeRotation(uint sequence) => RotationSequence = sequence;
     internal void ClearPracticeFeedback() { identifiedName = message = ""; nameUntil = messageUntil = 0; }
@@ -56,6 +64,8 @@ public sealed class PlayerInteraction : MonoBehaviour
     public GermanVoice Voice { get; private set; }
     private string identifiedName;
     private float nameUntil;
+    private bool identifiedByPointer;
+    public bool PointerNameVisible => identifiedByPointer && Time.unscaledTime < nameUntil;
     public string IdentifiedName => Time.unscaledTime < nameUntil ? identifiedName : "";
 
     public PickupItem HeldItem { get; private set; }
@@ -135,7 +145,7 @@ public sealed class PlayerInteraction : MonoBehaviour
         if(HeldItem==null)return;
         pickupElapsed+=Time.deltaTime;
         Quaternion rotation = playerCamera.rotation * Quaternion.Euler(0f, placementYaw - transform.eulerAngles.y, 0f);
-        Vector3 offset = playerCamera.TransformVector(new Vector3(.22f, -.27f, .60f));
+        Vector3 offset = playerCamera.TransformVector(new Vector3(.22f, -.32f, .43f));
         float radius = Mathf.Max(.04f, HeldItem.LocalBounds.extents.magnitude);
         if (Physics.SphereCast(playerCamera.position, radius, offset.normalized, out RaycastHit obstacle,
             offset.magnitude, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore) &&
@@ -205,11 +215,27 @@ public sealed class PlayerInteraction : MonoBehaviour
         HeldItem.SetCarriedPose(Vector3.Lerp(placeStart,position,ease)+Vector3.up*ManipulationMotion.Lift(t,.04f),
             Quaternion.Slerp(placeStartRotation,rotation,ease));
         if(t<1)return;
-        releasePosition=HandPosition;releaseElapsed=0;
+        releasePosition=HandPosition;releaseRotation=HandRotation;releaseElapsed=0;
         PickupItem placed=HeldItem;Transform surface=placementSurface;
         placing=false;placementCollider=null;placementSurface=null;HeldItem=null;
         placed.PlaceOnSurface(position,rotation,surface);
         ShowMessage("Abgelegt.");Learning.Placed(placed);
+    }
+
+    // Naming uses the nearest visible hit, never an object's open/pickup action.
+    public bool TryIdentifyAtScreen(Vector2 screenPosition)
+    {
+        if (placing || playerCamera == null || experience == null || experience.MenuOpen ||
+            experience.ModalOpen || experience.MapExpanded || Time.timeScale <= 0) return false;
+        Camera camera = playerCamera.GetComponent<Camera>();
+        if (camera == null) return false;
+        Physics.SyncTransforms();
+        if (!RaycastWorld(camera.ScreenPointToRay(screenPosition),interactionDistance,out RaycastHit hit)) return false;
+        var part=hit.collider.GetComponentInParent<VocabularyPart>();
+        var item=part != null && part.Owner != null ? part.Owner : hit.collider.GetComponentInParent<KitchenInteractable>();
+        if (item == null || Practice != null && !Practice.AllowsIdentification(item)) return false;
+        Identify(item,true);
+        return true;
     }
 
     public void IdentifyFocused()
@@ -218,12 +244,14 @@ public sealed class PlayerInteraction : MonoBehaviour
         else if (focusedPart != null) IdentifyPart(focusedPart);
     }
 
-    public void Identify(KitchenInteractable item)
+    public void Identify(KitchenInteractable item) => Identify(item,false);
+    private void Identify(KitchenInteractable item, bool fromPointer)
     {
         if (placing || item == null) return;
         if (Practice != null && !Practice.AllowsIdentification(item)) return;
         identifiedName = item.DisplayName; nameUntil = Time.unscaledTime + 3.5f;
-        if (Practice != null) Practice.Named(item);
+        identifiedByPointer = fromPointer;
+        if (Practice != null) Practice.Named(item,fromPointer);
         if (!Learning.Identified(item)) Voice.SpeakIdentification(item.DisplayName);
     }
 
@@ -236,6 +264,7 @@ public sealed class PlayerInteraction : MonoBehaviour
     {
         if (placing || Practice != null) return;
         if (part == null) return;
+        identifiedByPointer = false;
         identifiedName = part.DisplayName;
         nameUntil = Time.unscaledTime + 3.5f;
         // The detail control names only the part; whole-object learning belongs to Anhören.

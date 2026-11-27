@@ -22,6 +22,13 @@ public sealed class PlayerControls : MonoBehaviour
     private bool practicePointerUnlocked;
     private Rect touchSafeArea;
 
+    private int namingFinger=-1;
+    private Vector2 namingPress;
+    private float namingPressedAt;
+    private bool EligibleNameTap(Vector2 at, TouchControlLayout layout) =>
+        !layout.InteractButton.Contains(at) && !layout.PlaceButton.Contains(at) && !layout.RotateButton.Contains(at) &&
+        !layout.HearButton.Contains(at) && !layout.PartButton.Contains(at) &&
+        Vector2.Distance(at,layout.JoystickCenter)>layout.JoystickRadius*1.4f;
     public bool UsesTouch { get; private set; }
     public bool GameplayActive => hasFocus && !suspended && !menuOpen &&
         (experience == null || !experience.MapExpanded && !experience.ModalOpen) &&
@@ -123,7 +130,7 @@ public sealed class PlayerControls : MonoBehaviour
 
     private void ReadKeyboardAndMouse()
     {
-        bool practicePointer = experience.HandsOnActive && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt));
+        bool practicePointer = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
         if (practicePointer)
         { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
         else if (practicePointerUnlocked) ApplyCursor();
@@ -137,8 +144,9 @@ public sealed class PlayerControls : MonoBehaviour
         {
             Vector2 pointer = Cursor.lockState == CursorLockMode.Locked ? new Vector2(Screen.width / 2f, Screen.height / 2f) : (Vector2)Input.mousePosition;
             if (experience.TryPointer(pointer)) return;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            interaction.TryIdentifyAtScreen(pointer);
+            if (!practicePointer)
+            { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
         }
         if (!GameplayActive)
             return;
@@ -158,6 +166,7 @@ public sealed class PlayerControls : MonoBehaviour
         if (touchSafeArea != layout.SafeArea)
         {
             touches.Reset();
+            namingFinger=-1;
             mouseHeld = false;
             touchSafeArea = layout.SafeArea;
         }
@@ -170,14 +179,23 @@ public sealed class PlayerControls : MonoBehaviour
             {
                 case TouchPhase.Began:
                     if (experience.TryPointer(touch.position)) break;
+                    if (namingFinger<0 && EligibleNameTap(touch.position,layout))
+                    { namingFinger=touch.fingerId;namingPress=touch.position;namingPressedAt=Time.unscaledTime; }
                     overlay.ShowPress(touch.position);
                     touches.Press(touch.fingerId, touch.position, layout, canInteract, isHolding);
                     break;
                 case TouchPhase.Moved:
+                    if (touch.fingerId==namingFinger && Vector2.Distance(touch.position,namingPress)>18) namingFinger=-1;
                     touches.Drag(touch.fingerId, touch.position);
                     break;
                 case TouchPhase.Ended:
                 case TouchPhase.Canceled:
+                    if (touch.fingerId==namingFinger)
+                    {
+                        if(ObjectNameTapRules.Accepts(Time.unscaledTime-namingPressedAt,Vector2.Distance(touch.position,namingPress),touch.phase==TouchPhase.Ended))
+                            interaction.TryIdentifyAtScreen(touch.position);
+                        namingFinger=-1;
+                    }
                     touches.Release(touch.fingerId);
                     break;
             }
@@ -190,13 +208,19 @@ public sealed class PlayerControls : MonoBehaviour
             {
                 if (experience.TryPointer(position)) return;
                 mouseHeld = true;
+                namingFinger=EligibleNameTap(position,layout)?-100:-1;namingPress=position;namingPressedAt=Time.unscaledTime;
                 overlay.ShowPress(position);
                 touches.Press(-100, position, layout, canInteract, isHolding);
             }
             else if (mouseHeld && Input.GetMouseButton(0))
+            {
+                if(namingFinger==-100 && Vector2.Distance(position,namingPress)>18)namingFinger=-1;
                 touches.Drag(-100, position);
+            }
             if (Input.GetMouseButtonUp(0))
             {
+                if(namingFinger==-100 && ObjectNameTapRules.Accepts(Time.unscaledTime-namingPressedAt,Vector2.Distance(position,namingPress),true)) interaction.TryIdentifyAtScreen(position);
+                namingFinger=-1;
                 touches.Release(-100);
                 mouseHeld = false;
             }
@@ -225,6 +249,7 @@ public sealed class PlayerControls : MonoBehaviour
     public void ResetInput()
     {
         touches.Reset();
+        namingFinger=-1;
         queuedActions = PlayerAction.None;
         Movement = LookDelta = Vector2.zero;
         InteractPressed = PlacePressed = RotatePressed = LowerPosturePressed = RaisePosturePressed = false;
@@ -260,4 +285,10 @@ public sealed class PlayerControls : MonoBehaviour
         if (overlay != null)
             overlay.SetVisible(UsesTouch && !menuOpen && (experience == null || !experience.MapExpanded && !experience.ModalOpen));
     }
+}
+
+// A tap names an object; a look gesture, hold or cancellation must not name it.
+public static class ObjectNameTapRules
+{
+    public static bool Accepts(float elapsed,float travel,bool released) => released && elapsed>=0 && elapsed<.5f && travel>=0 && travel<=18;
 }

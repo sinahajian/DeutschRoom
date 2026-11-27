@@ -113,7 +113,7 @@ Check(catalog.tasks.All(t => !string.IsNullOrWhiteSpace(t.englishInstruction)), 
 Reject(c => c.tasks.Single(t=>t.id=="CUR-001").englishInstruction = " ", "Blank English instruction accepted");
 Console.WriteLine("PASS: English instruction coverage and missing-translation rejection.");
 
-Check(catalog.controlsPractice.Length == 7 && catalog.controlsPractice.All(s => !string.IsNullOrWhiteSpace(s.englishInstruction)),
+Check(catalog.controlsPractice.Length == 8 && catalog.controlsPractice.All(s => !string.IsNullOrWhiteSpace(s.englishInstruction)),
     "Hands-on guide is missing translated controls instructions");
 Reject(c => c.controlsPractice[0].englishInstruction = "", "Missing practice translation accepted");
 Reject(c => c.controlsPractice[1].id = c.controlsPractice[0].id, "Duplicate practice ID accepted");
@@ -125,7 +125,13 @@ for (int step = 0; step < 7; step++)
             action == 2, action == 3, action == 4, action == 5, action == 6) == (action == step),
             "Wrong action advanced hands-on step " + step);
 }
-Check(!HandsOnTutorialRules.Ready(7, 100, 0, true, true, true, true, true), "Completed practice advanced again");
+Check(!HandsOnTutorialRules.Ready(7,100,0,true,false,true,true,true),"Explore accepted old actions without a fresh direct name");
+Check(HandsOnTutorialRules.Ready(7,0,10,false,true,false,false,false),"Explore rejected a fresh direct name");
+Check(ObjectNameTapRules.Accepts(.1f,2,true),"Short object tap rejected");
+Check(!ObjectNameTapRules.Accepts(.1f,19,true),"Look drag became a name tap");
+Check(!ObjectNameTapRules.Accepts(.6f,0,true),"Long hold became a name tap");
+Check(!ObjectNameTapRules.Accepts(.1f,0,false),"Cancelled touch became a name tap");
+Check(!HandsOnTutorialRules.Ready(8, 100, 0, true, true, true, true, true), "Completed practice advanced again");
 Check(!HandsOnTutorialRules.Ready(0, .64f, 0, true, true, true, true, true), "Movement threshold skipped");
 Check(!HandsOnTutorialRules.Ready(1, 100, .41f, true, true, true, true, true), "Table distance threshold skipped");
 bool[] cells = Enumerable.Repeat(true, 25).ToArray();
@@ -143,7 +149,7 @@ cells[22] = false;
 Check(!TutorialRouteSearch.Find(cells, 5, 0, 4, previousCells, frontier, routeCells) && routeCells.Count == 0, "Blocked route left a misleading line");
 Check(!TutorialRouteSearch.Find(cells, 5, -1, 4, previousCells, frontier, routeCells), "Invalid start accepted");
 Check(TutorialRouteSearch.Find(cells, 5, 0, 0, previousCells, frontier, routeCells) && routeCells.SequenceEqual(new[] {0}), "Same-cell arrival failed");
-Console.WriteLine("PASS: seven translated hands-on steps; real-action gates and distance boundaries; obstacle detours, cardinal adjacency, blocked/invalid/same-cell routes.");
+Console.WriteLine("PASS: eight translated hands-on steps; real-action gates and distance boundaries; obstacle detours, cardinal adjacency, blocked/invalid/same-cell routes.");
 
 Check(ManipulationMotion.Ease(-1)==0 && ManipulationMotion.Ease(1)==1 && ManipulationMotion.Ease(2)==1,"Manipulation easing endpoints/clamps failed");
 float previousEase=0;

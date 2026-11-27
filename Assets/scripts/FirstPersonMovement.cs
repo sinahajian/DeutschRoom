@@ -93,7 +93,11 @@ public class FirstPersonMovement : MonoBehaviour
         standingCenter = controller.center;
         feetOffset = standingCenter.y - standingHeight / 2f;
         standingEye = playerCamera.localPosition.y;
-        if (GetComponent<FirstPersonBody>() == null) gameObject.AddComponent<FirstPersonBody>();
+        // Keep the near plane inside the collision capsule, including wide phone views.
+        // The old 0.3 m plane could cut through a wall before the capsule stopped.
+        Camera viewCamera = playerCamera.GetComponent<Camera>();
+        if (viewCamera != null) viewCamera.nearClipPlane = Mathf.Min(viewCamera.nearClipPlane, .03f);
+        if (GetComponent<ImportedPlayerBody>() == null) gameObject.AddComponent<ImportedPlayerBody>();
     }
 
     void Update()

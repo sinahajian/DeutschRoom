@@ -13,6 +13,7 @@ public sealed class PickupItem : KitchenInteractable
     private Quaternion previousRotation;
 
     public Bounds LocalBounds { get; private set; }
+    public Vector3 LocalGripPoint { get; private set; }
     public bool IsHeld { get; private set; }
     public uint CarrySequence { get; private set; }
 
@@ -64,6 +65,12 @@ public sealed class PickupItem : KitchenInteractable
             }
         }
         LocalBounds = bounds;
+        // Default to the right/near edge; utensils must be held by their handle.
+        LocalGripPoint = bounds.center + new Vector3(bounds.extents.x*.80f,
+            -Mathf.Min(.018f,bounds.extents.y*.3f),-Mathf.Min(.05f,bounds.extents.z*.3f));
+        foreach (var mesh in GetComponentsInChildren<MeshFilter>())
+            if (mesh.sharedMesh != null && (mesh.name == "SpoonHandle" || mesh.name == "ForkHandle" || mesh.name == "KnifeHandle"))
+            { LocalGripPoint = transform.InverseTransformPoint(mesh.transform.TransformPoint(mesh.sharedMesh.bounds.center)); break; }
     }
 
     public override string GetAction(PlayerInteraction player) => player.HeldItem == null ? "Aufheben" : "Zuerst ablegen";

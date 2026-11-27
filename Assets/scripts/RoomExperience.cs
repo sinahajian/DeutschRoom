@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(-300)]
-public sealed class RoomExperience : MonoBehaviour
+public sealed partial class RoomExperience : MonoBehaviour
 {
     public bool MenuOpen { get; private set; } = true;
     public bool MapExpanded => mapExpanded;
@@ -13,9 +13,7 @@ public sealed class RoomExperience : MonoBehaviour
     public bool HandsOnActive => HandsOn != null && HandsOn.Active;
     public bool TutorialOpen => tutorialOpen || HandsOnActive;
     public int TutorialStep => tutorialPage;
-    public bool ModalOpen => tutorialOpen || translationOpen || GrammarAnswerOpen || CaseReaderOpen || DialogueOpen;
-    private bool translationOpen;
-    private Vector2 translationScroll;
+    public bool ModalOpen => tutorialOpen || languageChoiceOpen || languageCheckpointOpen || GrammarAnswerOpen || CaseReaderOpen || DialogueOpen;
     private bool grammarWasOpen;
     private bool ScenarioAnswers => player != null && player.Learning != null && player.Learning.IsScenarioTask;
     public Rect GrammarPanel => new Rect((UIArea.width - Mathf.Min(ScenarioAnswers ? 640 : 540, UIArea.width - 36)) / 2,
@@ -23,8 +21,8 @@ public sealed class RoomExperience : MonoBehaviour
     public Rect GrammarChoiceRect(int index) => ScenarioAnswers
         ? new Rect(GrammarPanel.x + 12, GrammarPanel.y + 120 + index * 58, GrammarPanel.width - 24, 54)
         : new Rect(GrammarPanel.x + 12 + index * (GrammarPanel.width - 24) / 3, GrammarPanel.y + 152, (GrammarPanel.width - 30) / 3, 48);
-    private Rect ScenarioStatusRect => new Rect(18, 145, Mathf.Min(480, UIArea.width - 210), 100);
-    public Rect ScenarioConfirmRect => new Rect(TaskRect.x, TaskRect.yMax + 90, TaskRect.width, 40);
+    private Rect ScenarioStatusRect => new Rect(18,145,Mathf.Min(480,UIArea.width-210),100);
+    public Rect ScenarioConfirmRect => new Rect(TaskRect.x,TaskRect.yMax+90,TaskRect.width,40);
     public Rect CaseButtonRect => ReviewHintRect;
     public Rect CaseCloseRect => new Rect(GrammarPanel.xMax-110,GrammarPanel.y+6,100,32);
     public Rect CasePageButtonRect(int index) => new Rect(GrammarPanel.x+12+index*(GrammarPanel.width-24)/3,GrammarPanel.y+242,(GrammarPanel.width-36)/3,44);
@@ -51,7 +49,7 @@ public sealed class RoomExperience : MonoBehaviour
     private GUIStyle title, subtitle, button, nameStyle, partNameStyle, small, taskNumber;
     private GUIStyle tutorialTitle, tutorialBody, tutorialLead, tutorialMeta, answerChoice;
     private readonly GUIContent tutorialBodyContent = new GUIContent(), tutorialLeadContent = new GUIContent();
-    private float transitionElapsed = 10;
+    private float transitionElapsed = 100;
     private int transitionStage;
     private bool transitionComplete;
     private float previousTimeScale = 1;
@@ -75,11 +73,16 @@ public sealed class RoomExperience : MonoBehaviour
     {
         player.Learning.TaskChanged += ShowStageTransition;
         SetMenu(true);
+        languageChoiceOpen = !SupportLanguages.HasSelection;
         tutorialAutoPending = PlayerPrefs.GetInt(HandsOnSeenKey, 0) == 0;
+        checkpointPending = true;
     }
 
     private void Update()
     {
+        if (languageChoiceOpen || languageCheckpointOpen) return;
+        HandleHelpTextDrag();
+        if (checkpointPending) { CheckLanguageCheckpoint(); if (languageCheckpointOpen) return; }
         if (tutorialAutoPending) { tutorialAutoPending = false; OpenTutorial(); }
         if (HandsOnActive)
         {
@@ -94,12 +97,6 @@ public sealed class RoomExperience : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.LeftArrow)) { tutorialPage = Mathf.Max(0, tutorialPage - 1); tutorialScroll = Vector2.zero; }
             return;
         }
-        if (translationOpen)
-        {
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.I)) CloseTranslation();
-            return;
-        }
-        if (!MenuOpen && Input.GetKeyDown(KeyCode.I)) { OpenTranslation(); return; }
         if (ModalOpen) { mapExpanded = false; quickMenuOpen = false; }
         if (grammarWasOpen != ModalOpen)
         {
@@ -124,7 +121,8 @@ public sealed class RoomExperience : MonoBehaviour
         }
         if (!MenuOpen)
         {
-            transitionElapsed += Time.unscaledDeltaTime;
+            transitionElapsed=TaskNoticeTiming.Advance(transitionElapsed,Time.unscaledDeltaTime,
+                ModalOpen || !string.IsNullOrEmpty(player.IdentifiedName) || NoticePointerReading);
             string caption = player.Voice.CurrentCaption;
             if (!player.Voice.IsIdentification && caption != lastCaption && !string.IsNullOrEmpty(caption)) captionElapsed = 0;
             lastCaption = caption;
@@ -134,10 +132,9 @@ public sealed class RoomExperience : MonoBehaviour
 
     public void SetMenu(bool open)
     {
-        if (HandsOnActive) return;
+        if (HandsOnActive || (!open && (languageChoiceOpen || languageCheckpointOpen))) return;
         if (tutorialOpen) return;
         if (open && Time.timeScale > 0) previousTimeScale = Time.timeScale;
-        if (open) translationOpen = false;
         MenuOpen = open;
         if (!open) settingsOpen = false;
         Time.timeScale = open ? 0 : previousTimeScale;
@@ -148,10 +145,11 @@ public sealed class RoomExperience : MonoBehaviour
 
     public void ShowStageTransition()
     {
-        if (translationOpen) CloseTranslation();
+        checkpointPending = true;
         transitionStage = player.Learning.Stage;
         transitionComplete = player.Learning.IsComplete;
         transitionElapsed = 0;
+        noticeScroll=Vector2.zero;noticeHeld=false;
         captionElapsed = 0;
     }
 
@@ -188,11 +186,9 @@ public sealed class RoomExperience : MonoBehaviour
     public Rect HearRect => new Rect(UIArea.width - 94, UIArea.height - 210, 76, 76);
     public Rect PartRect => new Rect(UIArea.width - 180, UIArea.height - 210, 76, 76);
     private Texture2D actionCircle;
-    public Rect TranslationButtonRect => new Rect(TaskRect.x - 52, 18, 44, 44);
-    public Rect TranslationCloseRect => new Rect((UIArea.width - Mathf.Min(680, UIArea.width - 36)) / 2 + 12, UIArea.height - 68, Mathf.Min(680, UIArea.width - 36) - 24, 44);
-    public Rect TaskRect => new Rect(UIArea.width - 174, 18, 156, 58);
-    public Rect PlacementResetRect => new Rect(TaskRect.x, TaskRect.yMax + 50, TaskRect.width, 34);
-    public Rect ReviewHintRect => new Rect(TaskRect.x, TaskRect.yMax + 8, TaskRect.width, 34);
+    public Rect TaskRect => new Rect(UIArea.width-198,18,180,58);
+    public Rect PlacementResetRect => new Rect(TaskRect.x,TaskRect.yMax+50,TaskRect.width,34);
+    public Rect ReviewHintRect => new Rect(TaskRect.x,TaskRect.yMax+8,TaskRect.width,34);
     public Rect MinimapRect => mapExpanded
         ? new Rect(18, 86, UIArea.width - 36, Mathf.Max(120, UIArea.height - 180))
         : LessonMinimap.Layout(UIArea.width);
@@ -205,6 +201,18 @@ public sealed class RoomExperience : MonoBehaviour
     public bool TryPointer(Vector2 position)
     {
         Vector2 ui = ToUI(position);
+        if (languageChoiceOpen || languageCheckpointOpen) return true;
+        if(TaskNoticeVisible)
+        {
+            if(!taskNoticeRect.Contains(ui) || NoticeCloseRect.Contains(ui))
+            {
+                transitionElapsed=TaskNoticeDuration;noticeHeld=false;textScrollFinger=-1;
+            }
+            // Consume dismissal so the same press cannot activate a control or object behind it.
+            return true;
+        }
+        if (!MenuOpen && !ModalOpen && !TutorialOpen && !mapExpanded && TaskRect.Contains(ui))
+        { player.Learning.RepeatTask(); ShowStageTransition(); return true; }
         if (HandsOnActive)
         {
             if (HandsOnSkipRect.Contains(ui) || HandsOn.Complete && HandsOnFinishRect.Contains(ui)) { CloseTutorial(); return true; }
@@ -222,23 +230,12 @@ public sealed class RoomExperience : MonoBehaviour
             return true;
         }
         if (MenuOpen) return true;
-        if (translationOpen)
-        {
-            if (TranslationCloseRect.Contains(ui)) CloseTranslation();
-            return true;
-        }
-        if (InCircle(TranslationButtonRect, ui))
-        {
-            OpenTranslation();
-            return true;
-        }
         if (player.Learning.IsScenarioTask && player.Learning.ScenarioSession.HasCase && !CaseReaderOpen && CaseButtonRect.Contains(ui))
         { player.Learning.ScenarioSession.OpenCase(); return true; }
         if (CaseReaderOpen)
         {
             var session=player.Learning.ScenarioSession;
             if(QuickMenuRect.Contains(ui)){SetMenu(true);return true;}
-            if(TaskRect.Contains(ui)){session.SpeakCasePage();return true;}
             if(CaseCloseRect.Contains(ui)&&session.CanCloseCase){session.CloseCase();return true;}
             if(CasePageButtonRect(0).Contains(ui))session.PreviousCasePage();
             else if(CasePageButtonRect(1).Contains(ui))session.SpeakCasePage();
@@ -248,7 +245,6 @@ public sealed class RoomExperience : MonoBehaviour
         if (GrammarAnswerOpen || DialogueOpen)
         {
             if (QuickMenuRect.Contains(ui)) { SetMenu(true); return true; }
-            if (TaskRect.Contains(ui)) { player.Learning.RepeatTask(); return true; }
             string taskId = player.Learning.GrammarTask.id;
             for (int i = 0; i < 3; i++)
                 if (GrammarChoiceRect(i).Contains(ui)) { if(DialogueOpen)player.Learning.ScenarioSession.SubmitDialogue(taskId,i); else player.Learning.SubmitGrammarAnswer(taskId, i); break; }
@@ -257,7 +253,6 @@ public sealed class RoomExperience : MonoBehaviour
         if (QuickMenuRect.Contains(ui)) { mapExpanded = false; quickMenuOpen = !quickMenuOpen; return true; }
         if (quickMenuOpen && PauseRect.Contains(ui)) { quickMenuOpen = false; SetMenu(true); return true; }
         if (quickMenuOpen && MusicRect.Contains(ui)) { music.Toggle(); return true; }
-        if (TaskRect.Contains(ui)) { player.Learning.RepeatTask(); ShowStageTransition(); return true; }
         if (!mapExpanded && player.Learning.ScenarioNeedsConfirmation && ScenarioConfirmRect.Contains(ui))
         { player.Learning.ConfirmScenario(); return true; }
         if (!mapExpanded && player.Learning.IsScenarioTask && ScenarioStatusRect.Contains(ui)) return true;
@@ -343,21 +338,24 @@ public sealed class RoomExperience : MonoBehaviour
 
     private bool MenuButton(Rect rect, string caption, bool primary = false)
     {
+        string focusName="menu:"+caption;
+        bool focus=GUI.GetNameOfFocusedControl()==focusName;
         bool hover=rect.Contains(Event.current.mousePosition);
         bool press=hover && Input.GetMouseButton(0);
-        Color fill=primary?new Color(.075f,.36f,.30f):new Color(.09f,.13f,.19f);
-        if(hover)fill=Color.Lerp(fill,primary?mint:new Color(.29f,.40f,.53f),press?.30f:.14f);
-        Fill(new Rect(rect.x,rect.y+3,rect.width,rect.height),new Color(0,0,0,.22f));
-        Fill(rect,fill);
-        Fill(new Rect(rect.x+12,rect.y+12,3,rect.height-24),primary?mint:new Color(.32f,.44f,.58f));
-        return GUI.Button(rect, caption, button);
+        UiSurfaceBox(rect,hover||focus||primary);
+        Color fill=primary?new Color(.085f,.27f,.24f):new Color(.08f,.12f,.17f);
+        if(hover)fill=Color.Lerp(fill,UiAccent,press?.22f:.10f);
+        Fill(new Rect(rect.x+1,rect.y+1,rect.width-2,rect.height-2),fill);
+        var textStyle=SupportStyle(true);
+        GUI.SetNextControlName(focusName);
+        return GUI.Button(rect, SupportLayout(caption,textStyle,rect.width-24,false),textStyle);
     }
 
-    // English How to play: real rehearsal plus a paused reference; neither completes course tasks.
+    // English How to play source, localized through SupportLanguages; neither guide completes tasks.
     private readonly string[] tutorialTitles = {
         "Move", "Look and aim", "Sit, lie down and stand", "Pick up and use", "Hear an object's name",
         "Hear a part's name", "Place an object", "Rotate an object", "Your map", "Your current task",
-        "English translation", "A hint for review tasks", "Reset a practice", "Scenario instructions",
+        "Your support language", "A hint for review tasks", "Reset a practice", "Scenario instructions",
         "Confirm an action", "Read and listen to a case", "Choose an answer", "Open the quick menu",
         "Pause", "Music", "Settings and saved progress"
     };
@@ -368,7 +366,7 @@ public sealed class RoomExperience : MonoBehaviour
         if (TutorialOpen) return;
         tutorialAutoPending = false;
         if (!entered) Begin(); else SetMenu(false);
-        settingsOpen = translationOpen = mapExpanded = quickMenuOpen = false;
+        settingsOpen = mapExpanded = quickMenuOpen = false;
         if (HandsOn == null) HandsOn = gameObject.AddComponent<HandsOnTutorial>();
         tutorialScroll = Vector2.zero; handsOnRenderedStep = -1;
         if (!HandsOn.Begin(player)) { OpenControlsReference(); return; }
@@ -383,7 +381,7 @@ public sealed class RoomExperience : MonoBehaviour
         tutorialAutoPending = false;
         if (!entered) Begin();
         else SetMenu(false);
-        settingsOpen = translationOpen = mapExpanded = quickMenuOpen = false;
+        settingsOpen = mapExpanded = quickMenuOpen = false;
         tutorialPage = 0;
         tutorialOpen = true;
         // Remember the first presentation, including a skipped/interrupted tour.
@@ -415,35 +413,43 @@ public sealed class RoomExperience : MonoBehaviour
         ShowStageTransition();
     }
 
-    public Rect HandsOnCard => new Rect(14, 14, Mathf.Min(370, UIArea.width - 140), HandsOn != null && HandsOn.Complete ? 228 : 188);
+    public Rect HandsOnCard => new Rect(14, 14, Mathf.Min(370, UIArea.width - 140), Mathf.Min(300,UIArea.height*.5f-30));
     public Rect HandsOnSkipRect => new Rect(UIArea.width - 118, 14, 104, 44);
+    private Rect HandsOnTextViewport => new Rect(HandsOnCard.x+16,HandsOnCard.y+44,HandsOnCard.width-32,HandsOnCard.height-(HandsOn.Complete?116:76));
     public Rect HandsOnFinishRect => new Rect(HandsOnCard.x + 16, HandsOnCard.yMax - 60, HandsOnCard.width - 32, 44);
 
     private void DrawHandsOn(Rect area)
     {
         if (handsOnRenderedStep != (int)HandsOn.Step) { handsOnRenderedStep = (int)HandsOn.Step; tutorialScroll = Vector2.zero; }
         Rect card = HandsOnCard;
-        Fill(new Rect(card.x+3,card.y+5,card.width,card.height),new Color(0,0,0,.25f));
-        Fill(card,panel); Fill(new Rect(card.x,card.y,4,card.height),mint);
-        GUI.Label(new Rect(card.x+16,card.y+10,card.width-32,20),
-            "LEARN BY DOING · "+Mathf.Min((int)HandsOn.Step+1,HandsOn.StepCount)+" / "+HandsOn.StepCount,tutorialMeta);
-        tutorialTitle.fontSize=18;
-        string heading = HandsOn.Complete ? "Practice complete!" :
-            (string.IsNullOrEmpty(HandsOn.GermanName)?"":HandsOn.GermanName+"\n")+HandsOn.Instruction.title;
-        GUI.Label(new Rect(card.x+16,card.y+36,card.width-32,48),heading,tutorialTitle);
-        string text = HandsOn.Complete ? "You walked to the table, named the spoon, picked it up, turned it and put it down. Continue to your saved lesson." :
-            HandsOn.Instruction.englishInstruction+"\n\n"+(controls.UsesTouch?HandsOn.Instruction.touchHelp:HandsOn.Instruction.keyboardHelp);
-        tutorialBodyContent.text=text;
-        Rect viewport = new Rect(card.x+16,card.y+86,card.width-32,HandsOn.Complete?66:70);
-        float height=tutorialBody.CalcHeight(tutorialBodyContent,viewport.width-18);
-        tutorialScroll=GUI.BeginScrollView(viewport,tutorialScroll,new Rect(0,0,viewport.width-18,Mathf.Max(height,viewport.height)));
-        GUI.Label(new Rect(0,0,viewport.width-18,height),tutorialBodyContent,tutorialBody);GUI.EndScrollView();
+        UiSurfaceBox(card,true);
+        SupportLabel(new Rect(card.x+16,card.y+10,card.width-32,24),
+            SupportStageNumber(Mathf.Min((int)HandsOn.Step+1,HandsOn.StepCount))+" / "+SupportStageNumber(HandsOn.StepCount),false,false);
+        string heading=HandsOn.Complete?"You're ready!":HandsOn.Instruction.title;
+        string text=HandsOn.Complete?"Nice work! You can now explore the room and start your lesson.":
+            SupportLanguages.Text(HandsOn.Instruction.englishInstruction)+"\n\n"+SupportLanguages.Text(controls.UsesTouch?HandsOn.Instruction.touchHelp:HandsOn.Instruction.keyboardHelp);
+        var localizedStyle=SupportStyle();
+        float textWidth=card.width-68;
+        string titleText=SupportLayout(heading,localizedStyle,textWidth);
+        tutorialBodyContent.text=SupportLayout(text,localizedStyle,textWidth,HandsOn.Complete);
+        // All copy shares one measured scroll area, so heading/name/body cannot overlap.
+        Rect viewport=HandsOnTextViewport;
+        float headingHeight=localizedStyle.CalcHeight(new GUIContent(titleText),textWidth);
+        float bodyHeight=localizedStyle.CalcHeight(tutorialBodyContent,textWidth);
+        string name=HandsOn.GermanName;
+        float nameHeight=string.IsNullOrEmpty(name)?0:nameStyle.CalcHeight(new GUIContent(name),textWidth)+14;
+        float height=headingHeight+16+bodyHeight+nameHeight;
+        tutorialScroll=GUI.BeginScrollView(viewport,tutorialScroll,new Rect(0,0,textWidth,Mathf.Max(height,viewport.height)));
+        GUI.Label(new Rect(0,0,textWidth,headingHeight),titleText,localizedStyle);
+        if(nameHeight>0) GUI.Label(new Rect(0,headingHeight+12,textWidth,nameHeight-14),name,nameStyle);
+        GUI.Label(new Rect(0,headingHeight+16+nameHeight,textWidth,bodyHeight),tutorialBodyContent,localizedStyle);
+        GUI.EndScrollView();
         float progress=(float)(int)HandsOn.Step/HandsOn.StepCount;
-        Fill(new Rect(card.x+16,card.yMax-22,card.width-32,3),new Color(.16f,.28f,.32f));
-        Fill(new Rect(card.x+16,card.yMax-22,(card.width-32)*progress,3),mint);
-        Fill(HandsOnSkipRect,new Color(.15f,.22f,.26f));GUI.Label(HandsOnSkipRect,controls.UsesTouch?"Skip":"Skip (Esc)",button);
+        Fill(new Rect(card.x+16,card.yMax-16,card.width-32,3),new Color(.16f,.28f,.32f));
+        Fill(new Rect(card.x+16,card.yMax-16,(card.width-32)*progress,3),mint);
+        Fill(HandsOnSkipRect,new Color(.15f,.22f,.26f));SupportLabel(HandsOnSkipRect,"Skip",true);
         if (HandsOn.Complete)
-        {Fill(HandsOnFinishRect,new Color(.1f,.43f,.36f));GUI.Label(HandsOnFinishRect,"Start lesson",button);return;}
+        {Fill(HandsOnFinishRect,new Color(.1f,.43f,.36f));SupportLabel(HandsOnFinishRect,"Start lesson",true);return;}
         string key="";Rect action=default;
         string control = HandsOn.Step==HandsOnTutorial.PracticeStep.Name?"Hear":HandsOn.Step==HandsOnTutorial.PracticeStep.Pickup?"Interact":
             HandsOn.Step==HandsOnTutorial.PracticeStep.Rotate?"Rotate":HandsOn.Step==HandsOnTutorial.PracticeStep.Place?"Place":"";
@@ -476,27 +482,27 @@ public sealed class RoomExperience : MonoBehaviour
             bool touch = controls.UsesTouch;
             switch (tutorialPage)
             {
-                case 0: return touch ? "Drag the joystick to walk. For real practice, choose How to play (hands-on) in the menu. Tap Skip at any step to return to your lesson. This controls reference is paused: tap Next, Back or Skip. Scroll the card for more detail." : "Use W A S D or the arrow keys to walk around the house. Choose How to play (hands-on) from the menu for real walking, naming, pickup, rotation and placement practice with a floor route and Skip at every step. Your lesson is preserved; use Skip at any step (Escape, or hold Alt to click on desktop). In this controls reference, the game is paused and controls are previews. The line points to the highlighted control; the progress strip shows your place. Scroll this card for more detail. Use Next or Enter/Right Arrow, Back or Left Arrow, and Skip or Escape. Replay from Controls reference (English) in the menu.";
-                case 1: return touch ? "Drag on empty space to look. Aim the centre of the screen at a nearby object. Walk in front of the bathroom mirror and look at it to see your live reflection; no tap is needed. Your reflection stays upright and reverses your left and right as a real mirror does." : "Move the mouse to look. Click in the game to capture it. Aim at a nearby object. Walk in front of the bathroom mirror and look at it to see your live reflection; no key or click is needed. Your reflection stays upright and reverses your left and right as a real mirror does.";
-                case 2: return touch ? "Swipe down on empty space and hold for 0.6 seconds to sit. Release and repeat to lie down. Swipe up and hold to rise. Obstacles can block standing." : "Press C to sit, then C again to lie down. Press X to rise one posture. Obstacles can block standing.";
-                case 3: return touch ? "Aim at a nearby object, then tap AUFHEBEN or BENUTZEN. The same action button opens doors and drawers and operates devices. For doors and drawers, a door icon replaces the grasping hand: Öffnen opens it and Schließen closes it; tap the same button again to reverse it. Carry one object at a time. Your hand reaches and closes automatically; no extra gesture is needed. Your avatar has relaxed arms when empty-handed, articulated fingers, a sculpted nose, curved eyelids/lips, swept hair and fitted clothing, visible in the bathroom mirror. Rice, pasta and coffee are in glass jars with visible grains, pasta tubes and coffee beans. Use the same pickup action to carry each jar." : "Aim at a nearby object and press E to pick it up or use it. This also opens doors and drawers and operates devices; press E again to close an open door or drawer. In touch mode, the action shows a door icon and Öffnen/Schließen. Carry one object at a time. Your hand reaches and closes automatically; no extra gesture is needed. Your avatar has relaxed arms when empty-handed, articulated fingers, a sculpted nose, curved eyelids/lips, swept hair and fitted clothing, visible in the bathroom mirror. Rice, pasta and coffee are in glass jars with visible grains, pasta tubes and coffee beans. Use the same pickup action to carry each jar.";
-                case 4: return touch ? "The draped sofa throw and soft furnishings are fixed objects. Tap ANHÖREN to identify the whole object with its German article. Choose voice or both in sound settings to hear it." : "The draped sofa throw and soft furnishings are fixed objects. Press F or click Anhören to identify the whole object with its German article. Choose voice or both in sound settings to hear it.";
-                case 5: return touch ? "Aim at an annotated part and tap DETAIL to hear only that part's name. This appears when a separate part name exists." : "Aim at an annotated part and press Shift + F or click Detail to hear only the part's name.";
-                case 6: return touch ? "While carrying an object, aim at a nearby upward-facing surface and tap ABLEGEN. The button appears when placement is available. The hand releases the object in a short, smooth movement; wait for it to finish. No extra tap is needed." : "While carrying an object, aim at a nearby upward-facing surface and press G to place it. Wait for the short release movement to finish; no extra key is needed.";
-                case 7: return touch ? "While carrying an object, tap DREHEN to rotate it by 45 degrees. Touch actions use rounded dark cards with line icons, a closed grasping hand for AUFHEBEN, teal pickup/place buttons and light labels; a brief colour flash acknowledges a press. Buttons keep their positions: pickup/use at the bottom right, ANHÖREN to its left, DETAIL farther left, ABLEGEN above pickup/use and DREHEN above ANHÖREN. Unavailable actions are hidden; other buttons stay in place." : "While carrying an object, press R to rotate it by 45 degrees.";
-                case 8: return touch ? "Tap the map to enlarge it, then tap again to close it. It shows your position, the target and a route through doorways. Movement stops while enlarged." : "Tap or click the map to enlarge it, then again to close it. It shows your position, the target and a route through doorways. Movement stops while it is enlarged.";
-                case 9: return touch ? "Tap the task card to repeat the current instruction. Carrying and placing use the action buttons. Spoken guidance follows what you still need to do; task numbers remain on the card." : "This card shows your task number. Click it to repeat the current instruction. Automatic speech gives the next instruction without repeatedly announcing numbers. Placement reminders stop once you put the object down. Follow the requested action: hearing a name alone does not complete a pickup task. The first task asks you to pick up the spoon.";
-                case 10: return touch ? "Tap i to read the current task in English. Tap Back to task to close it. Translation does not answer or complete the task." : "Tap or click i, or press I, to read the current task in English. Back to task, I or Escape closes it. Translation does not answer or complete the task.";
+                case 0: return "New here? Choose How to play in the menu. We'll show you around, one step at a time. You can leave the guide and come back later. This reference is paused; use Next, Back or Skip.";
+                case 1: return "Look around by dragging the right side of the screen or moving the mouse. The mark in the middle helps you point at things. You can look around next to walls normally; the camera keeps nearby walls visible automatically, with no extra touch gesture or key. Look down to see your character’s body and hands, or look in the bathroom mirror to see the whole character. Your character’s steps follow your movement, including moving backwards and sideways. No extra buttons are needed.";
+                case 2: return "To sit, swipe down and hold briefly. Let go and repeat to lie down; swipe up and hold to get up. On a keyboard, use C to sit or lie down and X to get up. Move away from low furniture if you cannot stand.";
+                case 3: return "Look at a nearby object and tap AUFHEBEN to pick it up, or press E. The same button opens and closes doors and drawers. You can carry one thing at a time. Your hand holds the object automatically; cutlery is held by its handle.";
+                case 4: return "Curious about something nearby? Tap it to see its German name. On a computer, aim at it and click; hold Alt if you prefer to move the pointer. You can also use Anh\u00f6ren or F. Looking up a name does not pick up or open the object.";
+                case 5: return "Want to know the name of a part, such as a handle? Look at it and tap DETAIL, or press Shift + F. The button appears when that part has its own name.";
+                case 6: return "To put something down, look at a nearby tabletop or shelf and tap ABLEGEN, or press G. Wait for your hand to let go before doing the next thing.";
+                case 7: return "While holding something, tap DREHEN or press R to turn it. Try turning it before you put it down.";
+                case 8: return "Lost your way? Tap the map to make it bigger. It shows where you are and helps you find your way through the rooms. Tap again to return to the game.";
+                case 9: return "The task appears briefly in the centre. Read the large German instruction, then your translation underneath. Hold a finger on the notice to take more time; drag to read longer text. On a computer, hold Alt and point at the notice to keep it open; use the mouse wheel to scroll. Tap or click the visible X in the top-right corner, or anywhere outside the notice, to close it immediately. That press only dismisses the notice. Tap the small task card with the replay icon to show it again and repeat German; on desktop use Alt and click. Settings changes language or translation; every 50 completed tasks you can choose again. Help never gives answers or completes tasks.";
+                case 10: return "The task appears briefly in the centre. Read the large German instruction, then your translation underneath. Hold a finger on the notice to take more time; drag to read longer text. On a computer, hold Alt and point at the notice to keep it open; use the mouse wheel to scroll. Tap or click the visible X in the top-right corner, or anywhere outside the notice, to close it immediately. That press only dismisses the notice. Tap the small task card with the replay icon to show it again and repeat German; on desktop use Alt and click. Settings changes language or translation; every 50 completed tasks you can choose again. Help never gives answers or completes tasks.";
                 case 11: return touch ? "During reviews, Ziel zeigen reveals the target on the map. The next review hides the hint again." : "During reviews, the target is hidden at first. Ziel zeigen (H on keyboard) reveals its current position on the map. The next review hides the hint again.";
                 case 12: return "Later placement and scenario tasks offer Neu anordnen. Use it to restore the practice setup and retry the same task.";
                 case 13: return "Later scenarios show instructions and the current situation here. Follow their rules and requested actions. These controls are previews when the current task does not use them.";
                 case 14: return touch ? "When a scenario asks for confirmation, tap its Bestätigen button after doing the requested action." : "When a scenario asks for confirmation, its button appears here. Tap it or press T. Only confirm after performing the requested action.";
                 case 15: return touch ? "Open Fall lesen / hören. Read the required pages, tap Anhören to listen, Weiter or Zurück to change pages and Zur Aufgabe to return." : "Some later tasks offer Fall lesen / hören. Open the case, read each required page, use Anhören to listen, and use Weiter or Zurück to change pages. Return with Zur Aufgabe. Arrow keys also change pages.";
                 case 16: return touch ? "After the required action, tap one of the three answers. You can retry a mistake; this guide does not reveal answers." : "After the required action, a question may appear with three choices. Tap or click an answer, or press 1, 2 or 3. A mistake lets you try again; this tour does not reveal answers.";
-                case 17: return touch ? "Tap Menü to open Pause and Musik." : "Tap or click Menü to open the quick controls for Pause and Musik.";
-                case 18: return touch ? "Tap Pause to open the main menu. The world pauses; Weiter spielen resumes." : "Choose Pause to open the main menu. On a keyboard, Escape also pauses. Pausing freezes movement and world animation; Weiter spielen resumes.";
+                case 17: return touch ? "Tap Menu to open Pause and Musik." : "Tap or click Menu to open the quick controls for Pause and Musik.";
+                case 18: return touch ? "Tap Pause to open the main menu. The world pauses; Start / Continue resumes." : "Choose Pause to open the main menu. On a keyboard, Escape also pauses. Pausing freezes movement and world animation; Start / Continue resumes.";
                 case 19: return "Musik toggles background music separately from the spoken German instructions. Your choice is saved.";
-                case 20: return touch ? "In the main menu, Einstellungen: Text & Stimme selects text, voice or both and tests sound. Progress saves locally. The dark task card shows a progress bar and light text; tap it to hear the instruction again. Tap the menu button to open the quick menu. Weiter spielen continues; Diesen Lernpfad neu starten asks for confirmation. Choose Fortschritt behalten to cancel or Ja, neu starten to reset. Replay the practical guide from How to play (hands-on) or this reference from Controls reference (English). Tap Next, Back or Skip." : "In the main menu, Einstellungen: Text & Stimme selects text, voice or both and tests sound. You can also change touch/mouse controls. Progress saves locally; the task card shows a progress bar. Weiter spielen continues it; Diesen Lernpfad neu starten asks for confirmation. Click Fortschritt behalten to cancel or Ja, neu starten to reset. Replay this reference from Controls reference (English); choose How to play (hands-on) for real practice. Hands-on practice opens automatically once; both guides can be replayed from the menu. Next/Enter advances, Back/Left Arrow goes back, and Skip/Escape closes the tour.";
+                case 20: return "Settings changes your support language, bilingual display, text/voice mode and sound tests. Translation starts enabled; every 50 completed tasks you can choose again. Instructions appear briefly in the centre with translation below German, then fade together. Tap the small task-number card to repeat; on desktop hold Alt and click it. Progress saves locally. Start / Continue resumes; restarting asks for confirmation. How to play and Controls reference replay training in your selected language.";
                 default: return "";
             }
         }
@@ -533,7 +539,7 @@ public sealed class RoomExperience : MonoBehaviour
         {
             case 8: return MinimapRect;
             case 9: return TaskRect;
-            case 10: return TranslationButtonRect;
+            case 10: return TaskRect;
             case 11: return ReviewHintRect;
             case 12: return PlacementResetRect;
             case 13: return ScenarioStatusRect;
@@ -562,25 +568,25 @@ public sealed class RoomExperience : MonoBehaviour
             {
                 case 0: return touch ? "Walk: drag the joystick." : "Walk: use W A S D or arrow keys.";
                 case 1: return touch ? "Look: drag empty space. Aim with the centre mark." : "Look: move the mouse. Aim with the centre mark.";
-                case 2: return touch ? "Sit: swipe down, then hold still for 0.6 seconds." : "Sit / lie down: C. Rise: X.";
+                case 2: return "Swipe down and hold briefly to sit. On a keyboard, press C.";
                 case 3: return touch ? "Aim first, then tap AUFHEBEN or BENUTZEN." : "Aim first, then press E to pick up or use.";
                 case 4: return touch ? "ANHÖREN names the whole object." : "F / Anhören names the whole object.";
                 case 5: return touch ? "DETAIL names the part you are aiming at." : "Shift + F / Detail names the part you are aiming at.";
                 case 6: return touch ? "Carry, aim at a surface, then tap ABLEGEN." : "Carry, aim at a surface, then press G.";
                 case 7: return touch ? "Tap DREHEN to turn the carried object 45 degrees." : "Press R to turn the carried object 45 degrees.";
                 case 8: return touch ? "Tap the map to enlarge or close it." : "Click the map to enlarge or close it.";
-                case 9: return touch ? "Tap the task card to hear it again." : "Click the task card to hear it again.";
-                case 10: return touch ? "Need English? Tap i." : "Need English? Click i or press I.";
+                case 9: return "Tap the small task-number card to repeat the temporary bilingual instruction. On desktop, hold Alt and click it.";
+                case 10: return "Tap the small task-number card to repeat the temporary bilingual instruction. On desktop, hold Alt and click it.";
                 case 11: return touch ? "Review hint: tap Ziel zeigen to reveal the target." : "Review hint: Ziel zeigen / H reveals the target.";
                 case 12: return "Neu anordnen resets the practice, not your progress.";
                 case 13: return "Read the scenario status before taking action.";
                 case 14: return touch ? "Do the action first. Then tap Bestätigen." : "Do the action first. Then confirm with the button / T.";
                 case 15: return "Open Fall lesen / hören and read the required pages.";
                 case 16: return touch ? "Do the task first. Then tap an answer." : "Do the task first. Then choose with a click or 1 / 2 / 3.";
-                case 17: return touch ? "Tap Menü for the quick controls." : "Click Menü for the quick controls.";
+                case 17: return touch ? "Tap Menu for the quick controls." : "Click Menu for the quick controls.";
                 case 18: return touch ? "Tap Pause to open the main menu." : "Pause / Escape opens the main menu.";
                 case 19: return "Musik changes background music only.";
-                default: return "Replay this reference anytime from Controls reference (English).";
+                default: return "Replay this reference anytime from Controls reference.";
             }
         }
     }
@@ -637,20 +643,24 @@ public sealed class RoomExperience : MonoBehaviour
         Fill(card, panel);
         Fill(new Rect(card.x, card.y, 4, card.height), mint);
         string section = tutorialPage < 8 ? "BASICS" : tutorialPage < 13 ? "LESSON TOOLS" : tutorialPage < 17 ? "LATER TASKS" : "MENU & SOUND";
-        GUI.Label(new Rect(card.x+16,card.y+(compact?6:10),card.width-106,18),section,tutorialMeta);
+        SupportLabel(new Rect(card.x+16,card.y+(compact?6:10),card.width-106,22),section);
         GUI.Label(new Rect(card.xMax-88,card.y+(compact?6:10),72,18),(tutorialPage+1)+" / "+TutorialStepCount,small);
-        tutorialTitle.fontSize = compact ? 18 : 22;
-        GUI.Label(new Rect(card.x+16,card.y+(compact?26:36),card.width-32,compact?24:52),tutorialTitles[tutorialPage],tutorialTitle);
-        Rect viewport = new Rect(card.x+16,card.y+(compact?52:92),card.width-32,card.height-(compact?120:172));
-        float textWidth = viewport.width - 20;
-        tutorialLeadContent.text = TutorialAction;
-        tutorialBodyContent.text = TutorialText;
-        float leadHeight = tutorialLead.CalcHeight(tutorialLeadContent, textWidth);
-        float bodyHeight = tutorialBody.CalcHeight(tutorialBodyContent, textWidth);
-        float height = leadHeight + 12 + bodyHeight;
-        tutorialScroll = GUI.BeginScrollView(viewport,tutorialScroll,new Rect(0,0,viewport.width-20,Mathf.Max(height,viewport.height)));
-        GUI.Label(new Rect(0,0,textWidth,leadHeight),tutorialLeadContent,tutorialLead);
-        GUI.Label(new Rect(0,leadHeight+12,textWidth,bodyHeight),tutorialBodyContent,tutorialBody);
+        // Keep title, action and explanation in one scroll area on short screens too.
+        var referenceStyle=SupportStyle();
+        Rect viewport=new Rect(card.x+16,card.y+42,card.width-32,Mathf.Max(24,TutorialButtonY-card.y-60));
+        referenceTextViewport=viewport;
+        float textWidth=viewport.width-20;
+        string heading=SupportLayout(tutorialTitles[tutorialPage],referenceStyle,textWidth);
+        tutorialLeadContent.text=SupportLayout(TutorialAction,referenceStyle,textWidth);
+        tutorialBodyContent.text=SupportLayout(TutorialText,referenceStyle,textWidth);
+        float headingHeight=referenceStyle.CalcHeight(new GUIContent(heading),textWidth);
+        float leadHeight=referenceStyle.CalcHeight(tutorialLeadContent,textWidth);
+        float bodyHeight=referenceStyle.CalcHeight(tutorialBodyContent,textWidth);
+        float height=headingHeight+12+leadHeight+12+bodyHeight;
+        tutorialScroll=GUI.BeginScrollView(viewport,tutorialScroll,new Rect(0,0,textWidth,Mathf.Max(height,viewport.height)));
+        GUI.Label(new Rect(0,0,textWidth,headingHeight),heading,referenceStyle);
+        GUI.Label(new Rect(0,headingHeight+12,textWidth,leadHeight),tutorialLeadContent,referenceStyle);
+        GUI.Label(new Rect(0,headingHeight+12+leadHeight+12,textWidth,bodyHeight),tutorialBodyContent,referenceStyle);
         GUI.EndScrollView();
         float segment = (card.width - 32) / TutorialStepCount;
         for (int i = 0; i < TutorialStepCount; i++)
@@ -658,9 +668,9 @@ public sealed class RoomExperience : MonoBehaviour
         Fill(TutorialBackRect, new Color(.08f,.17f,.21f));
         Color previous = GUI.color;
         if (tutorialPage == 0) GUI.color = new Color(1, 1, 1, .35f);
-        GUI.Label(TutorialBackRect,"Back",small); GUI.color = previous;
-        Fill(TutorialSkipRect,new Color(.08f,.17f,.21f)); GUI.Label(TutorialSkipRect,"Skip",small);
-        Fill(TutorialNextRect,new Color(.1f,.43f,.36f)); GUI.Label(TutorialNextRect,tutorialPage+1==TutorialStepCount?"Finish":"Next",button);
+        SupportLabel(TutorialBackRect,"Back",true); GUI.color = previous;
+        Fill(TutorialSkipRect,new Color(.08f,.17f,.21f)); SupportLabel(TutorialSkipRect,"Skip",true);
+        Fill(TutorialNextRect,new Color(.1f,.43f,.36f)); SupportLabel(TutorialNextRect,tutorialPage+1==TutorialStepCount?"Finish":"Next",true);
     }
 
     private void DrawTutorialLink(Rect focus, Rect card)
@@ -710,66 +720,9 @@ public sealed class RoomExperience : MonoBehaviour
         else { Fill(rect,panel); GUI.Label(rect,caption,small); }
     }
 
-    private void OpenTranslation()
-    {
-        translationOpen = true;
-        translationScroll = Vector2.zero;
-        mapExpanded = quickMenuOpen = false;
-        controls.RefreshContext();
-    }
-
-    private void CloseTranslation()
-    {
-        translationOpen = false;
-        controls.RefreshContext();
-    }
-
-    private void DrawTranslation(Rect area)
-    {
-        Fill(area, panel);
-        float width = Mathf.Min(680, area.width - 36);
-        float x = (area.width - width) / 2;
-        GUI.Label(new Rect(x, 14, width, 40), "Task · English translation", nameStyle);
-        Rect viewport = new Rect(x + 12, 68, width - 24, area.height - 148);
-        var body = new GUIStyle(subtitle) { alignment = TextAnchor.UpperLeft, fontSize = 18 };
-        string content = player.Learning.TaskSpeech + "\n\nENGLISH\n" + player.Learning.TaskEnglish;
-        float height = body.CalcHeight(new GUIContent(content), viewport.width - 24);
-        translationScroll = GUI.BeginScrollView(viewport, translationScroll,
-            new Rect(0, 0, viewport.width - 24, Mathf.Max(height, viewport.height)));
-        GUI.Label(new Rect(0, 0, viewport.width - 24, height), content, body);
-        GUI.EndScrollView();
-        Fill(TranslationCloseRect, new Color(.1f, .43f, .36f));
-        GUI.Label(TranslationCloseRect, controls.UsesTouch ? "Back to task" : "Back to task (I / Esc)", button);
-    }
-
-    private void DrawTransition()
-    {
-        const float duration = 3.5f;
-        if (transitionElapsed >= duration) return;
-        Rect area = UIArea;
-        float enter = Mathf.SmoothStep(0, 1, Mathf.Clamp01(transitionElapsed / .4f));
-        float exit = Mathf.SmoothStep(0, 1, Mathf.Clamp01((transitionElapsed - 3) / .5f));
-        float width = Mathf.Min(380, area.width - 36);
-        float x = Mathf.Lerp(area.width + 20, (area.width - width) / 2, enter) - exit * (area.width + width);
-        bool compact = presentation.ShowAudioWarning && area.height < 520;
-        Rect card = new Rect(x, presentation.ShowAudioWarning ? 248 : 180, width, compact ? 42 : 136);
-        Fill(new Rect(card.x + 4, card.y + 7, card.width, card.height), new Color(0, 0, 0, .18f));
-        Fill(card, panel);
-        Fill(new Rect(card.x, card.y, 5, card.height), mint);
-        if (compact)
-        {
-            GUI.Label(new Rect(x + 12, card.y + 3, width - 24, 34), transitionComplete ? "Geschafft!" : "Aufgabe " + (transitionStage + 1) + " / " + player.Learning.TotalStages, nameStyle);
-            return;
-        }
-        string heading = transitionComplete ? "GESCHAFFT!" : transitionStage > 0 ? "WEITER GEHT'S" : "LOS GEHT'S";
-        GUI.Label(new Rect(x + 16, card.y + 12, width - 32, 24), heading, small);
-        string number = transitionComplete ? "Alle Aufgaben geschafft" : "Aufgabe " + (transitionStage + 1).ToString("00") + " / " + player.Learning.TotalStages;
-        GUI.Label(new Rect(x + 12, card.y + 40, width - 24, 42), number, nameStyle);
-        GUI.Label(new Rect(x + 12, card.y + 86, width - 24, 25), transitionComplete ? "Du kannst weiter üben." : "Entdecke den Raum.", small);
-        float progress = player.Learning.TotalStages == 0 ? 0 : (float)transitionStage / player.Learning.TotalStages;
-        Fill(new Rect(x + 22, card.yMax - 14, width - 44, 3), new Color(.15f, .25f, .28f));
-        Fill(new Rect(x + 22, card.yMax - 14, (width - 44) * progress, 3), mint);
-    }
+    private float TaskNoticeDuration => TaskNoticeTiming.Duration(player.Learning.TaskSpeech.Length+
+        (SupportLanguages.Bilingual?SupportLanguages.Text(TaskSupportSource).Length:0));
+    private void DrawTransition() => DrawTaskNotice();
 
     private void OnGUI()
     {
@@ -780,6 +733,11 @@ public sealed class RoomExperience : MonoBehaviour
         GUI.matrix = Matrix4x4.TRS(new Vector3(safe.xMin, Screen.height - safe.yMax, 0), Quaternion.identity, Vector3.one * UIScale);
         GUI.color = Color.white;
         Rect area = UIArea;
+        if (languageChoiceOpen || languageCheckpointOpen)
+        {
+            if (languageChoiceOpen) DrawLanguageChoice(area); else DrawLanguageCheckpoint(area);
+            GUI.matrix = before; GUI.color = previousColor; return;
+        }
         if (HandsOnActive)
         {
             DrawHandsOn(area);
@@ -788,7 +746,7 @@ public sealed class RoomExperience : MonoBehaviour
         if (MenuOpen)
         {
             Fill(new Rect(-safe.xMin / UIScale, -(Screen.height - safe.yMax) / UIScale, Screen.width / UIScale, Screen.height / UIScale), new Color(.025f, .065f, .09f, .97f));
-            if (settingsOpen) DrawSettings(area);
+            if (settingsOpen) DrawLanguageSettings(area);
             else
             {
                 bool menuEnabled=GUI.enabled;
@@ -796,7 +754,8 @@ public sealed class RoomExperience : MonoBehaviour
                 float width = Mathf.Min(380, area.width - 36), x = (area.width - width) / 2;
                 float viewportHeight = Mathf.Min(478, area.height - 16);
                 float top = Mathf.Max(8, (area.height - viewportHeight) / 2);
-                menuScroll = GUI.BeginScrollView(new Rect(0, top, area.width, viewportHeight), menuScroll,
+                menuTextViewport=new Rect(0,top,area.width,viewportHeight);
+                menuScroll = GUI.BeginScrollView(menuTextViewport, menuScroll,
                     new Rect(0, 0, area.width - 20, 472));
                 x -= 10;
                 float y = 0;
@@ -804,15 +763,15 @@ public sealed class RoomExperience : MonoBehaviour
                 GUI.Label(new Rect(x, y + 14, width, 54), "DeutschRoom", title);
                 GUI.Label(new Rect(x, y + 68, width, 36), player.Learning.CourseName +
                     (player.Voice.IntroAudioPending ? "\nText · Neue Stimme folgt" : ""), small);
-                if (MenuButton(new Rect(x, y + 108, width, 44), entered || !player.Learning.IsPreview ? "Weiter spielen" : "Spiel starten", true)) Begin();
-                if (MenuButton(new Rect(x, y + 160, width, 44), "Diesen Lernpfad neu starten")) resetConfirmation=true;
+                if (MenuButton(new Rect(x, y + 108, width, 44), SupportLanguages.Text("Start / Continue"), true)) Begin();
 
-                if (MenuButton(new Rect(x, y + 212, width, 44), "Einstellungen: Text & Stimme")) settingsOpen = true;
-                if (MenuButton(new Rect(x, y + 264, width, 44), controls.UsesTouch ? "Steuerung: Touch" : "Steuerung: Maus + Tastatur"))
+                if (MenuButton(new Rect(x, y + 160, width, 44), SupportLanguages.Text("Settings"))) settingsOpen = true;
+                if (MenuButton(new Rect(x, y + 264, width, 44), SupportLanguages.Text(controls.UsesTouch?"Controls: touch":"Controls: mouse + keyboard")))
                     controls.SetMode(controls.UsesTouch ? PlayerControls.ControlMode.KeyboardAndMouse : PlayerControls.ControlMode.Touch);
-                if (MenuButton(new Rect(x, y + 316, width, 44), music.MusicEnabled ? "Musik: an" : "Musik: aus")) music.Toggle();
-                if (MenuButton(new Rect(x, y + 368, width, 44), "How to play (hands-on)")) OpenTutorial();
-                if (MenuButton(new Rect(x, y + 420, width, 44), "Controls reference (English)")) OpenControlsReference();
+                if (MenuButton(new Rect(x, y + 316, width, 44), SupportLanguages.Text(music.MusicEnabled?"Music on":"Music off"))) music.Toggle();
+                if (MenuButton(new Rect(x, y + 212, width, 44), SupportLanguages.Text("How to play"))) OpenTutorial();
+                if (MenuButton(new Rect(x, y + 368, width, 44), SupportLanguages.Text("Controls reference"))) OpenControlsReference();
+                if (MenuButton(new Rect(x, y + 420, width, 44), SupportLanguages.Text("Restart course"))) resetConfirmation=true;
                 GUI.EndScrollView();
                 GUI.enabled=menuEnabled;
                 if(resetConfirmation)
@@ -820,43 +779,31 @@ public sealed class RoomExperience : MonoBehaviour
                     Fill(new Rect(0,0,area.width,area.height),new Color(.015f,.025f,.045f,.98f));
                     float w=Mathf.Min(420,area.width-36),left=(area.width-w)/2,topY=Mathf.Max(16,(area.height-248)/2);
                     Fill(new Rect(left-10,topY-10,w+20,248),panel);
-                    GUI.Label(new Rect(left,topY,w,42),"Lernpfad neu starten?",nameStyle);
-                    GUI.Label(new Rect(left+12,topY+52,w-24,60),"Der gespeicherte Fortschritt dieses Lernpfads wird gelöscht.",subtitle);
-                    if(MenuButton(new Rect(left,topY+124,w,44),"Fortschritt behalten",true))resetConfirmation=false;
-                    if(MenuButton(new Rect(left,topY+178,w,44),"Ja, neu starten"))
-                    {LearningProgress.ClearSavedProgress();SceneManager.LoadScene(gameObject.scene.path);}
+                    GUI.Label(new Rect(left,topY,w,42),SupportLayout("Restart this course?",SupportStyle(true),w),SupportStyle(true));
+                    GUI.Label(new Rect(left+12,topY+52,w-24,60),SupportLayout("Your saved course progress will be cleared.",SupportStyle(),w-24),SupportStyle());
+                    if(MenuButton(new Rect(left,topY+124,w,44),SupportLanguages.Text("Keep my progress"),true))resetConfirmation=false;
+                    if(MenuButton(new Rect(left,topY+178,w,44),SupportLanguages.Text("Start over")))
+                    {LearningProgress.ClearSavedProgress();SupportLanguages.ResetCheckpoints();SceneManager.LoadScene(gameObject.scene.path);}
                 }
             }
         }
-        else if (translationOpen) DrawTranslation(area);
         else
         {
-            DrawActionCircle(TranslationButtonRect, "i");
             Fill(QuickMenuRect, panel);
-            GUI.Label(QuickMenuRect, "Menü", small);
+            SupportLabel(QuickMenuRect,"Menu",true);
             if (quickMenuOpen)
             {
                 Fill(PauseRect, panel);
-                GUI.Label(PauseRect, "Pause", button);
+                SupportLabel(PauseRect,"Pause",true);
                 Fill(MusicRect, panel);
-                GUI.Label(MusicRect, music.MusicEnabled ? "Musik: an" : "Musik: aus", button);
+                GUI.Label(MusicRect, SupportLanguages.Text(music.MusicEnabled?"Music on":"Music off"), button);
             }
             if (!controls.UsesTouch && !mapExpanded)
             {
                 if (player.CanIdentify) DrawActionCircle(HearRect, "Anhören");
                 if (player.CanIdentifyPart) DrawActionCircle(PartRect, "Detail");
             }
-            Fill(TaskRect, panel);
-            string task = player.Learning.IsComplete ? "Geschafft!" : "Aufgabe " + (player.Learning.Stage + 1) + " / " + player.Learning.TotalStages;
-            taskNumber.fontSize = 16;
-            GUIContent taskContent = new GUIContent(task);
-            while (taskNumber.fontSize > 10 && taskNumber.CalcSize(taskContent).x > TaskRect.width - 16)
-                taskNumber.fontSize--;
-            GUI.Label(new Rect(TaskRect.x + 8, TaskRect.y + 5, TaskRect.width - 16, 27), taskContent, taskNumber);
-            float taskProgress=player.Learning.IsComplete?1:(float)player.Learning.Stage/Mathf.Max(1,player.Learning.TotalStages);
-            Fill(new Rect(TaskRect.x+10,TaskRect.yMax-5,TaskRect.width-20,3),new Color(.17f,.23f,.31f));
-            Fill(new Rect(TaskRect.x+10,TaskRect.yMax-5,(TaskRect.width-20)*taskProgress,3),mint);
-            GUI.Label(new Rect(TaskRect.x, TaskRect.y + 31, TaskRect.width, 21), presentation.Mode == LessonPresentation.OutputMode.Text ? "Aufgabe wiederholen" : "Noch einmal hören", small);
+            DrawTaskBadge();
             if (!mapExpanded && player.Learning.IsReviewTask && !player.Learning.ReviewHintRequested)
             {
                 Fill(ReviewHintRect, panel);
@@ -868,7 +815,7 @@ public sealed class RoomExperience : MonoBehaviour
             {
                 Fill(ScenarioStatusRect, panel);
                 GUI.Label(new Rect(ScenarioStatusRect.x+8,ScenarioStatusRect.y+4,ScenarioStatusRect.width-16,ScenarioStatusRect.height-8),
-                    player.Learning.TaskSpeech + "\n" + player.Learning.ScenarioSession.Status, small);
+                    player.Learning.ScenarioSession.Status, small);
                 if (player.Learning.ScenarioNeedsConfirmation)
                 { Fill(ScenarioConfirmRect, panel); GUI.Label(ScenarioConfirmRect, player.Learning.ScenarioSession.ConfirmationLabel + (controls.UsesTouch ? "" : " (T)"), small); }
                 var camera = player.GetComponentInChildren<Camera>();
@@ -896,7 +843,7 @@ public sealed class RoomExperience : MonoBehaviour
             }
             else if (GrammarAnswerOpen || DialogueOpen)
             {
-                Fill(GrammarPanel, panel);
+                UiSurfaceBox(GrammarPanel);
                 var grammar = player.Learning.GrammarTask;
                 var dialogue = DialogueOpen ? player.Learning.ScenarioSession.CurrentStep : null;
                 string question = dialogue != null ? dialogue.question : grammar.question;
@@ -906,13 +853,12 @@ public sealed class RoomExperience : MonoBehaviour
                 GUI.Label(new Rect(GrammarPanel.x + 12, GrammarPanel.y + (ScenarioAnswers ? 72 : 98), GrammarPanel.width - 24, ScenarioAnswers ? 40 : 48), feedback, small);
                 for (int i = 0; i < 3; i++)
                 {
-                    Rect choiceRect=GrammarChoiceRect(i);Fill(choiceRect,new Color(.15f,.35f,.39f,1));
+                    Rect choiceRect=GrammarChoiceRect(i);UiSurfaceBox(choiceRect,choiceRect.Contains(Event.current.mousePosition));
                     string choice=controls.UsesTouch?choices[i]:(i+1)+" · "+choices[i];var style=answerChoice;style.fontSize=small.fontSize;
                     while(style.fontSize>10&&style.CalcHeight(new GUIContent(choice),choiceRect.width)>choiceRect.height-4)style.fontSize--;
                     GUI.Label(choiceRect,choice,style);
                 }
             }
-            else if (!player.Learning.IsScenarioTask && string.IsNullOrEmpty(player.IdentifiedName)) DrawTransition();
 
             if (presentation.ShowAudioWarning && !ModalOpen)
             {
@@ -922,7 +868,7 @@ public sealed class RoomExperience : MonoBehaviour
                 GUI.Label(new Rect(warning.x + 12, warning.y + 4, warning.width - 24, 50), presentation.WarningText + "  Einstellungen öffnen", small);
             }
             if (!mapExpanded && !ModalOpen && !player.Learning.IsScenarioTask) DrawCaption(area);
-            if (!mapExpanded && !ModalOpen && presentation.ShowText && !string.IsNullOrEmpty(player.IdentifiedName))
+            if (!mapExpanded && !ModalOpen && (presentation.ShowText || player.PointerNameVisible) && !string.IsNullOrEmpty(player.IdentifiedName))
             {
                 float width = Mathf.Min(360, area.width - 36);
                 Rect name = new Rect((area.width - width) / 2, Mathf.Max(180, CaptionRect.y - 64), width, 58);
@@ -935,6 +881,7 @@ public sealed class RoomExperience : MonoBehaviour
             if (mapExpanded) Fill(new Rect(0, 80, area.width, area.height - 80), new Color(.025f, .065f, .09f, .97f));
             minimap.Draw(MinimapRect);
         }
+        if(!MenuOpen && !TutorialOpen && !mapExpanded && !ModalOpen) DrawTransition();
         if (tutorialOpen)
         {
             DrawTutorialControl();
@@ -944,29 +891,29 @@ public sealed class RoomExperience : MonoBehaviour
         GUI.color = previousColor;
     }
 
-    private void DrawSettings(Rect area)
+    private void DrawAudioSettings(Rect area)
     {
         float width = Mathf.Min(480, area.width - 36), x = (area.width - width) / 2;
         float y = Mathf.Max(12, (area.height - 400) / 2);
-        GUI.Label(new Rect(x, y, width, 42), "Text & Stimme", nameStyle);
-        string[] labels = { "Nur Text", "Nur Stimme", "Beides" };
+        SupportLabel(new Rect(x, y, width, 42), "Text & voice");
+        string[] labels = { "Text only", "Voice only", "Both" };
         float optionWidth = (width - 16) / 3;
         for (int i = 0; i < 3; i++)
-            if (MenuButton(new Rect(x + i * (optionWidth + 8), y + 52, optionWidth, 54), labels[i], (int)presentation.Mode == i))
+            if (MenuButton(new Rect(x + i * (optionWidth + 8), y + 52, optionWidth, 54), SupportLanguages.Text(labels[i]), (int)presentation.Mode == i))
             {
                 presentation.SetMode((LessonPresentation.OutputMode)i);
                 player.Voice.Stop();
             }
-        GUI.Label(new Rect(x, y + 114, width, 28), "Stimme: " + Mathf.RoundToInt(presentation.VoiceVolume * 100) + "%", subtitle);
+        SupportLabel(new Rect(x, y + 114, width, 28), SupportLanguages.Text("Voice")+": "+Mathf.RoundToInt(presentation.VoiceVolume*100)+"%",false,false);
         float volume = GUI.HorizontalSlider(new Rect(x + 16, y + 150, width - 32, 28), presentation.VoiceVolume, 0, 1);
         if (Mathf.Abs(volume - presentation.VoiceVolume) > .001f) presentation.SetVoiceVolume(volume);
-        if (MenuButton(new Rect(x, y + 184, width, 48), "Stimme testen")) player.Voice.PlayTest();
-        if (MenuButton(new Rect(x, y + 242, (width - 10) / 2, 48), "Ich höre nichts")) { presentation.ReportNoSound(true); player.Voice.Stop(); }
-        if (MenuButton(new Rect(x + (width + 10) / 2, y + 242, (width - 10) / 2, 48), "Ton funktioniert")) presentation.ReportNoSound(false);
+        if (MenuButton(new Rect(x, y + 184, width, 48), SupportLanguages.Text("Test voice"))) player.Voice.PlayTest();
+        if (MenuButton(new Rect(x, y + 242, (width - 10) / 2, 48), SupportLanguages.Text("I cannot hear sound"))) { presentation.ReportNoSound(true); player.Voice.Stop(); }
+        if (MenuButton(new Rect(x + (width + 10) / 2, y + 242, (width - 10) / 2, 48), SupportLanguages.Text("Sound works"))) presentation.ReportNoSound(false);
         string hint = player.Voice.IntroAudioPending ? "Die neue Stimme ist noch nicht verfügbar. Diese Lektionen zeigen Text." :
             presentation.ShowAudioWarning ? presentation.WarningText : (Application.isMobilePlatform ? "Kein Ton? Prüfe Medienlautstärke und den Lautlosmodus deines Telefons." : "Kein Ton? Prüfe Ausgabegerät und Lautstärke.");
         GUI.Label(new Rect(x + 4, y + 296, width - 8, 55), hint, small);
-        if (MenuButton(new Rect(x, y + 354, width, 46), "Speichern & zurück", true))
+        if (MenuButton(new Rect(x, y + 354, width, 46), SupportLanguages.Text("Save & back"), true))
         { presentation.Save(); player.Voice.Stop(); settingsOpen = false; }
     }
 
@@ -993,6 +940,7 @@ public sealed class RoomExperience : MonoBehaviour
         Color before = GUI.color;
         GUI.color = new Color(before.r, before.g, before.b, before.a * (pendingVoice ? 1 : 1 - Mathf.SmoothStep(0, 1, Mathf.Clamp01(captionElapsed - 6))));
         string text = string.IsNullOrEmpty(player.Voice.CurrentCaption) ? player.Learning.TaskSpeech : player.Voice.CurrentCaption;
+        if(text==player.Learning.TaskSpeech || transitionElapsed<TaskNoticeDuration) {GUI.color=before;return;}
         Rect card = CaptionRect;
         Fill(card, panel);
         GUI.Label(new Rect(card.x + 14, card.y + 7, card.width - 28, card.height - 14), text, subtitle);

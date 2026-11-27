@@ -1,0 +1,166 @@
+{
+  "updated": "2026-11-27",
+  "source": "Stylized Player Character (Free), URP",
+  "resource": "Characters/PlayerVisual",
+  "runtimePrefab": "Assets/Resources/Characters/PlayerVisual.prefab",
+  "adapter": "Assets/scripts/ImportedPlayerBody.cs",
+  "sourcePrefab": "Assets/StylizedCore/StylizedWoodMonsters/URP/AnimationGallery/Prefab/Player.prefab",
+  "model": "Assets/StylizedCore/StylizedWoodMonsters/URP/AnimationGallery/Models/Player.fbx",
+  "modelGuid": "9d96fe4fcd35cd94bb044fc76f910622",
+  "controller": "Assets/Resources/Characters/PlayerLocomotion.controller",
+  "material": "Assets/StylizedCore/StylizedWoodMonsters/URP/AnimationGallery/Texturas/Materials/Models_MAT/Player_MAT.mat",
+  "clips": [
+    "Idle",
+    "HumanM@Walk01_Forward",
+    "HumanM@Walk01_ForwardRight",
+    "HumanM@Walk01_Right",
+    "HumanM@Walk01_BackwardRight",
+    "HumanM@Walk01_Backward",
+    "HumanM@Walk01_BackwardLeft",
+    "HumanM@Walk01_Left",
+    "HumanM@Walk01_ForwardLeft",
+    "HumanM@Run01_Forward",
+    "HumanM@Run01_ForwardRight",
+    "HumanM@Run01_Right",
+    "HumanM@Run01_BackwardRight",
+    "HumanM@Run01_Backward",
+    "HumanM@Run01_BackwardLeft",
+    "HumanM@Run01_Left",
+    "HumanM@Run01_ForwardLeft"
+  ],
+  "rootMotion": false,
+  "movementOwner": "FirstPersonMovement + CharacterController",
+  "retainedSettings": {
+    "moveSpeed": 4,
+    "mouseSensitivity": 2,
+    "capsuleHeight": 1.76,
+    "capsuleRadius": 0.35,
+    "capsuleCenter": [
+      0,
+      0.9,
+      0
+    ],
+    "pickupSeconds": 0.28,
+    "placeSeconds": 0.24
+  },
+  "appearance": "Original imported mesh, material, rig and textures; normalized to the existing capsule height",
+  "headMask": "Head-weighted triangles omitted in first-person clone; original full skin used for shadows/mirror",
+  "postureAndReach": "Runtime bone adaptation for sitting, lying, right-arm reach and fingers; no authored clips for these are claimed",
+  "removed": [
+    "Assets/scripts/FirstPersonBody.cs",
+    "Assets/scripts/AvatarAnatomy.cs"
+  ],
+  "sharedMotionHelper": "Assets/scripts/ManipulationMotion.cs",
+  "excludedFromRuntimeVisual": [
+    "UniversalAnimationViewer",
+    "vendor demo camera and gallery controls"
+  ],
+  "newLearningTargets": 0,
+  "portableTargets": 53,
+  "fixedTargets": 79,
+  "playableTasks": 428,
+  "validation": {
+    "static": "passed: runtime/editor compilation, character wiring, 428 lesson assets and four-language localization",
+    "nativeRigSmoke": "passed in isolated Unity 6000.6.7f1: 16 directional clips; 324 settled grip cases; head/mirror/posture/finger checks; 2026-11-27",
+    "appearanceAndPhonePerformance": "unverified",
+    "previousNativeSmokeReport": {
+      "passed": true,
+      "rootMotion": false,
+      "source": "Stylized Player Character (Free), URP",
+      "shader": "Universal Render Pipeline/Lit",
+      "clips": [
+        "Idle",
+        "Running",
+        "Walking"
+      ],
+      "height": 1.7599998712539673,
+      "visualScale": 0.9815234541893005,
+      "bones": 54,
+      "fullTriangles": 30682,
+      "firstPersonTriangles": 26274
+    },
+    "nativeSmokeReport": {
+      "passed": true,
+      "rootMotion": false,
+      "source": "Stylized Player Character (Free), URP",
+      "shader": "Universal Render Pipeline/Lit",
+      "clips": [
+        "Idle",
+        "HumanM@Walk01_Forward",
+        "HumanM@Walk01_ForwardRight",
+        "HumanM@Walk01_Right",
+        "HumanM@Walk01_BackwardRight",
+        "HumanM@Walk01_Backward",
+        "HumanM@Walk01_BackwardLeft",
+        "HumanM@Walk01_Left",
+        "HumanM@Walk01_ForwardLeft",
+        "HumanM@Run01_Forward",
+        "HumanM@Run01_ForwardRight",
+        "HumanM@Run01_Right",
+        "HumanM@Run01_BackwardRight",
+        "HumanM@Run01_Backward",
+        "HumanM@Run01_BackwardLeft",
+        "HumanM@Run01_Left",
+        "HumanM@Run01_ForwardLeft"
+      ],
+      "height": 1.7599998712539673,
+      "visualScale": 0.9815234541893005,
+      "bones": 54,
+      "fullTriangles": 30682,
+      "firstPersonTriangles": 26274,
+      "directionalClipsTested": 16,
+      "gripCasesTested": 324
+    }
+  },
+  "originalController": "Assets/StylizedCore/StylizedWoodMonsters/URP/AnimationGallery/Animations/Animations Controllers/AC_Player.controller",
+  "states": [
+    "Idle",
+    "Walking",
+    "Running"
+  ],
+  "locomotion": {
+    "package": "Human Basic Motions FREE 2.4.2",
+    "sourceRoot": "Assets/Kevin Iglesias/Human Animations/Animations/Male/Movement",
+    "directions": [
+      "Forward",
+      "ForwardRight",
+      "Right",
+      "BackwardRight",
+      "Backward",
+      "BackwardLeft",
+      "Left",
+      "ForwardLeft"
+    ],
+    "blendParameters": [
+      "MoveX",
+      "MoveZ"
+    ],
+    "directionSource": "actual player displacement in player-local space",
+    "walkReferenceSpeed": 1.5,
+    "runReferenceSpeed": 4,
+    "directionDampingSeconds": 0.1,
+    "stateBlendSeconds": 0.16,
+    "rootMotion": false,
+    "sourceAssetsModified": false,
+    "excluded": [
+      "RootMotion clips",
+      "sprint",
+      "jump",
+      "turn actions",
+      "demo characters and scripts"
+    ],
+    "postureAndGrip": "existing procedural bone adaptation; no sitting/lying/pickup clips in this package"
+  },
+  "grip": {
+    "contact": "imported middle knuckle/palm frame, replacing guessed 0.065 m wrist offset",
+    "itemAnchor": "local handle midpoint for SpoonHandle/ForkHandle/KnifeHandle; near-edge bounds fallback; TransformPoint preserves scale/rotation",
+    "carryOffset": [
+      0.22,
+      -0.32,
+      0.43
+    ],
+    "settledContact": "after pickup only, item follows actual solved palm; never correct while placing",
+    "placementTimingAndValidatedPose": "unchanged",
+    "verification": "passed: 324 cases across three scaled object sizes, three postures, three look pitches, four object yaws and idle/walk/run; spoon-handle anchor, no cumulative drift, no correction while placing or during pickup; rendered contact unverified"
+  }
+}

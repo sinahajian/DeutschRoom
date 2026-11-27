@@ -6,13 +6,13 @@ using UnityEngine;
 [DefaultExecutionOrder(300)]
 public sealed class HandsOnTutorial : MonoBehaviour
 {
-    public enum PracticeStep { Move, Table, Aim, Name, Pickup, Rotate, Place, Complete }
+    public enum PracticeStep { Move, Table, Aim, Name, Pickup, Rotate, Place, Explore, Complete }
     public bool Active { get; private set; }
     public PracticeStep Step { get; private set; }
     public bool Complete => Step == PracticeStep.Complete;
     public PickupItem Target { get; private set; }
     public Vector3 Destination { get; private set; }
-    public int StepCount => 7;
+    public int StepCount => 8;
     public IntroLessonCatalog.ControlsPracticeStep Instruction => Complete ? null : player.Learning.ControlsPracticeSteps[(int)Step];
     public string GermanName { get; private set; } = "";
     public string RouteStatus { get; private set; } = "";
@@ -37,7 +37,7 @@ public sealed class HandsOnTutorial : MonoBehaviour
     private Vector3 previousPosition;
     private Vector3 placementPoint, lastRingCentre;
     private float walked, nextRouteTime;
-    private bool named;
+    private bool named, explored;
     private uint carryAtStart, rotateAtStart, placeAtStart;
     private PickupItem.PracticeInteractionState originalInteractions;
     private PickupItem originalHeld;
@@ -109,7 +109,7 @@ public sealed class HandsOnTutorial : MonoBehaviour
             placementPoint = near + Vector3.up * .015f;
             Target.transform.position = near - new Vector3(bounds.center.x, bounds.min.y, bounds.center.z);
             lastStart = -1; BuildMarkers();
-            Step = PracticeStep.Move; walked = 0; named = false; GermanName = "";
+            Step = PracticeStep.Move; walked = 0; named = explored = false; GermanName = "";
             previousPosition = player.transform.position; lastStart = -1; nextRouteTime = 0;
             carryAtStart = Target.CarrySequence; rotateAtStart = player.RotationSequence; placeAtStart = Target.PlacementSequence;
             player.Voice.Stop();
@@ -123,13 +123,15 @@ public sealed class HandsOnTutorial : MonoBehaviour
     }
 
     public bool AllowsPickup(KitchenInteractable item) => Active && Step == PracticeStep.Pickup && item == Target;
-    public bool AllowsIdentification(KitchenInteractable item) => Active && Step == PracticeStep.Name && item == Target;
+    public bool AllowsIdentification(KitchenInteractable item) => Active && item != null && (Step == PracticeStep.Explore || Step == PracticeStep.Name && item == Target);
     public bool AllowsRotation => Active && Step == PracticeStep.Rotate;
     public bool AllowsPlacement(Transform surface) => Active && Step == PracticeStep.Place && surface == table.transform;
-    public void Named(KitchenInteractable item)
+    public void Named(KitchenInteractable item, bool fromPointer = false)
     {
         if (!AllowsIdentification(item)) return;
-        named = true; GermanName = item.DisplayName;
+        named = true;
+        if (Step == PracticeStep.Explore && fromPointer) explored = true;
+        GermanName = item.DisplayName;
     }
 
     private void Update()
@@ -140,7 +142,7 @@ public sealed class HandsOnTutorial : MonoBehaviour
         walked += Horizontal(previousPosition, player.transform.position);
         previousPosition = player.transform.position;
         if (HandsOnTutorialRules.Ready((int)Step, walked, Horizontal(player.transform.position, Destination),
-            player.FocusedObject == Target, named,
+            player.FocusedObject == Target, Step == PracticeStep.Explore ? explored : named,
             player.HeldItem == Target && Target.CarrySequence != carryAtStart,
             player.RotationSequence != rotateAtStart,
             player.HeldItem == null && Target.PlacementSequence != placeAtStart && Target.LastPlacementSurface == table.transform))
@@ -150,7 +152,7 @@ public sealed class HandsOnTutorial : MonoBehaviour
         }
         bool walking = Step <= PracticeStep.Table;
         pathLine.enabled = destinationRing.enabled = walking;
-        spoonRing.enabled = !walking && !Complete && (player.HeldItem == null || Step == PracticeStep.Place);
+        spoonRing.enabled = !walking && Step != PracticeStep.Explore && !Complete && (player.HeldItem == null || Step == PracticeStep.Place);
         if (walking && Time.unscaledTime >= nextRouteTime)
         { nextRouteTime = Time.unscaledTime + .2f; UpdateRoute(); }
         if (spoonRing.enabled)
@@ -281,6 +283,7 @@ public static class HandsOnTutorialRules
             case 4: return picked;
             case 5: return rotated;
             case 6: return placed;
+            case 7: return named;
             default: return false;
         }
     }
