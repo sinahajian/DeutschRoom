@@ -1,10 +1,10 @@
 {
   "schema": "deutschroom-curriculum-design-v1",
-  "updated": "2026-11-22",
-  "status": "CUR-001–430 implemented as selection-based adaptations in code/audio. Original 400 baseline retained; independent writing/speech assessment remains future.",
+  "updated": "2026-11-23",
+  "status": "428 playable tasks; CUR-102 and CUR-191 retired after hallway mirror removal. Stable IDs and original baseline/history retained.",
   "runtimeImported": false,
   "counts": {
-    "search": 200,
+    "search": 198,
     "grammar": 100,
     "action": 130
   },
@@ -2032,7 +2032,7 @@
     {
       "id": "CUR-102",
       "number": 102,
-      "status": "Done",
+      "status": "Removed",
       "level": "A1.2",
       "de": "Finde den Spiegel im Flur und tippe auf „Anhören“.",
       "fa": "«آینه» در راهرو را پیدا کن و «Anhören» را بزن.",
@@ -2047,7 +2047,9 @@
         "action": "primary whole-object identification with Anhören/F",
         "audio": "Installed de-DE-TanjaNeural: 627 validated mono PCM16 24 kHz files, 622 current + 5 compatibility phrases; -8%",
         "verification": "Standalone runtime/editor compilation, actual compiled Validate/ResumeStage executable checks and static scene/audio validation passed; fresh Unity Play Mode stalled before tests on licensing initialization; phone unverified"
-      }
+      },
+      "removalDate": "2026-11-23",
+      "removalReason": "Hallway mirror removed at user request; historical ID retained, not playable."
     },
     {
       "id": "CUR-103",
@@ -3881,9 +3883,9 @@
       "number": 190,
       "status": "Done",
       "level": "A2.1",
-      "de": "Finde den Spiegel im Bad, nicht im Flur, und tippe auf „Anhören“.",
-      "fa": "آینهٔ حمام را پیدا کن، نه راهرو، و «Anhören» را بزن.",
-      "en": "Find the bathroom mirror rather than the hall mirror and tap “Anhören”.",
+      "de": "Finde den Spiegel im Bad und tippe auf „Anhören“.",
+      "fa": "آینهٔ حمام را پیدا کن و «Anhören» را بزن.",
+      "en": "Find the bathroom mirror and tap “Anhören”.",
       "gate": "I",
       "expected": "IDENTIFY-Bath_Mirror",
       "dependencies": "CLUE",
@@ -3893,7 +3895,7 @@
     {
       "id": "CUR-191",
       "number": 191,
-      "status": "Done",
+      "status": "Removed",
       "level": "A2.1",
       "de": "Finde den Spiegel im Flur und tippe auf „Anhören“.",
       "fa": "آینهٔ راهرو را پیدا کن و «Anhören» را بزن.",
@@ -3902,7 +3904,9 @@
       "expected": "IDENTIFY-Hall_Mirror",
       "dependencies": "CLUE",
       "legacy_ref": "IDENTIFY-Hall_Mirror",
-      "implementation": "IntroA11.json; contextual review"
+      "implementation": "IntroA11.json; contextual review",
+      "removalDate": "2026-11-23",
+      "removalReason": "Hallway mirror removed at user request; historical ID retained, not playable."
     },
     {
       "id": "CUR-192",
@@ -7653,5 +7657,10 @@
       "range": "CUR-401–430",
       "reason": "User requested next fifty from 381; thirty C1.2 integration stages extend the revisable 400 baseline."
     }
+  ],
+  "activeTotal": 428,
+  "retiredTaskIds": [
+    "CUR-102",
+    "CUR-191"
   ]
 }

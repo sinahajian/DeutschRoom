@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public sealed class IntroLessonCatalog
 {
-    public const int ImplementedTaskCount = 430;
+    public const int ImplementedTaskCount = 428;
     public string id;
     public int version;
     public Task[] tasks;
@@ -139,8 +139,8 @@ public sealed class IntroLessonCatalog
                      task.instruction.Contains("Anhören")) identifications++;
             else throw new InvalidOperationException("A1 task instruction does not match its action.");
         }
-        if (pickups != 106 || identifications != 94 || reviews != 157 || grammar != 90 || scenarios != 140 || targets.Count != 133 || tasks[0].targetName != "Loeffel_Spoon")
-            throw new InvalidOperationException("Expected spoon first, 133 introductions, 67 contextual reviews, 90 grammar tasks and 140 scenarios, 106 pickup/94 identification tasks.");
+        if (pickups != 106 || identifications != 92 || reviews != 156 || grammar != 90 || scenarios != 140 || targets.Count != 132 || tasks[0].targetName != "Loeffel_Spoon")
+            throw new InvalidOperationException("Expected spoon first, 132 introductions, 66 contextual reviews, 90 grammar tasks and 140 scenarios, 106 pickup/92 identification tasks.");
     }
 
     public KitchenInteractable[] Resolve(PickupItem[] pickups, FixedLearningTarget[] fixtures)

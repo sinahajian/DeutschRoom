@@ -1,720 +1,559 @@
-# DeutschRoom — سند طراحی بازی / Game Design Document / Spieldesign-Dokument
+# DeutschRoom — GDD
 
-آخرین به‌روزرسانی / Last updated / Zuletzt aktualisiert: **2026-11-23 — Europe/Berlin**
+[فارسی](#فارسی) · [English](#english) · [Deutsch](#deutsch)
 
-## پرداخت بیشتر چهره و تجربهٔ کاربری / Further face and UX refinement / Weitere Gesichts- und UX-Verfeinerung — 2026-11-23
+## فارسی
+
+آخرین به‌روزرسانی: **2026-11-27 — Europe/Berlin**
+
+| سند | نقش |
+| --- | --- |
+| **GDD** | طراحی جاری |
+| [GameStages](GameStages.md) | ترتیب و تکمیل وظایف |
+| [Changelog](CHANGELOG.md) | تاریخچه و نتایج بررسی‌های گذشته |
+
+### 1. خلاصه و چشم‌انداز
+
+DeutschRoom بازی آموزشی سه‌بعدی اول‌شخص در یک خانه است. بازیکن با پیدا کردن و نام‌شنیدن اشیا، جابه‌جایی وسایل، انتخاب پاسخ و اجرای موقعیت‌های خانگی، واژگان و دستور زبان آلمانی را تمرین می‌کند. اصول طراحی: یادگیری در بافت واقعی، ارتباط روشن دستور و عمل، بازخورد قابل اصلاح و کمک اختیاری.
+
+### 2. مخاطب و دامنه
+
+مخاطب، زبان‌آموز آلمانی است؛ گروه سنی مشخص نشده است. محتوا تقسیم داخلی A1.1–C1.2 دارد، اما مدرک سطح یا نتیجهٔ رسمی نیست. کنترل لمس برای گوشی و ماوس/صفحه‌کلید برای رایانه وجود دارد؛ انتشار و کیفیت دستگاه واقعی هنوز تأیید نشده‌اند. امتیاز پولی، جان و پرداخت درون‌بازی پیاده نشده‌اند.
+
+### 3. چرخهٔ بازی
+
+ورود یا ادامه ← خواندن/شنیدن دستور ← جست‌وجوی شیء یا بررسی پرونده ← عمل لازم و پاسخ در صورت درخواست ← بازخورد و اصلاح ← ثبت پیشرفت و هدف بعدی. نقشه در مرور تا درخواست کمک هدف را آشکار نمی‌کند. آموزش کنترل جدا از درس است و پیشرفت درسی ایجاد نمی‌کند. پس از پایان، تمرین آزاد ممکن است.
+
+### 4. محتوا و پیشرفت
 
-**فارسی — پیاده‌شده در کد:** وضوح مش سر افزایش یافت؛ بینی با سطح صورت یکپارچه، پلک/ابرو/لب منحنی، جزئیات داخلی گوش، درخشش کوچک چشم و موی نامتقارن فرم‌دار جای جزئیات ساده‌تر را گرفته‌اند. نرمال‌های درز و قطب سر اصلاح شدند؛ پلک‌ها همراه چشم حرکت می‌کنند. دکمه‌های لمس آیکون خطی اختصاصی و بازخورد رنگی کوتاه دارند؛ بازخورد پس از لمس یا کلیک پیش‌نمایش فعال می‌شود و خود عمل/درس را تأیید نمی‌کند. زمینهٔ کارت‌ها، منو، پاسخ‌ها و زیرنویس گوشه‌گرد و هماهنگ است؛ دکمه‌های منو بازخورد اشاره/فشار و کارت مرحله نوار پیشرفت دارد. بازنشانی مسیر ابتدا تأیید می‌خواهد؛ Fortschritt behalten یا Escape لغو می‌کند، Ja, neu starten ذخیرهٔ مسیر را پاک و صحنه را دوباره بارگذاری می‌کند؛ دکمه‌های پشت تأیید غیرفعال‌اند. راهنمای انگلیسی به‌روز است. جای دکمه‌ها، شرط عمل، ترجمه و پاسخ‌های آموزشی تغییر نکرده‌اند؛ مرحله/واژه/مبلمان تازه نیست، CUR-001–430، ۵۳ قابل حمل/۸۰ ثابت، قاشق اول و F01–F16 حفظ‌اند. کامپایل Runtime بدون خطا/هشدار و بررسی دارایی‌ها، ترجمه‌ها و ترتیب درس‌ها موفق بود؛ ظاهر هنری و تعامل روی گوشی هنوز تأیید بصری نشده‌اند؛ شخصیت همچنان مدل رویه‌ای سبک است.
+| شاخص | وضعیت جاری |
+| --- | --- |
+| وظایف | **428**; P: 106 · I: 92 · G: 90 · C: 140 |
+| جمعیت صحنه | **53** قابل حمل + **79** ثابت |
+| شروع | CUR-001 · Loeffel_Spoon · der Löffel |
+| پایان | CUR-430 · **428** |
+| بازنشسته | CUR-102 · CUR-191; Hall_Mirror؛ ترتیب ثابت **48** خالی است |
+| پرونده‌ها | E · M · W · H؛ **16** صفحه |
+
+P برداشتن واقعی، I شناسایی هدف، G دستور زبان و C موقعیت ترکیبی است. ۵۳ معرفی قابل حمل سپس ۷۹ معرفی ثابت می‌آیند؛ ادامه شامل مرور، دستور و سناریو است. ترتیب دقیق در GameStages و IntroA11.json است؛ شمارهٔ نمایشی با شناسهٔ CUR یکی نیست. قاشق با جابه‌جایی اولین هدف مرتب‌شده بر اساس LessonOrder در ابتدا می‌ماند. ذخیره بر اساس شناسه است، نه تعداد قدیمی؛ مسیر قدیمی حذف شده است.
+
+### 5. مکانیک و کنترل
 
-**English — implemented in code:** Higher-resolution head geometry now includes an integrated nose, curved eyelids/brows/lips, inner-ear details, small eye catchlights and asymmetrically swept hair. Head seam/pole normals are corrected; lids move with blinking eyes. Touch actions gain dedicated line icons and a short colour response to touch or mouse preview; this acknowledges input, not action/lesson success. Cards, menus, answers and captions share rounded surfaces; menu buttons respond to hover/press and the task card shows progress. Restart asks for confirmation: Fortschritt behalten or Escape cancels; Ja, neu starten clears course progress and reloads the scene. Underlying menu actions are disabled during confirmation. The English guide is updated. Fixed slots, action gates, translation and lesson choices remain; no new stage/vocabulary/furniture, with CUR-001–430, 53 portable/80 fixed targets, spoon first and F01–F16 preserved. Runtime compilation passed without errors/warnings; asset, translation and lesson-order validation passed. Artistic appearance and phone interaction still require visual verification; the avatar remains a lightweight procedural model.
-
-**Deutsch — im Code umgesetzt:** Höher aufgelöstes Kopfmesh mit integrierter Nase, gebogenen Lidern/Brauen/Lippen, Ohrdetails, kleinen Augenlichtpunkten und asymmetrisch geformter Frisur. Normalen an Kopfnaht/Polen korrigiert; Lider blinzeln mit den Augen. Touch-Aktionen erhalten eigene Linienicons und kurze Farbrückmeldung bei Berührung/Mausvorschau; dies bestätigt die Eingabe, keinen Handlungs-/Aufgabenerfolg. Karten, Menüs, Antworten und Untertitel nutzen einheitliche abgerundete Flächen; Menütasten reagieren auf Zeiger/Druck, die Aufgabenkarte zeigt Fortschritt. Neustart verlangt Bestätigung: Fortschritt behalten oder Escape bricht ab; Ja, neu starten löscht den Lernpfadfortschritt und lädt die Szene neu. Dahinterliegende Menüaktionen sind währenddessen deaktiviert. Englische Anleitung aktualisiert. Feste Plätze, Handlungsgates, Übersetzung und Lernantworten bleiben; keine neue Stufe/Vokabel/Möbel, CUR-001–430, 53 tragbare/80 feste Ziele, Löffel zuerst und F01–F16 erhalten. Runtime-Kompilierung ohne Fehler/Warnungen sowie Asset-, Übersetzungs- und Aufgabenreihenfolgeprüfung bestanden. Künstlerisches Aussehen und Smartphone-Interaktion benötigen weiterhin Sichtprüfung; die Figur bleibt ein leichtes prozedurales Modell.
-
-## آینه، کنترل‌ها و تناسب شخصیت / Mirror, controls and avatar proportions / Spiegel, Bedienung und Körperproportionen — 2026-11-23
-
-**فارسی — پیاده‌شده در کد:** بازتاب آینه پیش از آماده‌سازی دوربین اصلی در رویداد beginCameraRendering اجرا می‌شود؛ قفل بازگشت، بازیابی culling و پنهان‌کردن سر پس از بازتاب حفظ است و viewport بازتاب مستقل تنظیم می‌شود. دکمه‌های لمس به کارت‌های گوشه‌گرد تیره با تأکید فیروزه‌ای برای برداشتن/گذاشتن، نوار رنگی و سایه تبدیل شدند؛ رنگ سفید اولیه حذف شد. جای ثابت و شرط نمایش/عمل حفظ است. بالاتنه مش فرم‌دار با شانه و کمر دارد؛ صورت دارای حجم گونه/چانه، فرورفتگی چشم و چشم/لب ظریف‌تر است؛ دست‌های خالی کنار بدن آرام می‌گیرند و حرکت گرفتن موجود ادامه دارد. راهنمای انگلیسی به‌روز است. مرحله/هدف آموزشی، واژه یا مبلمان تازه نیست؛ CUR-001–430، ۵۳ قابل حمل، ۸۰ ثابت، قاشق اول و ذخیره حفظ‌اند. کامپایل Runtime بدون خطا/هشدار و ممیزی دارایی‌ها/درس‌ها موفق بود. ظاهر نهایی، رفع کامل اختلال آینه و کارایی گوشی هنوز نیازمند مشاهده در Unity/دستگاه است؛ این مدل همچنان رویه‌ای است.
-
-**English — implemented in code:** Mirrors render in beginCameraRendering before the main camera prepares its state; recursion protection, culling restoration and first-person head hiding remain, with an explicit reflection viewport. Touch actions use rounded dark cards, teal pickup/place emphasis, accent bars and shadows instead of initial white fills; fixed positions and action/visibility gates remain. A shaped shirt mesh defines shoulders/waist; the face adds cheek/chin volume, recessed sockets and subtler eyes/lips. Empty hands rest beside the body, retaining the existing reaching animation. The English guide is updated. No new stage, target, vocabulary or furniture; CUR-001–430, 53 portable/80 fixed targets, spoon first and saves remain. Runtime compilation passed with no errors/warnings; asset/lesson validation passed. Final appearance, complete mirror-fault resolution and phone performance require Unity/device visual verification; the avatar remains procedural.
-
-**Deutsch — im Code umgesetzt:** Spiegel rendern über beginCameraRendering vor der Zustandsvorbereitung der Hauptkamera; Rekursionsschutz, Culling-Wiederherstellung und Kopfausblendung in Ichansicht bleiben, mit eigenem Reflexions-Viewport. Touch-Aktionen erhalten dunkle abgerundete Karten, türkise Betonung für Aufheben/Ablegen, Farbstreifen und Schatten statt weißer Ausgangsflächen; feste Positionen und Aktions-/Sichtbarkeitsbedingungen bleiben. Ein geformtes Oberteil definiert Schultern/Taille; das Gesicht erhält Wangen-/Kinnvolumen, vertiefte Augenhöhlen und dezentere Augen/Lippen. Leere Hände ruhen seitlich, die vorhandene Greifbewegung bleibt. Englische Anleitung aktualisiert. Keine neue Stufe, Lernziele, Vokabeln oder Möbel; CUR-001–430, 53 tragbare/80 feste Ziele, Löffel zuerst und Speicherstände bleiben. Runtime-Kompilierung ohne Fehler/Warnungen und Asset-/Aufgabenprüfung bestanden. Endgültiges Aussehen, vollständige Behebung der Spiegelstörung und Smartphone-Leistung benötigen Sichtprüfung in Unity/auf dem Gerät; die Figur bleibt prozedural.
-
-## راهنمای متناسب با دستگاه و گفتار به‌موقع / Device-appropriate guidance and timely speech / Passende Gerätehinweise und aktuelle Sprache — 2026-11-23
-
-**فارسی — پیاده‌شده در کد و صوت:** حالت Automatic موجود، گوشی را با Application.isMobilePlatform و لمس را تشخیص می‌دهد؛ راهنمای صوتی برداشتن/نام‌شنیدن اکنون فقط دستور حالت فعال را می‌گوید: لمس Aufheben/Anhören یا کلید E/F. چهار عبارت با همان Tanja و سرعت -8% ساخته شدند؛ هر ۱۸۷۷ WAV قبلی بایت‌به‌بایت حفظ و اکنون ۱۸۸۱ فایل معتبرند. مرجع انگلیسی، Skip، ترجمه و پاسخ‌های حالت لمس نیز اشارهٔ غیرلازم به کلید/ماوس ندارند؛ انتخاب دستی حالت کنترل حفظ است. شمارهٔ مرحله روی کارت می‌ماند، ولی گفتار خودکار پس از موفقیت و تکرار کارت، شماره/تأیید طولانی را تکرار نمی‌کند و دستور لازم بعدی را می‌گوید. اعتبار هشدار گذاشتن در زمان پخش دوباره بررسی می‌شود: فقط وقتی شیء در دست و رهاسازی شروع نشده باشد؛ پیام منقضی‌شده از صف رد یا هنگام پخش قطع می‌شود، بدون تکرار دوبارهٔ کل مرحله بعد از گذاشتن. کمک فقط راهنماست و مرحله/گزینه‌ای را تکمیل یا افشا نمی‌کند. چهار جفت instruction/englishInstruction در controlGuidance در IntroA11.json، خارج از tasks ثبت شده‌اند؛ راهنمای انگلیسی RoomExperience به‌روز است.
-
-**فارسی — بهینه‌سازی و وضعیت بررسی:** فهرست متنی VoiceIntroA11Index بررسی موجودبودن ضبط را بدون بارگذاری/رمزگشایی همهٔ صداهای صف یا حالت بی‌صدا انجام می‌دهد؛ فقط صدای لازم برای پخش بارگذاری می‌شود و کش ۱۲ فایل/برآورد ۸ MiB قبلی حفظ است. هندسهٔ دکمه‌های ثابت فقط هنگام تغییر اندازه/ناحیهٔ امن محاسبه می‌شود؛ وضعیت، متن و جای جوی‌استیک فقط هنگام تغییر نوشته و سبک پاسخ‌ها دوباره استفاده می‌شود. انگشت‌ها، پلک و بخش‌های بازو از نوشتن تبدیل‌های دقیقاً یکسان اجتناب می‌کنند؛ هندسه/نور/وضوح/کیفیت صدا کاهش نیافته‌اند. CUR-001–430، ذخیره، شرط عمل، ۵۳ قابل حمل/۸۰ ثابت، قاشق اول و F01–F16 حفظ‌اند؛ مرحله/شیء تازه نیست. کامپایل Runtime/Editor، ممیزی صوت/دارایی‌ها و آزمون‌های مدیریت‌شدهٔ کش، صف گفتار، حالت کنترل و درس‌ها موفق؛ RAM/FPS و تعامل واقعی گوشی هنوز اندازه‌گیری/تأیید نشده‌اند و محدودیت قبلی مجوز Unity مانع بررسی بومی بود.
-
-**English — implemented in code and audio:** Existing Automatic mode detects phones through Application.isMobilePlatform and touch input; spoken pickup/identification help now gives only the active mode's action: tap Aufheben/Anhören or press E/F. Four phrases use the same Tanja voice at -8%; all previous 1877 WAVs remain byte-identical and 1881 recordings now validate. The English reference, Skip, translation and touch answers also omit irrelevant keyboard/mouse hints; manual mode selection remains. Task numbers remain on the card, while automatic next-task/repeat speech omits repeated numbers/long success announcements and gives the needed next instruction. Release warnings are revalidated during playback: only while holding and before release starts; stale queued warnings are skipped and active ones interrupted, without replaying the whole stage after placement. Help never completes a task or reveals choices. Four instruction/englishInstruction pairs are registered in IntroA11.json's controlGuidance outside tasks; RoomExperience's English guide is updated.
-
-**English — optimization and verification:** VoiceIntroA11Index checks recording availability without loading/decoding every queued or muted clip; only the clip needed for playback loads, retaining the existing 12-clip/estimated 8 MiB cache. Fixed touch-button geometry is computed only on size/safe-area changes; visibility, labels and joystick position are written only when changed, and answer styles are reused. Fingers, blinking and arm segments avoid identical transform writes; geometry, lighting, resolution and audio quality are not reduced. CUR-001–430, saves, action gates, 53 portable/80 fixed populations, spoon first and F01–F16 remain; no new stage/object. Runtime/Editor compilation, audio/asset audits and managed cache, narration-queue, control-mode and course checks passed; actual phone RAM/FPS and interaction remain unmeasured/unverified, with the previously established Unity licence blocker preventing native review.
-
-**Deutsch — in Code und Audio umgesetzt:** Der bestehende Automatic-Modus erkennt Smartphones über Application.isMobilePlatform und Touch-Eingaben; gesprochene Aufhebe-/Benennungshilfe nennt nur die aktive Bedienung: Aufheben/Anhören antippen oder E/F drücken. Vier Sätze nutzen dieselbe Tanja-Stimme mit -8%; alle bisherigen 1877 WAVs bleiben bytegleich, nun sind 1881 Aufnahmen gültig. Englische Referenz, Skip, Übersetzung und Touch-Antworten lassen unnötige Tastatur-/Maushinweise weg; manuelle Moduswahl bleibt. Aufgabennummern bleiben auf der Karte; automatische nächste Anweisung/Wiederholung verzichten auf wiederholte Nummern/lange Erfolgsmeldungen. Ablegehinweise werden während der Wiedergabe erneut geprüft: nur beim Tragen vor Beginn des Ablegens; veraltete Warteschlangensätze werden übersprungen und laufende unterbrochen, ohne nach dem Ablegen die ganze Aufgabe erneut vorzulesen. Hilfe erfüllt keine Aufgabe und verrät keine Auswahl. Vier instruction-/englishInstruction-Paare stehen unter controlGuidance in IntroA11.json außerhalb von tasks; die englische RoomExperience-Anleitung ist aktualisiert.
-
-**Deutsch — Optimierung und Prüfung:** VoiceIntroA11Index prüft Aufnahmeverfügbarkeit, ohne alle wartenden/stummen Clips zu laden/dekodieren; geladen wird nur der zur Wiedergabe benötigte Clip, der bestehende Cache mit 12 Clips/geschätzten 8 MiB bleibt. Feste Touch-Tastengeometrie wird nur bei Größen-/Safe-Area-Änderungen berechnet; Sichtbarkeit, Text und Joystickposition nur bei Änderung geschrieben, Antwortstile wiederverwendet. Finger, Blinzeln und Armteile vermeiden identische Transform-Schreibvorgänge; Geometrie, Beleuchtung, Auflösung und Audioqualität werden nicht reduziert. CUR-001–430, Speicherstände, Handlungsgates, Bestand 53 tragbar/80 fest, Löffel zuerst und F01–F16 bleiben; keine neue Stufe/kein Objekt. Runtime-/Editor-Kompilierung, Audio-/Assetprüfungen und verwaltete Cache-, Sprachwarteschlangen-, Steuerungsmodus- und Kursprüfungen bestanden; tatsächliche Smartphone-RAM-/FPS-Werte und Interaktion ungeprüft, der zuvor festgestellte Unity-Lizenzblocker verhinderte native Prüfung.
-
-## صورت، دست و حرکت گرفتن/گذاشتن / Face, hands and pickup/release motion / Gesicht, Hände und Greif-/Ablegebewegung — 2026-11-23
-
-**فارسی — پیاده‌شده در کد:** سر موجود با فرم فک/جمجمه، گوش‌ها، پلک/ابرو، چشم کوچک‌تر با عنبیه و مردمک، بینی و لب و موی فرم‌دار بازطراحی شد؛ پلک‌زدن آرام و دنبال‌کردن شیب نگاه اضافه است. هر دست یک مش پوستی با پنج انگشت و ۱۶ استخوان دارد؛ انگشت‌ها هنگام گرفتن جمع و هنگام گذاشتن باز می‌شوند و ساعد/مچ به محل شیء نزدیک و سپس نرم برمی‌گردند. صورت ثابت بر اساس متریال ترکیب می‌شود؛ مش‌ها یک‌بار ساخته و همراه متریال‌ها هنگام حذف شخصیت آزاد می‌شوند؛ برخوردگر بدن همان CharacterController است. این بهبود مدل رویه‌ای و نسبتاً سادهٔ موجود است، نه شخصیت اسکن‌شده یا گرفتن اختصاصیِ هر شیء/فیزیک تماس انگشت‌ها. برداشتن با همان AUFHEBEN/E شیء را طی ۰٫۲۸ ثانیه به محل حمل نزدیک‌تر می‌آورد؛ ثبت برداشتن همان هنگام گرفتن است. گذاشتن با ABLEGEN/G طی ۰٫۲۴ ثانیه انجام می‌شود و فقط در پایان یک‌بار، سطح/شمارنده/ذخیره و بازشدن پاسخ درس ثبت می‌شوند. تا پایان رهاسازی، استفاده/نام/چرخش و گذاشتن مجدد مسدودند؛ توقف زمان حرکت را متوقف می‌کند. لغو حمل، غیرفعال‌شدن کنترل یا Skip آموزش، حرکت ناتمام را بدون ثبت گذاشتن لغو و وضعیت مجاز قبلی را بازمی‌گرداند. اگر سطح حذف/غیرفعال یا عمودی شود، شیء در دست می‌ماند. جای هدف نسبت به سطح ذخیره می‌شود تا حرکت کشو/در تعقیب شود. سر در اول‌شخص پنهان و در آینه قابل دیدن است؛ کیفیت/وضوح آینه تغییر نکرده. راهنمای انگلیسی و instruction/englishInstruction تمرین کنترل‌ها به انتظار کوتاه اشاره دارند؛ دستورها و شماره‌های CUR-001–430، ذخیرهٔ مسیر، جمعیت ۵۳/۸۰، قاشق اول و F01–F16 حفظ‌اند. نام اجزای نمایشی در tools ثبت شد؛ شیء آموزشی یا مرحلهٔ تازه نیست. کامپایل Runtime/Editor و آزمون‌های مدیریت‌شدهٔ درس/منحنی حرکت موفق؛ آزمون‌های بومی ثبت دقیقاً یک‌باره، توقف/لغو، Skip وسط رهاسازی، استخوان‌های دست و شناسایی سر به‌روز شدند ولی اجرا نشده‌اند. ظاهر، برخورد در مسیر حرکت، گرفتن اشیای گوناگون و هزینهٔ واقعی GPU/FPS در Unity/گوشی هنوز تأیید نشده‌اند؛ راه‌اندازی بومی قبلی در مجوز Unity متوقف ماند.
-
-**English — implemented in code:** The existing head is reshaped with jaw/cranium contours, ears, eyelids/brows, smaller eyes with irises/pupils, nose/lips and shaped hair; restrained blinking and head pitch follow the view. Each hand uses one skinned mesh with five digits and 16 bones; fingers close on pickup/open on release, while forearm/wrist reach toward the object and ease back. Static face parts are combined by material; meshes are built once and released with materials when the avatar is destroyed. CharacterController remains the body collider. This refines the existing procedural, relatively simple model; it is not a scanned human, per-object authored grip or finger-contact physics. AUFHEBEN/E brings an object smoothly into a closer carry pose over 0.28 s; pickup is still registered on taking ownership. ABLEGEN/G releases over 0.24 s and commits surface/counter/save/lesson readiness exactly once at the end. Use/naming/rotation/repeated placement are blocked during release; pausing time freezes it. Carry cancellation, disabling interaction or tutorial Skip cancels an unfinished release without recording placement and restores the appropriate prior state. If the surface disappears/deactivates or becomes vertical, the item stays held. The destination is surface-local to follow moving drawers/doors. Head exclusion in first person and visibility in mirrors remain; mirror quality/resolution are unchanged. The English guide and controls-practice instruction/englishInstruction pairs explain the brief wait. CUR-001–430 instructions/numbers, course saves, 53/80 populations, spoon-first order and F01–F16 remain. Visual anatomy names are registered in tools; no new learning object/stage. Runtime/Editor compilation and managed lesson/motion-curve checks passed; native exactly-once, pause/cancel, mid-release Skip, hand-bone and head-exclusion checks are updated but unexecuted. Appearance, intermediate motion collisions, grips across objects and actual GPU/FPS cost in Unity/on a phone remain unverified; the previous native launch stalled at Unity licence initialization.
-
-**Deutsch — im Code umgesetzt:** Der vorhandene Kopf erhält Kiefer-/Schädelkonturen, Ohren, Lider/Brauen, kleinere Augen mit Iris/Pupille, Nase/Lippen und geformte Haare; dezentes Blinzeln und Kopfneigung folgen dem Blick. Jede Hand verwendet ein Skinning-Mesh mit fünf Fingern und 16 Knochen; Finger schließen beim Aufheben/öffnen beim Ablegen, Unterarm/Handgelenk greifen zum Objekt und kehren weich zurück. Statische Gesichtsteile werden nach Material kombiniert; einmal erzeugte Meshes und Materialien werden beim Entfernen der Figur freigegeben. CharacterController bleibt der Körperkollider. Verfeinert wird das vorhandene prozedurale, relativ einfache Modell; kein gescannter Mensch, objektspezifisch erstellter Griff oder Fingerkontaktphysik. AUFHEBEN/E bewegt das Objekt in 0,28 s weich in eine nähere Tragepose; Aufheben wird weiterhin beim Übernehmen registriert. ABLEGEN/G dauert 0,24 s und registriert Oberfläche/Zähler/Speichern/Aufgabenbereitschaft genau einmal am Ende. Benutzen/Benennen/Drehen/erneutes Ablegen sind währenddessen gesperrt; Zeitpause hält die Bewegung an. Trageabbruch, Deaktivieren der Interaktion oder Tutorial-Skip brechen unfertiges Ablegen ohne Platzierungsereignis ab und stellen den passenden vorherigen Zustand wieder her. Verschwindet/deaktiviert sich die Fläche oder wird senkrecht, bleibt das Objekt getragen. Das Ziel ist flächenlokal und folgt bewegten Schubladen/Türen. Kopf bleibt in Ichansicht verborgen und im Spiegel sichtbar; Spiegelqualität/-auflösung unverändert. Englische Anleitung und instruction-/englishInstruction-Paare der Steuerungsübung erklären die kurze Wartezeit. CUR-001–430-Anweisungen/-Nummern, Kursspeicherstände, Bestand 53/80, Löffel zuerst und F01–F16 bleiben erhalten. Visuelle Anatomienamen in tools erfasst; kein neues Lernobjekt/keine neue Stufe. Runtime-/Editor-Kompilierung und verwaltete Aufgaben-/Bewegungskurvenprüfungen bestanden; native Prüfungen für einmalige Registrierung, Pause/Abbruch, Skip während des Ablegens, Handknochen und Kopfausblendung aktualisiert, aber nicht ausgeführt. Ansicht, Kollisionen während der Bewegung, Griffe verschiedener Objekte und tatsächliche GPU-/FPS-Kosten in Unity/auf dem Smartphone ungeprüft; der vorherige native Start blieb bei der Unity-Lizenzinitialisierung hängen.
-
-## آموزش عملی ورود / Hands-on onboarding / Interaktiver Einstieg — 2026-11-23
-
-**فارسی — پیاده‌شده در کد:** آموزش خودکار ورود و گزینهٔ How to play (hands-on) اکنون تمرین واقعی هفت‌گامی است: حرکت حداقل ۰٫۶۵ متر؛ دنبال‌کردن خط سبز تا حلقهٔ کنار میز؛ هدف‌گیری قاشق مشخص‌شده؛ نام‌دیدن/شنیدن der Löffel با Anhören/F؛ برداشتن با AUFHEBEN/E؛ چرخاندن با DREHEN/R؛ گذاشتن روی میز با ABLEGEN/G. گام‌ها فقط با انجام عمل مربوط جلو می‌روند و Next آن‌ها را رد نمی‌کند. مسیر داخل آشپزخانه با شبکهٔ ۲۰ سانتی‌متری و آزمون کپسول با شعاع بازیکن به‌علاوهٔ فاصلهٔ امن، دیوار/میز/صندلی و سایر برخوردگرها را دور می‌زند؛ خط زمین و حلقه موقت‌اند، نه ناوبری کل خانه. دکمهٔ لازم برجسته و نام پس از شناسایی مستقل از حالت متن/صدا نمایش داده می‌شود. Skip در تمام گام‌ها و هنگام حمل فعال است؛ Escape نیز خارج می‌شود و روی رایانه نگه‌داشتن Alt کلیک روی Skip را ممکن می‌کند. پایان با Start lesson/Enter یا Skip همان درس ذخیره‌شده را ادامه می‌دهد. تمرین از محل شروع آشپزخانه اجرا و وضعیت قبلی بازیکن، وضعیت بدن، اشیا، حمل قبلی و شمارنده‌های عمل در خروج بازگردانده می‌شود؛ ذخیره و ارزیابی درس/سناریو در طول تمرین معلق‌اند، بنابراین تمرین قاشق CUR-001 را کامل نمی‌کند. پرچم مستقل DeutschRoom.HandsOnTutorial.v1 نمایش خودکار را فقط یک‌بار ثبت می‌کند؛ مرور دوباره از منو ممکن است. مرجع انگلیسی ۲۱گامیِ متوقف‌شده در Controls reference (English) حفظ شد و راهنمای انگلیسی RoomExperience به‌روز است. هفت دستور با instruction آلمانی و englishInstruction و کمک لمس/صفحه‌کلید در بخش controlsPractice در IntroA11.json ثبت‌اند؛ خارج از tasks هستند. مرحلهٔ ۰ گسترش یافت؛ CUR-001–430، ذخیرهٔ مسیر، ۵۳ قابل حمل/۸۰ ثابت، F01–F16 و قاشق اول حفظ‌اند. واژه/مبلمان یا درس شماره‌دار تازه اضافه نشده؛ ابزارها نام نشانگرهای موقت را ثبت می‌کند. کامپایل Runtime/Editor و آزمون‌های مدیریت‌شدهٔ قواعد عمل، مسیر مانع‌دار، ترجمه و ۴۳۰ درس موفق؛ آزمون بومی تعامل/بازگردانی آماده شده ولی اجرای Unity در راه‌اندازی مجوز متوقف ماند و فرایند آزمون پایان داده شد؛ ظاهر/مسیر واقعی گوشی و اجرای آزمون بومی هنوز تأیید نشده‌اند.
-
-**English — implemented in code:** Automatic entry and How to play (hands-on) now provide seven real practice steps: walk at least 0.65 m; follow the green line to the ring beside the table; aim at the marked spoon; display/hear der Löffel using Anhören/F; pick up with AUFHEBEN/E; rotate with DREHEN/R; place on the table with ABLEGEN/G. Each step waits for its corresponding action; Next cannot bypass it. A 20 cm kitchen grid with capsule checks using player radius plus clearance routes around walls, table, chairs and other colliders; the floor line/rings are temporary and not whole-house navigation. The relevant button is highlighted; identification displays the name regardless of text/voice mode. Skip works at every step, including mid-carry; Escape exits, and desktop users can hold Alt to click Skip. Start lesson/Enter at completion or Skip resumes the same saved lesson. Practice starts at the kitchen spawn; exit restores the previous player pose/posture, item layout, prior carry and action counters. Lesson/scenario evaluation and saving are suspended during practice, so rehearsal does not complete CUR-001. Separate DeutschRoom.HandsOnTutorial.v1 records first presentation once; menu replay remains available. The paused 21-step English reference remains under Controls reference (English), and RoomExperience's English guide is updated. Seven German instruction/englishInstruction pairs with touch/keyboard help are in IntroA11.json's controlsPractice section, outside tasks. Stage 0 is expanded; CUR-001–430, course saves, 53 portable/80 fixed populations, F01–F16 and spoon-first order remain. No new vocabulary/furniture or numbered lesson; tools registers temporary marker names. Runtime/Editor compilation and managed action-gate, obstacle-route, translation and 430-task checks passed; native interaction/restoration checks are prepared, but Unity startup stalled at licence initialization and the validation process was terminated; native execution and actual phone appearance/routes remain unverified.
-
-**Deutsch — im Code umgesetzt:** Automatischer Einstieg und How to play (hands-on) bieten nun sieben echte Übungsschritte: mindestens 0,65 m gehen; der grünen Linie zum Ring neben dem Tisch folgen; den markierten Löffel anvisieren; der Löffel mit Anhören/F anzeigen/anhören; mit AUFHEBEN/E aufheben; mit DREHEN/R drehen; mit ABLEGEN/G auf dem Tisch ablegen. Jeder Schritt wartet auf seine Handlung; Next kann sie nicht überspringen. Ein Küchenraster mit 20 cm Zellen und Kapselprüfungen mit Spielerradius plus Sicherheitsabstand umgeht Wände, Tisch, Stühle und weitere Kollider; Bodenlinie/Ringe sind temporär und keine Navigation im ganzen Haus. Die jeweilige Taste wird hervorgehoben; die Benennung zeigt den Namen unabhängig vom Text-/Sprachmodus. Skip funktioniert in jedem Schritt, auch beim Tragen; Escape beendet, am Computer erlaubt gehaltenes Alt den Klick auf Skip. Start lesson/Enter nach Abschluss oder Skip setzt dieselbe gespeicherte Aufgabe fort. Die Übung startet am Küchen-Startpunkt; beim Beenden werden vorherige Spielerpose/Haltung, Objektanordnung, zuvor getragener Gegenstand und Aktionszähler wiederhergestellt. Aufgabenauswertung/Szenarioprüfung und Speichern ruhen währenddessen; die Probe erfüllt CUR-001 nicht. DeutschRoom.HandsOnTutorial.v1 merkt die erste Präsentation einmalig; Wiederholung im Menü bleibt möglich. Die pausierte englische Referenz mit 21 Schritten bleibt unter Controls reference (English); die englische RoomExperience-Anleitung ist aktualisiert. Sieben deutsche instruction-/englische englishInstruction-Paare mit Touch-/Tastaturhilfe stehen im Abschnitt controlsPractice von IntroA11.json außerhalb von tasks. Stufe 0 erweitert; CUR-001–430, Kursspeicherstände, Bestand 53 tragbar/80 fest, F01–F16 und Löffel zuerst bleiben erhalten. Keine neuen Wörter/Möbel oder nummerierten Aufgaben; tools erfasst temporäre Markernamen. Runtime-/Editor-Kompilierung und verwaltete Prüfungen für Handlungsgates, Hindernisrouten, Übersetzungen und 430 Aufgaben bestanden; native Interaktions-/Wiederherstellungsprüfungen vorbereitet, Unity-Start blieb bei der Lizenzinitialisierung hängen und der Prüfprozess wurde beendet; native Ausführung und tatsächliche Smartphoneansicht/-wege noch ungeprüft.
-
-## آموزش واضح‌تر کنترل‌ها / Clearer controls tutorial / Verständlichere Steuerungseinführung — 2026-11-23
-
-**فارسی — پیاده‌شده در کد:** همان آموزش انگلیسی ۲۱گامی اکنون چهار بخش Basics، Lesson tools، Later tasks و Menu & sound دارد. هر گام با عنوان خواناتر و یک دستور کوتاهِ برجسته شروع می‌شود و جزئیات لمس/صفحه‌کلید در متن قابل پیمایش می‌مانند؛ شمار گام و نوار پیشرفت، دکمهٔ Next/Finish برجسته و خط اتصال کادر به کنترل روشن اضافه شدند. کادر از فضای آزاد بالا/پایین/کنار کنترل استفاده می‌کند و در صفحهٔ کوتاه حالت فشرده دارد؛ دکمه‌ها در محل متنِ در حال پیمایش نیستند. راهنما توضیح می‌دهد که بازی متوقف و کنترل‌ها فقط پیش‌نمایش‌اند، متن را می‌توان پیمایش کرد و مرور از How to play (English) ممکن است. سبک‌ها و متن‌ها دوباره استفاده می‌شوند و محاسبهٔ کنترل لمسی یک‌بار در هر فریم/گام/چیدمان انجام می‌شود. اولین نمایش با همان کلید قبلی، Next/Enter/پیکان راست، Back/پیکان چپ و Skip/Escape حفظ شدند. مرحله یا دستور درس جدیدی نیست؛ stage 0 همان معرفی کنترل‌هاست. CUR-001–430، ذخیره، ۵۳ قابل حمل/۸۰ ثابت و قاشق اول حفظ‌اند؛ IntroA11.json تغییری نکرد. کامپایل Runtime/Editor و ۱۲۶ بررسیِ تابع واقعی چیدمان برای صفحه‌های مربع/عمودی/افقی موفق؛ آزمون بومی ناوبری گسترش یافته ولی اجرا و نمایش نهایی Unity/گوشی هنوز تأیید نشده‌اند.
-
-**English — implemented in code:** The same 21-step English tour now has four sections: Basics, Lesson tools, Later tasks and Menu & sound. Each step starts with a clearer title and a short highlighted action, with touch/keyboard details kept in scrollable text. Step count/progress strip, emphasized Next/Finish and a line linking the card to the highlighted control improve orientation. The card selects free space above/below/beside the control and uses a compact layout on short screens; navigation stays outside the scrolling body. The guide explains the paused previews, scrolling and replay from How to play (English). Styles/text are reused and touch-control geometry is computed once per frame/step/layout. Existing first-presentation preference and Next/Enter/Right Arrow, Back/Left Arrow and Skip/Escape remain. No new stage or lesson instruction; stage 0 remains control orientation. CUR-001–430, saves, 53 portable/80 fixed targets and spoon-first order remain; IntroA11.json is unchanged. Runtime/Editor compilation and 126 checks of the actual layout function across square/portrait/landscape screens passed; native navigation checks are extended, but execution and final Unity/phone appearance remain unverified.
-
-**Deutsch — im Code umgesetzt:** Dieselbe englische Einführung mit 21 Schritten hat nun vier Abschnitte: Basics, Lesson tools, Later tasks und Menu & sound. Jeder Schritt beginnt mit einer deutlicheren Überschrift und einer kurzen hervorgehobenen Handlung; Touch-/Tastaturdetails bleiben im scrollbaren Text. Schrittzahl/Fortschrittsleiste, hervorgehobenes Next/Finish und eine Verbindungslinie zur markierten Bedienung verbessern die Orientierung. Die Karte wählt freien Platz über/unter/neben der Bedienung und nutzt auf kurzen Bildschirmen ein kompaktes Layout; die Navigation liegt außerhalb des Scrolltexts. Die Anleitung erklärt pausierte Vorschauen, Scrollen und Wiederholung über How to play (English). Stile/Texte werden wiederverwendet und Touch-Geometrie einmal pro Frame/Schritt/Layout berechnet. Bestehende Erstanzeige-Einstellung und Next/Enter/Pfeil rechts, Back/Pfeil links sowie Skip/Escape bleiben erhalten. Keine neue Stufe oder Aufgabenanweisung; Stufe 0 bleibt die Steuerungseinführung. CUR-001–430, Speicherstände, 53 tragbare/80 feste Ziele und Löffel zuerst bleiben erhalten; IntroA11.json bleibt unverändert. Runtime-/Editor-Kompilierung und 126 Prüfungen der tatsächlichen Layoutfunktion für quadratische/Hoch-/Querformate bestanden; native Navigationsprüfungen erweitert, Ausführung und endgültige Unity-/Smartphoneansicht noch ungeprüft.
-
-## مدیریت حافظهٔ صدا و مش / Voice and mesh memory management / Speicherverwaltung für Audio und Meshes — 2026-11-23
-
-**فارسی — پیاده‌شده در کد:** نگهداری صدای درس با کش اشتراکی LRU محدود شد: هدف ۱۲ فایل و برآورد ۸ MiB دادهٔ PCM؛ فایل درخواستیِ بزرگ یا صداهای فعال هم‌زمان می‌توانند موقتاً از سقف عبور کنند. فقط فایل‌های غیرفعال با Resources.UnloadAsset آزاد می‌شوند؛ مرجع AudioSource پس از پایان/توقف خالی و کش هنگام غیرفعال‌شدن آخرین گوینده پاک می‌شود. بررسی وجود صدای آغاز دیگر در هر بار رسم رابط فایل را بارگذاری نمی‌کند. مش‌های بالشتک با اندازهٔ دقیقاً یکسان مشترک‌اند (۱۸ نمونه/۹ اندازه در صحنه)؛ نسخهٔ CPU مش‌های نمایشی غذا و بالشتک پس از آپلود آزاد می‌شود و مش برخوردگر پتوی مبل خواندنی می‌ماند. آرایه‌های موقت هر مثلث حذف و پاک‌سازی افکت وسایل و منبع موسیقی هنگام حذف کامپوننت اصلاح شد. کیفیت صدا، هندسه، سایه، کنترل و راهنمای بازیکن تغییری ندارند؛ مرحله/دستور تازه نیست؛ CUR-001–430، ذخیره، ۵۳ قابل حمل/۸۰ ثابت و قاشق اول حفظ‌اند. کامپایل Runtime/Editor، بررسی دارایی‌ها/پیوندها و آزمون‌های مدیریت‌شدهٔ ۴۳۰ درس و کد واقعی کش صدا موفق‌اند؛ آزمون کش از جایگزین‌های مدیریت‌شدهٔ API استفاده می‌کند و اندازه‌گیری RAM/FPS یا آزمون صدای بومی/نمایش گوشی نیست. اجرای دسته‌ای Unity در راه‌اندازی مجوز متوقف ماند و پایان داده شد؛ آزمون طولانی و اندازه‌گیری حافظهٔ واقعی هنوز انجام نشده‌اند.
-
-**English — implemented in code:** Lesson recordings now use a shared LRU cache targeting 12 clips and an estimated 8 MiB of decoded PCM; a large requested clip or simultaneous active clips may temporarily exceed the budget. Only idle recordings are unloaded with Resources.UnloadAsset; AudioSource references are cleared on completion/stop, and disabling the last narrator clears the cache. Opening-audio availability no longer loads a recording on every UI query. Exact-size padding meshes are shared (18 authored instances/9 sizes); presentation-only food/padding meshes release their CPU copies after upload, while the throw's collider mesh remains readable. Per-triangle temporary arrays are removed; device effects and the music source are cleaned up on component removal. Audio quality, geometry, shadows, controls and the player guide remain unchanged; no new stage/instruction. CUR-001–430, saves, 53 portable/80 fixed targets and spoon-first order remain. Runtime/Editor compilation, asset/link checks and managed 430-task/actual voice-cache checks passed; cache checks use managed API doubles, not RAM/FPS measurements or native audio/phone visual tests. Unity batch startup stalled at licence initialization and was terminated; long-session/native memory measurement remains unperformed.
-
-**Deutsch — im Code umgesetzt:** Aufnahmen verwenden nun einen gemeinsamen LRU-Cache mit Zielgrenzen von 12 Clips und geschätzten 8 MiB dekodiertem PCM; ein großer angeforderter Clip oder gleichzeitig aktive Clips können die Grenze vorübergehend überschreiten. Nur inaktive Aufnahmen werden mit Resources.UnloadAsset entladen; AudioSource-Referenzen werden bei Ende/Stopp geleert, und beim Deaktivieren des letzten Sprechers wird der Cache geleert. Die Prüfung der Startaufnahme lädt nicht mehr bei jeder UI-Abfrage eine Aufnahme. Polstermeshes mit exakt gleicher Größe werden geteilt (18 Szeneninstanzen/9 Größen); reine Darstellungsmeshes für Lebensmittel/Polster geben nach dem Upload ihre CPU-Kopien frei, während das Kollidermesh der Decke lesbar bleibt. Temporäre Arrays pro Dreieck entfallen; Geräteeffekte und Musikquelle werden beim Entfernen der Komponente aufgeräumt. Audioqualität, Geometrie, Schatten, Steuerung und Spieleranleitung bleiben gleich; keine neue Stufe/Anweisung. CUR-001–430, Speicherstände, 53 tragbare/80 feste Ziele und Löffel zuerst bleiben erhalten. Runtime-/Editor-Kompilierung, Asset-/Linkprüfungen und verwaltete 430-Aufgaben-/Prüfungen des tatsächlichen Audiocache-Codes bestanden; Cacheprüfungen verwenden verwaltete API-Testdoubles statt RAM-/FPS-Messungen oder nativer Audio-/Smartphone-Sichttests. Unity-Batchstart blieb bei der Lizenzinitialisierung hängen und wurde beendet; Langzeittest/native Speichermessung steht aus.
-
-## جهت تصویر آینه / Mirror image orientation / Ausrichtung des Spiegelbilds — 2026-11-23
-
-**فارسی — اصلاح در کد:** شیدر آینه تبدیل مبدأ عمودی بافت را برای Metal/D3D نداشت؛ پس از ماتریس GPU مخصوص RenderTexture، مختصات Y اکنون فقط روی پلتفرم‌های دارای مبدأ بالای بافت اصلاح می‌شود. مسیر OpenGL و وارونگی طبیعی چپ/راست آینه حفظ‌اند. راهنمای انگلیسی نگاه‌کردن به آینه بدون دکمه و ایستاده بودن تصویر را توضیح می‌دهد. کیفیت، وضوح ۵۱۲×۵۱۲، نرخ بازتاب، اشیا و تعامل‌ها تغییر نکردند. مرحله یا دستور درس تازه نیست؛ CUR-001–430، ذخیره، ۵۳ قابل حمل/۸۰ ثابت و قاشق اول حفظ‌اند. بررسی عددی تبدیل مختصات موفق؛ تأیید تصویری در Unity و گوشی هنوز انجام نشده است.
-
-**English — corrected in code:** The mirror shader omitted vertical texture-origin conversion for Metal/D3D; after the RenderTexture GPU matrix, Y is now corrected only on platforms whose texture origin is at the top. The OpenGL path and natural mirror left/right reversal remain. The English guide explains looking into a mirror without buttons and an upright reflection. Quality, 512×512 resolution, reflection update rate, objects and interactions remain unchanged. No new stage or lesson instruction; CUR-001–430, saves, 53 portable/80 fixed targets and spoon-first order remain. Numerical coordinate-conversion checks passed; visual confirmation in Unity/on a phone remains unperformed.
-
-**Deutsch — im Code korrigiert:** Dem Spiegelshader fehlte die vertikale Texturursprungsumrechnung für Metal/D3D; nach der RenderTexture-GPU-Matrix wird Y nun nur auf Plattformen mit oberem Texturursprung korrigiert. OpenGL-Pfad und natürliche Links-/Rechts-Spiegelung bleiben erhalten. Die englische Anleitung erklärt das Hineinsehen ohne Tasten und ein aufrechtes Spiegelbild. Qualität, Auflösung 512×512, Spiegelaktualisierungsrate, Objekte und Interaktionen bleiben gleich. Keine neue Stufe oder Aufgabenanweisung; CUR-001–430, Speicherstände, 53 tragbare/80 feste Ziele und Löffel zuerst bleiben erhalten. Numerische Koordinatenprüfungen bestanden; Sichtbestätigung in Unity/auf dem Smartphone steht noch aus.
-
-## بهینه‌سازی بدون کاهش کیفیت / Performance without quality reduction / Optimierung ohne Qualitätsverlust — 2026-11-23
-
-**فارسی — پیاده‌شده در کد:** جست‌وجوی کامل شخصیت در هر بازتاب با ثبت شخصیت‌های فعال جایگزین شد؛ رندررهای سر، صفحه‌های دید، درخواست رندر و حافظهٔ وضعیت آینه‌ها دوباره استفاده می‌شوند. پرتو تعامل با بافر ۳۲ برخورد اجرا می‌شود و در صورت پُر شدن به جست‌وجوی کامل برمی‌گردد تا هدفی از دست نرود. نقشه فقط هنگام رسم تصویر پردازش می‌شود؛ حافظهٔ جست‌وجوی مسیر دوباره استفاده و نزدیک‌ترین خانه برای موقعیت دقیقاً یکسان ذخیره می‌شود. محتوایی حذف نشده و تنظیمات کیفیت، وضوح/نرخ بازتاب، نور، سایه و هندسه کاهش نیافته‌اند. کنترل و راهنمای بازیکن تغییری ندارند؛ دستور درس یا مرحلهٔ تازه اضافه نشده است. ترتیب قابل حمل‌ها و سپس اهداف ثابت در LearningProgress، جابه‌جایی قاشق به اول، ۵۳ قابل حمل، ۸۰ ثابت، CUR-001–430 و ذخیره‌ها حفظ‌اند. کامپایل مستقل C# و آزمون‌های مدیریت‌شدهٔ ۴۳۰ درس و حفظ پیشرفت موفق؛ اجرای Unity به دلیل باز بودن پروژه در نمونهٔ دیگر متوقف شد. میزان بهبود FPS و نمایش/کارایی گوشی هنوز اندازه‌گیری نشده‌اند.
-
-**English — implemented in code:** Per-reflection scene-wide avatar searches are replaced by active-body registration; head renderers, frustum planes, render requests and mirror-state storage are reused. Interaction rays use a 32-hit buffer with a full-query fallback when saturated so targets are not missed. The map processes only repaint events, reuses path-search storage and caches nearest cells for exactly unchanged positions. No content removed; no reduction to quality settings, reflection resolution/update rate, lighting, shadows or geometry. Controls and the player guide remain unchanged; no new lesson instructions or stages. LearningProgress's pickup-then-fixed ordering, spoon-first swap, 53 pickups, 80 fixed targets, CUR-001–430 and saves remain. Standalone C# compilation and managed 430-task/save checks passed; Unity execution was blocked by another open project instance. FPS improvement and phone appearance/performance remain unmeasured.
-
-**Deutsch — im Code umgesetzt:** Szenenweite Spielfigursuchen pro Spiegelbild werden durch Registrierung aktiver Körper ersetzt; Kopf-Renderer, Sichtvolumenebenen, Renderanfragen und Spiegel-Zustandsspeicher werden wiederverwendet. Interaktionsstrahlen verwenden einen Puffer mit 32 Treffern und bei vollem Puffer eine vollständige Abfrage, damit kein Ziel verloren geht. Die Karte verarbeitet nur Repaint-Ereignisse, verwendet Pfadsuchspeicher erneut und speichert nächste Zellen für exakt unveränderte Positionen. Keine Inhalte entfernt; keine Verringerung von Qualitätseinstellungen, Spiegelauflösung/-aktualisierungsrate, Beleuchtung, Schatten oder Geometrie. Steuerung und Spieleranleitung bleiben gleich; keine neuen Aufgabenanweisungen oder Stufen. Tragbar-dann-fest-Reihenfolge in LearningProgress, Löffel-Tausch, 53 tragbare/80 feste Ziele, CUR-001–430 und Speicherstände bleiben erhalten. Eigenständige C#-Kompilierung und verwaltete 430-Aufgaben-/Speicherstandprüfungen bestanden; Unity-Ausführung durch eine andere geöffnete Projektinstanz blockiert. FPS-Gewinn und Smartphoneansicht/-leistung noch nicht gemessen.
-
-## تشخیص برنج، پاستا و قهوه / Recognizable rice, pasta and coffee / Erkennbarer Reis, Nudeln und Kaffee — 2026-11-23
-
-**فارسی — پیاده‌شده در کد:** ظاهر سه هدف موجود Contents_Rice/Pasta/Coffee در بارگذاری صحنه با ظرف شیشه‌ای شفاف، لبه و درپوش متمایز و محتوای سه‌بعدی جایگزین می‌شود: دانه‌های کشیدهٔ روشن برنج، پاستای لوله‌ای زرد با سوراخ باز و دانه‌های قهوهٔ قهوه‌ای با شیار تیره. هندسهٔ هر ماده ترکیب شده و قطعات برخوردگر تازه ندارند؛ ریشه، برخوردگرهای قبلی، نام‌ها، محل و برداشتن/گذاشتن حفظ می‌شوند. راهنمای انگلیسی استفاده از همان عمل برداشتن برای ظرف را توضیح می‌دهد. واژه، شیء آموزشی یا مرحلهٔ تازه اضافه نشده؛ CUR-001–430، ذخیره، ۵۳ قابل حمل/۸۰ ثابت و قاشق اول حفظ‌اند. نمایش، شفافیت و کارایی Unity/گوشی هنوز بررسی نشده‌اند.
-
-**English — implemented in code:** On scene load, the existing Contents_Rice/Pasta/Coffee targets receive clear glass jars, distinct lids/rims and visible 3D contents: elongated pale rice grains, yellow hollow pasta tubes and brown coffee beans with dark seams. Each food's geometry is combined and visual parts have no new colliders; roots, existing colliders, names, positions and pickup/placement remain. The English guide explains carrying the jars with the same pickup action. No new vocabulary, learning object or stage; CUR-001–430, saves, 53 portable/80 fixed populations and spoon-first order remain. Unity/phone appearance, transparency and performance remain unverified.
-
-**Deutsch — im Code umgesetzt:** Beim Szenenladen erhalten die bestehenden Ziele Contents_Rice/Pasta/Coffee klare Glasbehälter, unterschiedliche Deckel/Ränder und sichtbaren 3D-Inhalt: längliche helle Reiskörner, gelbe hohle Nudelröhren und braune Kaffeebohnen mit dunklen Furchen. Die Geometrie jeder Füllung wird zusammengefasst; visuelle Teile haben keine neuen Kollider. Wurzeln, vorhandene Kollider, Namen, Positionen und Aufheben/Ablegen bleiben erhalten. Die englische Anleitung erklärt das Tragen der Behälter mit derselben Aufhebeaktion. Keine neuen Wörter, Lernobjekte oder Aufgaben; CUR-001–430, Speicherstände, Bestand 53 tragbar/80 fest und Löffel zuerst bleiben. Ansicht, Transparenz und Leistung in Unity/auf dem Smartphone sind noch ungeprüft.
-
-
-**بررسی / Validation / Prüfung:** کامپایل C# و بررسی دارایی‌ها/پیوندها موفق؛ اجرای Unity با محدودیت سوکت UPM متوقف شد. / C# compilation and asset/link checks passed; Unity launch was blocked by the UPM socket restriction. / C#-Kompilierung und Asset-/Linkprüfung bestanden; Unity-Start durch UPM-Socketbeschränkung blockiert.
-
-
-## جای ثابت دکمه‌های تعامل / Fixed interaction button positions / Feste Positionen der Aktionstasten — 2026-11-23
-
-**فارسی — پیاده‌شده در کد:** دکمه‌های لمسی جای ثابت دارند: برداشتن/استفاده پایین راست، Anhören سمت چپ آن، Detail باز هم چپ‌تر، Ablegen بالای برداشتن/استفاده و Drehen بالای Anhören. عمل ناموجود پنهان می‌شود و جای دیگر دکمه‌ها تغییر نمی‌کند؛ محدودهٔ لمس و پیش‌نمایش راهنما از همان جای ثابت استفاده می‌کنند. راهنمای انگلیسی به‌روز شد. مرحله، دستور درس، ترتیب CUR-001–430، ذخیره و جمعیت ۵۳ قابل حمل/۸۰ ثابت با قاشق اول تغییری نکردند. بررسی دیداری Unity/گوشی هنوز انجام نشده است.
-
-**English — implemented in code:** Touch actions have fixed slots: pickup/use at bottom right, Anhören to its left, Detail farther left, Ablegen above pickup/use and Drehen above Anhören. Unavailable actions are hidden without moving the other buttons; touch bounds and tutorial previews use those same fixed positions. The English guide is updated. No change to stages, lesson instructions, CUR-001–430 order, saves or the spoon-first 53 portable/80 fixed populations. Unity/phone visual checks remain unperformed.
-
-**Deutsch — im Code umgesetzt:** Touch-Aktionen haben feste Plätze: Aufheben/Benutzen unten rechts, Anhören links daneben, Detail weiter links, Ablegen über Aufheben/Benutzen und Drehen über Anhören. Nicht verfügbare Aktionen werden ausgeblendet, ohne andere Tasten zu verschieben; Touch-Flächen und Einführungsvorschau verwenden dieselben festen Positionen. Die englische Anleitung ist aktualisiert. Keine Änderung an Aufgaben, Aufgabenanweisungen, Reihenfolge CUR-001–430, Speicherständen oder Bestand 53 tragbar/80 fest mit Löffel zuerst. Sichtprüfung in Unity/auf dem Smartphone noch nicht durchgeführt.
-
-
-## بازتاب زندهٔ آینه‌ها / Live mirror reflections / Live-Spiegelbilder — 2026-11-23
-
-**فارسی — پیاده‌شده در کد:** دو آینهٔ موجود ورودی و حمام در زمان اجرا بازتاب تخت زندهٔ محیط و بدن/سر/صورت بازیکن را نشان می‌دهند. جلوی آینه بایستید و به آن نگاه کنید؛ دکمه یا کلید لازم نیست. سر فقط هنگام رندر بازتاب نمایان است و در دید اول‌شخص پنهان می‌ماند. هر آینهٔ قابل دیدن از سمت جلو تا فاصلهٔ ۷ متر با بافت ۵۱۲×۵۱۲ به‌روز می‌شود؛ بازتاب آینه در آینه و سایه‌های اضافی دوربین بازتاب غیرفعال‌اند. راهنمای انگلیسی لمس و ماوس به‌روز شد. شیء، واژه یا مرحلهٔ تازه‌ای اضافه نشده؛ CUR-001–430، ذخیره، ۵۳ شیء قابل حمل، ۸۰ هدف ثابت و جابه‌جایی قاشق به اول حفظ‌اند. کامپایل C# موفق؛ نمایش شیدر، جهت بازتاب و کارایی در Unity و گوشی هنوز تأیید نشده‌اند؛ اجرای بررسی Unity به دلیل باز بودن پروژه در نمونهٔ دیگر متوقف شد.
-
-**English — implemented in code:** The two existing hallway/bathroom mirrors receive live planar reflections of the room and the player's body/head/face at runtime. Stand in front and look at a mirror; no button/key is needed. The head is visible only during reflection rendering and remains hidden in first person. Each visible front-facing mirror updates within 7 metres using a 512×512 texture; recursive mirror reflections and extra reflection-camera shadows are disabled. The English touch/mouse guide is updated. No new object, vocabulary or stage; CUR-001–430, saves, 53 pickups, 80 fixed targets and the spoon-first swap remain. C# compilation passed; shader appearance, reflection orientation and performance in Unity/on a phone remain unverified. Unity validation was blocked by another open project instance.
-
-**Deutsch — im Code umgesetzt:** Die beiden vorhandenen Flur-/Badezimmerspiegel erhalten zur Laufzeit planare Live-Spiegelbilder des Raums und von Körper/Kopf/Gesicht der Spielfigur. Davorstellen und hineinsehen; keine Taste nötig. Der Kopf ist nur beim Spiegelrendern sichtbar und bleibt in der Ichansicht verborgen. Jeder sichtbare, von vorn betrachtete Spiegel wird innerhalb von 7 Metern mit einer 512×512-Textur aktualisiert; rekursive Spiegelbilder und zusätzliche Schatten der Spiegelkamera sind deaktiviert. Die englische Touch-/Mausanleitung wurde aktualisiert. Kein neues Objekt, Wort oder Lernschritt; CUR-001–430, Speicherstände, 53 tragbare und 80 feste Ziele sowie der Löffel-Tausch bleiben erhalten. C#-Kompilierung bestanden; Shaderansicht, Spiegelorientierung und Leistung in Unity/auf dem Smartphone noch ungeprüft. Die Unity-Prüfung wurde durch eine andere geöffnete Projektinstanz blockiert. Die Unity-Prüfung wurde durch eine andere geöffnete Projektinstanz blockiert.
-
-
-## نرمی پارچه و پتوی مبل / Soft furnishings and sofa throw / Polster und Sofadecke — 2026-11-22
-
-**فارسی — پیاده‌شده در کد:** هنگام ورود به Play، پتوی موجود die Wohndecke با منحنی نرم روی پشتی، نشیمن و جلوی مبل می‌افتد و چین‌های کم‌عمق دارد؛ برخوردگر شناسایی از همان مش استفاده می‌کند. بالشتک‌های مبل و مبل تک‌نفره، کوسن، بالشتک نیمکت، بالش‌ها و تشک‌ها لبه‌های گردتر و پف ملایم دارند. متریال پارچهٔ فعلی حفظ است؛ سازندهٔ پذیرایی نیز در بازسازی بعدی فرم تازهٔ پتو را می‌سازد. این اصلاح وسایل موجود است، نه شبیه‌سازی زندهٔ پارچه یا تأیید واقع‌گرایی همهٔ وسایل. مرحلهٔ تازه اضافه نشده؛ CUR-001–430، ذخیره، تعامل‌ها، مسیرها و شمار ۵۳ قابل حمل/۸۰ ثابت با قاشق اول حفظ‌اند. راهنمای انگلیسی شناسایی این وسایل ثابت با Anhören/F را توضیح می‌دهد. کامپایل Runtime/Editor موفق؛ بررسی دیداری Unity/گوشی انجام نشده چون پروژه در نمونهٔ دیگر Unity باز است.
-
-**English — implemented in code:** On entering Play, the existing die Wohndecke drapes smoothly over the sofa back, seat and front with shallow folds; its identification collider uses the same mesh. Sofa/armchair padding, the sofa cushion, bench pad, pillows and mattresses gain rounder edges and restrained loft. Existing cloth materials remain; subsequent living-room rebuilds also use the new throw shape. This refines existing furnishings, without live cloth simulation or a claim that all objects are now realistic. No new stage; CUR-001–430, saves, interactions, routes and spoon-first 53 portable/80 fixed populations remain. The English guide explains identification of these fixed furnishings with Anhören/F. Runtime/Editor compilation passed; Unity/phone visual review remains unperformed because another Unity instance has the project open.
-
-**Deutsch — im Code umgesetzt:** Beim Play-Start fällt die vorhandene Wohndecke weich über Sofarücken, Sitz und Vorderkante mit flachen Falten; ihr Benennungskollider verwendet dasselbe Mesh. Sofa-/Sesselpolster, Sofakissen, Bankpolster, Kopfkissen und Matratzen erhalten rundere Kanten und dezente Wölbung. Vorhandene Stoffmaterialien bleiben; spätere Wohnzimmer-Neuaufbauten verwenden ebenfalls die neue Deckenform. Verfeinert werden vorhandene Möbel, ohne laufende Stoffsimulation oder Behauptung, dass alle Gegenstände nun realistisch seien. Keine neue Aufgabe; CUR-001–430, Speicherstände, Interaktionen, Wege und Bestand 53 tragbar/80 fest mit Löffel zuerst bleiben. Die englische Anleitung erklärt die Benennung dieser festen Einrichtung mit Anhören/F. Runtime-/Editor-Kompilierung bestanden; Unity-/Smartphone-Sichtprüfung noch nicht erfolgt, da das Projekt in einer anderen Unity-Instanz geöffnet ist.
-
-
-## آموزش روی بازی / In-game spotlight tutorial / Einführung direkt im Spiel — 2026-11-22
-
-**فارسی — پیاده‌شده:** آموزش متنیِ شش‌صفحه‌ای جای خود را به ۲۱ گام انگلیسی روی نمای بازی داد. در هر گام صفحه تیره است و فقط کنترل مورد توضیح در جای خودش روشن می‌ماند؛ کادر توضیح با Next/Back/Skip و Finish کنترل می‌شود. نمایش اولیه با کلید موجود DeutschRoom.ControlsTutorial.v1 همان موقع ثبت می‌شود؛ فقط اولین اجرا خودکار است، حتی اگر آموزش رد یا برنامه بسته شود. اجرای دوباره از How to play (English) در منو ممکن است؛ شروع دوبارهٔ درس این پرچم را پاک نمی‌کند. لمس/کلیک روی Next یا Enter/پیکان راست گام بعد، Back/پیکان چپ گام قبل و Skip/Escape خروج است. بازی هنگام آموزش متوقف و ورودی‌های پشت لایه مسدودند؛ خروج همان وظیفه را ادامه می‌دهد. راهنما حرکت، نگاه، وضعیت بدن، برداشتن/استفاده، نام کل/جزء، گذاشتن/چرخش، نقشه، وظیفه، ترجمه، کمک مرور، بازچینی، وضعیت/تأیید سناریو، پرونده، پاسخ‌ها، منو، توقف، موسیقی و تنظیمات/ذخیره را توضیح می‌دهد. کنترل‌های وابسته به موقعیت با پیش‌نمایش آموزشی و بدون اجرای عمل نشان داده می‌شوند. مرحلهٔ آموزشی تازه یا تغییر CUR-001–430/ذخیره ایجاد نشد؛ مرحلهٔ ۰ شامل معرفی کنترل‌هاست. کامپایل Runtime/Editor موفق؛ آزمون Play Mode نوشته شده ولی اجرا و بررسی دیداری گوشی تأیید نشده است. اجرای Unity اینجا ابتدا با محدودیت سوکت و سپس با قفل پروژه توسط نمونهٔ دیگر متوقف شد.
-
-**English — implemented:** The six-page text guide is replaced by a 21-step English tour over the game view. Each step dims the screen except the control at its actual position, with a callout and Next/Back/Skip/Finish. First presentation immediately sets existing DeutschRoom.ControlsTutorial.v1; only first launch opens automatically, including when skipped or interrupted. Replay from the menu's How to play (English); restarting lessons does not clear the flag. Tap/click Next or Enter/Right Arrow to advance, Back/Left Arrow to return, Skip/Escape to exit. The world pauses and underlying gameplay input is blocked; exit resumes the same task. Steps cover movement, look, posture, pickup/use, whole/part names, place/rotate, map, task, translation, review hint, practice reset, scenario status/confirmation, cases, answers, menu, pause, music and settings/saves. Contextual controls use non-interactive teaching previews without performing actions. No new learning stage or CUR-001–430/save change; stage 0 includes control orientation. Runtime/Editor compilation passed; Play Mode regression checks are added but their execution and phone visuals remain unverified. Unity launch here first hit a socket restriction, then a project lock from another instance.
-
-**Deutsch — umgesetzt:** Die sechsseitige Textanleitung wurde durch eine englische Einführung mit 21 Schritten direkt über der Spielansicht ersetzt. Jeder Schritt verdunkelt den Bildschirm außer der erläuterten Bedienung an ihrer tatsächlichen Position, mit Hinweis und Next/Back/Skip/Finish. Die erste Anzeige setzt sofort den bestehenden Schlüssel DeutschRoom.ControlsTutorial.v1; automatisch nur beim ersten Start, auch nach Überspringen/Unterbrechung. Wiederholung über How to play (English) im Menü; Aufgaben-Neustart löscht das Merkmal nicht. Next antippen/anklicken oder Enter/Pfeil rechts: weiter; Back/Pfeil links: zurück; Skip/Escape: schließen. Welt und darunterliegende Spieleingaben sind angehalten; danach läuft dieselbe Aufgabe weiter. Erklärt werden Bewegung, Blick, Haltung, Aufheben/Benutzen, Gesamt-/Teilnamen, Ablegen/Drehen, Karte, Aufgabe, Übersetzung, Wiederholungshilfe, Übungsreset, Szenariostatus/Bestätigung, Fälle, Antworten, Menü, Pause, Musik und Einstellungen/Speichern. Situative Bedienelemente erscheinen als reine Vorschau ohne Aktion. Keine neue Lernaufgabe oder Änderung an CUR-001–430/Speicherständen; Stufe 0 umfasst Steuerungseinführung. Laufzeit-/Editor-Kompilierung bestanden; Play-Mode-Regressionen ergänzt, deren Ausführung und Smartphoneansicht noch ungeprüft. Unity-Start scheiterte hier zunächst an einer Socketbeschränkung, danach an einer Projektsperre durch eine andere Instanz.
-
-## صدای همهٔ اشیا / Audio for all objects / Audio für alle Objekte — 2026-11-22
-
-**فارسی — پیاده‌شده:** ۱۱۵ نامِ اشیا و اجزا در بستهٔ فعال نبودند؛ بررسی قبلی فقط فایل‌های فهرست را بررسی می‌کرد. هر ۱۱۵ عبارت با همان صدای de-DE-TanjaNeural و سرعت -8% ساخته و نصب شدند؛ شامل die Dunstabzugshaube و die Mikrowelle. اکنون هر ۲۴۲ نام یکتای صحنه و کنترل‌های زمان اجرا صدای معتبر دارد. مجموع بسته ۱۸۷۷ فایل WAV تک‌کانالهٔ PCM16 با نرخ ۲۴ کیلوهرتز است؛ صفر مفقود/نامعتبر و هر ۱۷۶۲ ضبط قبلی عیناً حفظ شد. Anhören/F نام کل و Detail/Shift+F نام جزء را می‌خواند؛ حالت Stimme یا Text + Stimme را فعال کنید. حالت Text عمداً بی‌صداست. بررسی خودکار نام‌های واقعی با فایل صوتی به اعتبارسنجی دارایی‌ها اضافه شد. مرحله یا شیء تازه ساخته نشده؛ مسیر CUR-001–430، ذخیره و جمعیت ۵۳/۸۰ با قاشق اول حفظ‌اند. کامپایل Runtime/Editor و بررسی فایل‌ها موفق؛ شنیدن داخل Unity و گوشی هنوز تأیید نشده است.
-
-**English — implemented:** The active pack lacked 115 object/part names; the previous audit checked only listed phrases. All 115 were generated and installed with the same de-DE-TanjaNeural at -8%, including die Dunstabzugshaube and die Mikrowelle. All 242 unique scene/runtime-control names now have valid matching audio. The pack contains 1877 mono PCM16 24-kHz WAV files, none missing/invalid; all 1762 earlier recordings remain byte-identical. Anhören/F reads the whole name, Detail/Shift+F the part; enable Stimme or Text + Stimme to hear them. Text mode intentionally stays silent. Asset validation now checks actual scene names against audio files. No new stage/object; CUR-001–430, saved progress and spoon-first 53/80 populations remain. Runtime/Editor compilation and file checks passed; listening in Unity/on a phone remains unverified.
-
-**Deutsch — umgesetzt:** Im aktiven Paket fehlten 115 Objekt-/Teilnamen; das bisherige Audit prüfte nur aufgeführte Sätze. Alle 115 wurden mit derselben de-DE-TanjaNeural bei -8% erzeugt und installiert, darunter die Dunstabzugshaube und die Mikrowelle. Alle 242 eindeutigen Szenen-/Laufzeitbedienungsnamen haben nun gültige passende Aufnahmen. Das Paket enthält 1877 Mono-PCM16-WAV-Dateien mit 24 kHz, keine fehlend/ungültig; alle bisherigen 1762 Aufnahmen bleiben bytegleich. Anhören/F spricht den Gesamtnamen, Detail/Shift+F den Teilnamen; dafür Stimme oder Text + Stimme aktivieren. Text bleibt absichtlich stumm. Die Assetprüfung gleicht tatsächliche Szenennamen mit Sprachdateien ab. Keine neue Aufgabe/kein neues Objekt; CUR-001–430, Fortschritt und Bestand 53/80 mit Löffel zuerst bleiben. Laufzeit-/Editor-Kompilierung und Dateiprüfungen bestanden; Hörprüfung in Unity/auf dem Smartphone bleibt unbestätigt.
-
-[نمونهٔ هود و مایکروویو / Hood and microwave preview / Hörprobe Haube und Mikrowelle](ObjectNamesVoicePreview.wav)
-
-## حذف مسیر قدیمی / Retired course removed / Altpfad entfernt — 2026-11-22
-
-**فارسی — پیاده‌شده:** بازی فقط مسیر CUR-001–430 را اجرا می‌کند. گزینهٔ «Zu bisherigen Aufgaben»، منطق ۱۳۶مرحله‌ای جست‌وجو/شناسایی/مرتب‌سازی قدیمی، مهاجرت ذخیرهٔ آن، آزمون اختصاصی و بستهٔ صوتی Katja و فهرست/پروفایل/نمونهٔ آن حذف شدند. ذخیرهٔ مسیر جدید با کلید DeutschRoom.Learning.IntroA11.v1 و completedTasks حفظ شده است؛ انتخاب ذخیره‌شدهٔ مسیر قدیمی دیگر خوانده نمی‌شود. مرحلهٔ ۰ آماده‌سازی و پایان فعلی پس از CUR-430 است؛ سپس تمرین آزاد ادامه دارد. راهنمای انگلیسی و ابزار صوت به مسیر یگانه به‌روز شدند. جمعیت واقعی صحنه ۵۳ قابل حمل و ۸۰ ثابت است و قاشق همچنان نخست است. شناسه‌ها و تاریخچهٔ مستندات قدیمی فقط سابقه‌اند، نه مراحل قابل بازی. آزمون Unity و گوشی برای این حذف هنوز تأیید نشده است.
-
-**English — implemented:** The game runs only CUR-001–430. Removed the “Zu bisherigen Aufgaben” option, old 136-task search/identification/article-sorting logic, its save migration, dedicated validation and Katja audio pack with its manifest/profile/preview. The new course retains DeutschRoom.Learning.IntroA11.v1 and completedTasks; the saved old-course selection is no longer read. Stage 0 is setup; completion follows CUR-430, then free practice. The English guide and voice tool now describe one course. Actual scene populations remain 53 portable/80 fixed, spoon first. Old documentation IDs and history are historical records, not playable stages. Unity and phone testing of this removal remain unverified.
-
-**Deutsch — umgesetzt:** Das Spiel führt ausschließlich CUR-001–430 aus. Entfernt wurden „Zu bisherigen Aufgaben“, die alte 136-Aufgaben-Logik für Suche/Benennung/Artikelsortierung, deren Speichermigration, eigene Prüfung sowie das Katja-Sprachpaket mit Manifest/Profil/Hörprobe. Der neue Pfad behält DeutschRoom.Learning.IntroA11.v1 und completedTasks; eine gespeicherte Altpfad-Auswahl wird nicht mehr gelesen. Stufe 0 ist Vorbereitung, Abschluss nach CUR-430, danach freies Üben. Englische Anleitung und Sprachwerkzeug beschreiben einen einzigen Pfad. Tatsächlicher Bestand bleibt 53 tragbare/80 feste Ziele, Löffel zuerst. Alte Dokumentations-IDs und Verlauf sind historische Nachweise, keine spielbaren Aufgaben. Unity- und Smartphoneprüfung dieser Entfernung sind noch unbestätigt.
-
-**بررسی / Validation / Prüfung — 2026-11-22:** کامپایل مستقل Runtime و Editor موفق؛ بررسی دارایی‌های ۴۳۰ مرحله و پیوندها موفق؛ ۱۷۶۲ صدای معتبر، صفر مفقود/نامعتبر. / Standalone runtime and Editor compilation passed; 430-stage asset/link validation passed; 1762 valid voice clips, none missing/invalid. / Separate Laufzeit-/Editor-Kompilierung bestanden; Prüfung der 430 Aufgaben, Assets und Links bestanden; 1762 gültige Sprachdateien, keine fehlend/ungültig.
-
-## وضعیت جاری / Current status / Aktueller Stand — 2026-11-22
-
-**فارسی:** CUR-001–430 به‌صورت اقتباس گزینه‌ای در کد پیاده شده‌اند. بستهٔ جدید ۳۸۱–۴۳۰، بیست هدف باقی‌ماندهٔ برنامهٔ ۴۰۰تایی و سی تمرین تکمیلی C1.2 را شامل می‌شود؛ مرحلهٔ ۴۰۰ اکنون جمع‌بندی میانی و پایان فعلی ۴۳۰ است. برنامهٔ زنده ۲۰۰ جست‌وجو، ۱۰۰ دستور زبان و ۱۳۰ عمل/ترکیب دارد؛ baselineTotal/baselineCounts و تاریخچهٔ گسترش، طرح اولیهٔ ۴۰۰تایی را حفظ می‌کنند. شمار نوع کد: ۱۰۶ P، ۹۴ I، ۹۰ G و ۱۴۰ C. پرونده‌های W و H از همان متن آلمانی طراحی، هرکدام چهار صفحه، به E و M اضافه شده‌اند: جمعاً چهار پرونده و شانزده صفحه با خواندن و شنیدن و تأیید مرحله‌ای. محتوای داخلی تا C1.2 می‌رسد، اما نوشتن متن بلند، سنجش شمار واژه و گفتار خودجوش هنوز ارزیابی نمی‌شود؛ plannedFreeResponse/freeProductionStatus معیارهای آینده را جدا نگه می‌دارند. مرحله‌های ۴۰۱–۴۱۰ استثنا و توافق، ۴۱۱–۴۲۰ شواهد و گزارش، و ۴۲۱–۴۳۰ تصمیم تازه و تحویل را تمرین می‌کنند. سؤال دقیق باید پیش از پاسخ شخصیت و عمل مرتبط درست انتخاب شود. در تحویل‌هایی که چراغ مطالعه روشن می‌ماند، استفادهٔ فعلی با پاسخ تازه تأیید می‌شود؛ پیام قدیمی به‌تنهایی کافی نیست. مرحله‌های ۳۸۵/۴۰۴/۴۲۶ خاموش‌ماندن شیر با منع تعامل و تأیید صریح را می‌خواهند. استثنای جست‌وجو محدود به هدف و حداکثر ده دقیقه است؛ ۳۹۰/۴۱۰ اجرای شروع استثنا را می‌سنجند، ۴۰۱/۴۲۲ با پیام داستانی پایان جست‌وجو بازگشت را می‌سنجند؛ ده دقیقهٔ واقعی انتظار اجباری یا تایمر اندازه‌گیری‌شده ادعا نمی‌شود. در ۳۹۹/۴۰۶/۴۲۱ پایان مطالعه پیش از خاموش‌کردن چراغ تأیید می‌شود. در ۴۰۰/۴۲۹/۴۳۰ پاسخ تازهٔ خروج همه، هر سه گروه چراغ قابل‌کنترلِ آموزشی را همراه آب/هود خاموش و دو در را بسته می‌خواهد؛ کنتور، علت خرابی و صرفه‌جویی مشخص همچنان نامعلوم‌اند. تمام سناریوها مستقل و موقت‌اند؛ شیء یا مبلمان تازه و نصب گوشی انجام نشده است. جمعیت صحنه ۵۳ قابل حمل/۸۰ ثابت و قاشق در ابتدا حفظ‌اند؛ مسیر قدیمی حذف شده و شناسه‌ها/کلید ذخیرهٔ مسیر جدید حفظ‌اند؛ پایان ۳۸۰ از ۳۸۱ و جمع‌بندی ۴۰۰ از ۴۰۱ ادامه دارد. کامپایل اجرا/Editor و آزمون‌های مدیریت‌شدهٔ کاتالوگ/ذخیره/پاسخ/منبع موفق بوده‌اند. اجرای کامل Unity، نمایش و دسترسی/انیمیشن و گوشی هنوز تأیید نشده‌اند؛ محدودیت قبلی مجوز Unity رفع‌شده فرض نشده است.
-
-**English:** CUR-001–430 are implemented as selection-based adaptations in code. This 381–430 batch contains the twenty remaining baseline stages plus thirty new C1.2 integration tasks. Stage 400 is now an intermediate checkpoint; the current ending is 430. Live design totals are 200 search, 100 grammar and 130 action/integration; baselineTotal/baselineCounts and extension history retain the original 400 baseline. Code kinds: 106 P, 94 I, 90 G, 140 C. W/H are added from the original German design sources as four pages each, joining E/M for four packets and sixteen readable/listenable pages with per-stage acknowledgement. Internal content reaches C1.2; long writing, word-count rubrics and spontaneous speech are not assessed. plannedFreeResponse/freeProductionStatus retain future criteria separately. New bands: 401–410 bounded agreements/exceptions, 411–420 evidence/reporting, 421–430 updates/handover. A correct precise clarification precedes character reply and action. Handovers retaining desk light require a fresh confirmation of current reading; an older note alone is insufficient. Stages 385/404/426 require protected tap-off plus explicit confirmation without interaction. Search exceptions are purpose-bound, at most ten minutes: 390/410 validate initial implementation, 401/422 restore the rule after a fictional search-finished cue; no forced real ten-minute wait or measured timer is claimed. In 399/406/421 reading-finished information precedes desk-off. In 400/429/430 a fresh all-residents-left answer requires all three controllable learning-light groups, tap and hood off, both doors closed. Meter reading, fault causes and specific savings remain unverified. All scenarios are independent temporary presets; no new furniture/objects or phone installation. Scene populations 53 portable/80 fixed and spoon-first order remain; the legacy course is removed and new-course save IDs/key remain. Completed 380 resumes 381; checkpoint 400 continues 401. Runtime/Editor compilation and managed catalog/save/answer/source tests passed. Full Unity/device rendering, reachability, animation and interaction remain unverified; the previous licensing blocker is not assumed resolved.
-
-**Deutsch:** CUR-001–430 sind als Auswahlanpassungen im Code umgesetzt. Das Paket 381–430 umfasst zwanzig verbleibende Grundplanaufgaben und dreißig neue C1.2-Integrationsaufgaben. 400 ist ein Zwischenabschluss, aktuelles Ende 430. Live-Entwurf: 200 Suche, 100 Grammatik, 130 Handlung/Integration; baselineTotal/baselineCounts und Erweiterungshistorie erhalten den ursprünglichen 400er-Plan. Codetypen: 106 P, 94 I, 90 G, 140 C. W/H ergänzen E/M unverändert aus den deutschen Entwurfsquellen auf je vier Seiten: vier les-/hörbare Pakete mit sechzehn Seiten und Bestätigung je Aufgabe. Interner Inhalt reicht bis C1.2; lange Texte, Wortzahlraster und spontanes Sprechen werden nicht bewertet. plannedFreeResponse/freeProductionStatus halten Zukunftskriterien getrennt fest. Neu: 401–410 begrenzte Vereinbarungen/Ausnahmen, 411–420 Belege/Berichte, 421–430 Aktualisierung/Übergabe. Richtige präzise Rückfrage kommt vor Figurenantwort und Handlung. Bei Übergaben mit Leselicht wird aktuelle Nutzung neu bestätigt; eine alte Notiz genügt nicht. 385/404/426 verlangen geschützten Hahn-aus-Zustand und ausdrückliche Bestätigung ohne Betätigung. Suchausnahmen sind zweckgebunden und auf höchstens zehn Minuten begrenzt: 390/410 prüfen ihren Beginn, 401/422 die Rückkehr nach einer fiktiven Suchende-Meldung; keine erzwungene reale Zehn-Minuten-Wartezeit oder gemessene Zeitsteuerung. In 399/406/421 geht Lesen-beendet der Abschaltung voraus. In 400/429/430 verlangt die neue Auskunft alle Bewohner gegangen alle drei steuerbaren Lernlichtgruppen, Wasser und Haube aus sowie beide Türen zu. Zählerstand, Fehlerursachen und konkrete Ersparnis bleiben ungeprüft. Alle Vorgaben sind unabhängig/temporär; keine neuen Möbel/Objekte oder Telefoninstallation. Bestand 53 tragbare/80 feste Ziele und Löffel zuerst bleiben; Altpfad entfernt, Speicher-IDs/-schlüssel des neuen Pfads bleiben. Nach 380 folgt 381, nach Zwischenabschluss 400 folgt 401. Laufzeit-/Editor-Kompilierung und verwaltete Katalog-/Speicher-/Antwort-/Quellentests bestanden. Vollständige Unity-/Gerätedarstellung, Erreichbarkeit, Animation und Interaktion bleiben ungeprüft; bisherige Lizenzblockade gilt nicht als behoben.
-
-**فارسی:** ۱۷۶۲ فایل Tanja نصب و ممیزی شد؛ صفر مفقود/نامعتبر، ۲۴۱ عبارت تازه و تمام ۱۵۲۱ ضبط قبلی عیناً حفظ‌شده‌اند. نمونه: [Stages381-430VoicePreview.wav](Stages381-430VoicePreview.wav).
-
-**English:** 1762 Tanja files installed/audited; zero missing/invalid, 241 new phrases and all 1521 earlier recordings preserved byte-for-byte. Preview: [Stages381-430VoicePreview.wav](Stages381-430VoicePreview.wav).
-
-**Deutsch:** 1762 Tanja-Dateien installiert/geprüft; keine fehlend/ungültig, 241 neue Ausdrücke und alle 1521 bisherigen Aufnahmen bytegleich erhalten. Hörprobe: [Stages381-430VoicePreview.wav](Stages381-430VoicePreview.wav).
-
-
-## هدف سند / Document purpose / Zweck
-
-**فارسی:** مرجع زندهٔ طراحی بر اساس خواسته‌های کاربر و وضعیت واقعی پروژه. هر تغییر مرتبط باید در همین سند و [فایل مراحل](GameStages.md) بازتاب یابد. زبان‌های این سند فارسی، انگلیسی و آلمانی‌اند؛ این تصمیم به معنی ترجمهٔ خودکار رابط بازی به سه زبان نیست.
-
-**English:** Living design reference based on the user's requests and the actual project. Reflect relevant changes here and in the [stage file](GameStages.md). This document uses Persian, English and German; it does not require a trilingual game interface.
-
-**Deutsch:** Lebendige Designreferenz auf Grundlage der Nutzerwünsche und des tatsächlichen Projekts. Relevante Änderungen hier und in der [Aufgabendatei](GameStages.md) nachführen. Dieses Dokument ist persisch, englisch und deutsch; daraus folgt keine dreisprachige Spieloberfläche.
-
-## چشم‌انداز / Vision / Vision
-
-**فارسی:** بازیکن در خانه حرکت می‌کند، واژهٔ آلمانی را می‌شنود یا می‌خواند، شیء واقعیِ صحنه را پیدا می‌کند و با جابه‌جایی آن حرف تعریف را تمرین می‌کند. راهنمای صوتی و نقشه مانع گم‌شدن هدف می‌شوند. تمرکز محتوای فعلی آشپزخانه است.
-
-**English:** The player explores a home, hears or reads a German word, finds its scene object and practices articles by moving objects. Spoken guidance and the map keep the objective clear. Current learning content focuses on the kitchen.
-
-**Deutsch:** Die spielende Person erkundet ein Haus, hört oder liest ein deutsches Wort, findet den Gegenstand in der Szene und übt Artikel durch Umplatzieren. Sprachanweisungen und Karte verdeutlichen das Ziel. Der aktuelle Lerninhalt konzentriert sich auf die Küche.
-
-## چرخهٔ اصلی و دامنه / Core loop and scope / Kernablauf und Umfang
-
-| فارسی | English | Deutsch |
-|---|---|---|
-| ورود و تنظیم شیوهٔ راهنما ← شنیدن/خواندن هدف ← دیدن هدف روی نقشه ← پیدا کردن و برداشتن وسیله ← دریافت بازخورد و گذاشتن وسیله ← هدف بعدی | Enter and choose guidance mode → hear/read the objective → locate it on the map → find and pick up the object → receive feedback and put it down → next objective | Starten und Hinweismodus wählen → Ziel hören/lesen → auf der Karte lokalisieren → Gegenstand finden und aufheben → Rückmeldung erhalten und ablegen → nächstes Ziel |
-| پس از واژه‌ها: خالی کردن میز ← انتخاب وسیله با مقالهٔ خواسته‌شده ← گذاشتن روی میز ← اصلاح اشتباه و رسیدن به شمار هدف ← مقالهٔ بعدی | After vocabulary: clear the table → select an item with the requested article → place it → correct mistakes and reach the target count → next article | Nach den Wortaufgaben: Tisch leerräumen → Gegenstand mit gewünschtem Artikel wählen → ablegen → Fehler korrigieren und Zielanzahl erreichen → nächster Artikel |
-| پاسخ اشتباه فرصت اصلاح دارد؛ پایان یک وظیفه به‌جای امتیاز یا ارز، پیشرفت محلی را جلو می‌برد. تایمر، جان، ارز و پرداخت درون‌بازی در نسخهٔ فعلی پیاده نشده‌اند. | Mistakes allow correction; completing an objective advances local progress. Timers, lives, currency and in-game payments are not implemented in the current version. | Fehler können korrigiert werden; ein abgeschlossenes Ziel erhöht den lokalen Fortschritt. Zeitlimit, Leben, Währung und In-App-Zahlungen sind in der aktuellen Version nicht umgesetzt. |
-| مخاطب فعلی یادگیرندهٔ واژه‌ها و حرف تعریف روزمره است؛ مسیر پیشنهادی تازه از A1.1 تا C1.2 هدف‌گذاری شده، ولی سطح رسمی یا نتیجهٔ آزمون زبانی تأیید نشده و گروه سنی تعیین نشده است. | Current content serves everyday vocabulary/article learners; the new proposed path targets A1.1–C1.2, but formal level or language-test outcomes are unverified and age group is unspecified. | Bisherige Inhalte dienen Alltagswortschatz/Artikeln; der neue Entwurf zielt auf A1.1–C1.2, doch formales Niveau und Sprachtestergebnisse sind ungeprüft, die Altersgruppe unbestimmt. |
-| پروژه Unity 6000.6.7f1 و URP است. کنترل Android/iOS و پیش‌نمایش رایانه وجود دارد؛ تأیید انتشار موبایل یا نتیجهٔ آزمون دستگاه واقعی هنوز ثبت نشده است. | The project uses Unity 6000.6.7f1 and URP. Android/iOS controls and desktop preview exist; mobile release approval and real-device test results are not recorded yet. | Das Projekt verwendet Unity 6000.6.7f1 und URP. Android-/iOS-Steuerung und Computer-Vorschau sind vorhanden; Freigabe für eine mobile Veröffentlichung und echte Gerätetestergebnisse sind noch nicht dokumentiert. |
-
-## وضعیت‌ها / Status legend / Statuslegende
-
-| کد / Code | فارسی | English | Deutsch |
-|---|---|---|---|
-| Done | پیاده‌شده؛ وضعیت کد و صحنه، نه تأیید انتشار | Implemented in code/scene; not a release certification | In Code/Szene umgesetzt; keine Veröffentlichungsfreigabe |
-| Next | درخواست آینده؛ هنوز انجام نشده | Requested future work; not implemented | Gewünschte künftige Arbeit; noch nicht umgesetzt |
-| Verify | بررسی لازم، هنوز تأیید کامل نشده | Verification required, not fully confirmed | Prüfung erforderlich, noch nicht vollständig bestätigt |
-| Limit | محدودیت فعلی یا قابلیت پشتیبانی‌نشده | Current limitation or unsupported capability | Aktuelle Einschränkung oder nicht unterstützte Funktion |
-
-## الزامات / Requirements / Anforderungen
-
-| ID | وضعیت / Status | فارسی | English | Deutsch |
-|---|---|---|---|---|
-| GDD-01 | Done | یادگیری واژه‌های آلمانی با حرف تعریف در خانهٔ سه‌بعدی و دید اول‌شخص. | Learn German vocabulary with articles in a first-person 3D home. | Deutsche Wörter mit Artikeln in einem dreidimensionalen Zuhause aus der Ichperspektive lernen. |
-| GDD-02 | Done | منوی ورود شامل شروع، ادامه، شروع دوباره، تنظیمات، انتخاب کنترل و آموزش انگلیسی How to play است؛ آموزش روی بازی فقط در اولین اجرا خودکار و سپس از منو باز می‌شود. | The opening menu provides start, continue, restart, settings, control selection and an English spotlight How to play tour that opens automatically only on first launch and can be replayed from the menu. | Das Startmenü bietet Start, Fortsetzen, Neustart, Einstellungen, Steuerungswahl und eine englische How-to-play-Einführung direkt im Spiel, die nur beim ersten Start automatisch und danach auf Menüaufruf erscheint. |
-| GDD-03 | Done | توقف، حرکت و پویانمایی محیط را متوقف می‌کند؛ ادامه، بازی را برمی‌گرداند. | Pause freezes movement and world animation; resume restores play. | Pause hält Bewegung und Weltanimationen an; Fortsetzen setzt das Spiel fort. |
-| GDD-04 | Done | کنترل گوشی: جوی‌استیک حرکت، کشیدن برای نگاه و دکمه‌های وابسته به عمل قابل انجام. | Mobile controls use a movement joystick, swipe look and contextual action buttons. | Mobilsteuerung: Bewegungsjoystick, Wischen zum Umschauen und situationsabhängige Aktionstasten. |
-| GDD-05 | Done | رایانه: WASD، نگاه ماوس، E تعامل، F نام کل، Shift+F جزء، G گذاشتن، R چرخش، Escape توقف و H آشکارکردن هدف در مرور. | Desktop: WASD, mouse look, E interact, F whole name, Shift+F part, G place, R rotate, Escape pause, H reveals a review target. | Computer: WASD, Mausblick, E Aktion, F Gesamtname, Shift+F Teil, G ablegen, R drehen, Escape Pause, H Wiederholungsziel zeigen. |
-| GDD-06 | Done | پایین کشیدن و ۰٫۶ ثانیه نگه‌داشتن: نشستن؛ تکرار پس از رها کردن: درازکشیدن. حرکت رو به بالا، یک حالت را برمی‌گرداند. C/X معادل رایانه‌اند. | Swipe down and hold for 0.6 seconds to sit; release and repeat to lie down. Swipe up and hold to rise one posture. Desktop equivalents are C/X. | Nach unten wischen und 0,6 Sekunden halten: hinsetzen; loslassen und wiederholen: hinlegen. Nach oben wischen und halten: eine Haltung aufrichten. Am Computer: C/X. |
-| GDD-07 | Done | دوربین و کپسول برخورد با وضعیت بدن تغییر می‌کنند؛ زیر مانع بلند شدن مجاز نیست. | Camera and collision capsule change with posture; obstacles prevent standing up. | Kamera und Kollisionskapsel folgen der Körperhaltung; Hindernisse verhindern das Aufstehen. |
-| GDD-08 | Done | دکمهٔ دایره‌ای یگانهٔ شناسایی برای شیء نزدیک و روبه‌رو، نامش را با Anhören طبق حالت نمایش، نشان می‌دهد یا می‌خواند. | A single circular Anhören button for the nearby aimed object identifies it using the selected text/voice mode. | Eine einzelne runde Anhören-Taste für den nahen anvisierten Gegenstand benennt ihn im gewählten Text-/Sprachmodus. |
-| GDD-09 | Done | برداشتن یک وسیله در هر لحظه، چرخش ۴۵ درجه و گذاشتن روی سطح رو به بالا در دسترس. | Carry one item at a time, rotate it by 45 degrees and place it on a reachable upward-facing surface. | Jeweils einen Gegenstand tragen, um 45 Grad drehen und auf einer erreichbaren nach oben gerichteten Fläche ablegen. |
-| GDD-10 | Done | درهای کابینت‌ها، کشو، وسایل بزرگ و اتاق‌ها تعاملی‌اند؛ شیر آب جریان نمایشی دارد. | Cabinet, drawer, appliance and room doors are interactive; the faucet has a visual water stream. | Schranktüren, Schublade, Geräte- und Zimmertüren sind bedienbar; der Wasserhahn zeigt einen Wasserstrahl. |
-| GDD-11 | Done | آشپزخانه ۵۳ وسیلهٔ قابل حمل دارد؛ ظروف، ابزار و خوراکی‌ها در کابینت، کشو، زیر سینک، یخچال و فریزر قرار دارند. | The kitchen has 53 portable objects, including dishes, tools and food in cupboards, drawer, under-sink cabinet, refrigerator and freezer. | Die Küche enthält 53 tragbare Gegenstände: Geschirr, Werkzeuge und Lebensmittel in Schränken, Schublade, Spülenunterschrank, Kühlschrank und Gefrierfach. |
-| GDD-12 | Done | صندلی‌ها، میز، طبقه‌ها و اجزای سینک مانند خروجی، سیفون، لوله و شلنگ‌ها نام دارند؛ اجزای ثابت قابل حمل نیستند. | Chairs, table, shelves and sink components such as drain, trap, pipes and hoses have vocabulary labels; fixed parts cannot be carried. | Stühle, Tisch, Böden und Spülenteile wie Abfluss, Siphon, Rohre und Schläuche sind benannt; feste Teile sind nicht tragbar. |
-| GDD-13 | Done | بیرون پنجرهٔ آشپزخانه باغی تزئینی با درخت، چمن، بوته، گل، مسیر، سنگ، نیمکت و تپه دیده می‌شود. | The kitchen window overlooks a decorative garden with trees, grass, shrubs, flowers, paths, stones, a bench and hills. | Durch das Küchenfenster sieht man einen dekorativen Garten mit Bäumen, Gras, Sträuchern, Blumen, Wegen, Steinen, einer Bank und Hügeln. |
-| GDD-14 | Done | دو اتاق خواب، پذیرایی، ورودی و حمام چیده شده‌اند؛ هر ۸۰ نمونهٔ F01–F16 ساخته شده و مسیرها باز مانده‌اند. | Bedrooms, living room, entrance and bathroom are furnished; all eighty F01–F16 instances are built with routes kept clear. | Schlafzimmer, Wohnzimmer, Eingang und Bad sind eingerichtet; alle achtzig F01–F16-Instanzen sind gebaut, Wege bleiben frei. |
-| GDD-15 | Done | مسیر پیش‌فرض ۴۳۰ وظیفه دارد: ۱۰۶ P، ۹۴ I، ۹۰ G و ۱۴۰ C؛ مسیر قدیمی ۱۳۶ حفظ است. | Default 430: 106 P/94 I/90 G/140 C; legacy 136 retained. | Standard 430: 106 P/94 I/90 G/140 C; Altpfad 136 bleibt. |
-| GDD-16 | Done | در تمرین ترکیبی، شرط عمل یا تأیید شرطی و پاسخ درست لازم است؛ ۴۰۰ میانی و پایان ۴۳۰ بدون اعلام ۴۳۱ است. | Combined tasks need action/guarded confirmation AND correct response; 400 is intermediate, 430 ending announces no 431. | Kombinationsaufgaben: Handlung/geschützte Bestätigung UND richtige Antwort; 400 Zwischenstand, Ende 430 ohne 431. |
-| GDD-17 | Done | سه تمرین پایانی به‌ترتیب der، die و das هستند؛ پیش از هرکدام میز باید کاملاً خالی شود. | The final three tasks use der, die and das in that order; the table must be cleared before each. | Die letzten drei Aufgaben behandeln nacheinander der, die und das; vor jeder Aufgabe muss der Tisch leergeräumt werden. |
-| GDD-18 | Done | در تمرین مقاله‌ها، نام هر وسیلهٔ گذاشته‌شده، شمار درست‌ها و وسیلهٔ اشتباه برای برداشتن اعلام می‌شود؛ برداشتن وسیله شمار را کم می‌کند و دوباره گذاشتنش امتیاز تکراری ندارد. | Article tasks announce each placed item, matching count and wrong items to remove; removing an item reduces the count and replacing it earns no duplicate credit. | Artikelaufgaben benennen jeden abgelegten Gegenstand, die passende Anzahl und falsche Gegenstände zum Entfernen; Wegnehmen senkt die Anzahl, erneutes Ablegen zählt nicht doppelt. |
-| GDD-19 | Done | نقشه هدف زنده و مسیر را نشان می‌دهد؛ در مرور هدف/مسیر تا «Ziel zeigen» یا H مخفی‌اند و با مرحلهٔ بعد دوباره مخفی می‌شوند. | Map follows live target/route; reviews hide marker/route until Ziel zeigen/H and hide them again on the next task. | Karte folgt echtem Ziel/Weg; Wiederholungen verbergen Ziel/Weg bis Ziel zeigen/H und bei nächster Aufgabe erneut. |
-| GDD-20 | Done | تنظیمات درس شامل فقط متن، فقط صدا و هر دو، بلندی گوینده، تست صدا و گزینهٔ «صدا نمی‌شنوم» است؛ حالت و بلندی ذخیره می‌شوند. | Lesson settings provide text only, voice only or both, narration volume, a sound test and a no-sound fallback; mode and volume persist. | Lektionseinstellungen bieten nur Text, nur Stimme oder beides, Sprachlautstärke, Klangtest und eine Hilfe bei fehlendem Ton; Modus und Lautstärke werden gespeichert. |
-| GDD-21 | Done | با صدای رسانهٔ صفر یا گزارش نشنیدن، هشدار نوشتاری و متن جایگزین فعال می‌شود؛ تشخیص خودکار کلید Silent آیفون پشتیبانی نمی‌شود. | Zero media volume or a no-sound report enables a written warning and text fallback; automatic detection of the iPhone Silent switch is unsupported. | Bei Medienlautstärke null oder gemeldetem fehlendem Ton erscheinen ein schriftlicher Hinweis und Ersatztext; der iPhone-Stummschalter wird nicht automatisch erkannt. |
-| GDD-22 | Done | Tanja با ۱۷۶۲ فایل معتبر نصب است؛ PCM16 تک‌کانالهٔ ۲۴ کیلوهرتز، ۸٪ آرام‌تر؛ صدای قدیمی حفظ است. | Tanja installed/audited: 1762 valid mono PCM16 24-kHz files, 8% slower; legacy retained. | Tanja installiert/geprüft: 1762 gültige Mono-PCM16-24-kHz-Dateien, 8 % langsamer; Altbestand bleibt. |
-| GDD-23 | Done | موسیقی از Assets/Resources/Music/background.mp3 بارگذاری می‌شود؛ کلید قطع/وصل در منوی مشترک کنار نقشه دارد و هنگام گویندگی آرام‌تر می‌شود. فایل موسیقی را کاربر می‌گذارد. | Music loads from Assets/Resources/Music/background.mp3, has a toggle in the shared menu beside the map and ducks during narration. The user supplies the track. | Musik wird aus Assets/Resources/Music/background.mp3 geladen, lässt sich im gemeinsamen Menü neben der Karte schalten und wird während der Sprache leiser. Die Musikdatei liefert der Nutzer. |
-| GDD-24 | Done | پیشرفت و جای تمام ۵۳ وسیله برای دو مسیر جدا ذخیره می‌شود؛ شناسهٔ CUR در مسیر جدید و کلید قدیمی v1 حفظ می‌شوند. شروع دوباره فقط مسیر انتخابی را پاک می‌کند؛ ذخیرهٔ ابری وجود ندارد. | Progress and all 53 item poses save separately per course; the new course uses CUR IDs and the legacy v1 key remains. Restart clears only the selected course; no cloud saves. | Fortschritt und Positionen aller 53 Gegenstände werden je Pfad getrennt gespeichert; neuer Pfad nutzt CUR-IDs, alter v1-Schlüssel bleibt. Neustart löscht nur gewählten Pfad; keine Cloud-Speicherung. |
-| GDD-25 | Done | وسیلهٔ داخل کشو همراه آن حرکت می‌کند؛ پس از گذاشتن روی سطح ثابت از کشو جدا می‌شود و پس از بازگرداندن به کشو دوباره همراهش حرکت می‌کند. | Drawer contents move with it; placing an item on a static surface detaches it, and returning it to the drawer reattaches it. | Schubladeninhalt bewegt sich mit; Ablegen auf einer festen Fläche löst den Gegenstand, Zurücklegen in die Schublade verbindet ihn wieder. |
-| GDD-26 | Done | هر ۸۰ نمونهٔ برنامه‌ریزی‌شدهٔ F01–F16 ساخته‌اند؛ هیچ وسیله‌ای از این صف در انتظار نیست. | All eighty planned F01–F16 instances are built; none remain pending in this queue. | Alle achtzig geplanten F01–F16-Instanzen sind gebaut; in diesem Plan bleibt keine offen. |
-| GDD-27 | Verify | آزمون روی گوشی واقعی برای چندلمسی، اندازهٔ رابط، صدا، هدست، بازگشت به برنامه و هشدار بی‌صدا لازم است؛ آزمون Unity جای آن را نمی‌گیرد. | Real-device testing is required for multitouch, UI sizing, sound, headphones, app resume and mute warnings; Unity tests do not replace it. | Tests auf echten Geräten für Mehrfingereingabe, UI-Größe, Ton, Kopfhörer, App-Rückkehr und Stummhinweise sind nötig; Unity-Tests ersetzen sie nicht. |
-| GDD-28 | Limit | گذاشتن آزاد فعلی، هم‌پوشانی وسایل و لبهٔ میز را رد نمی‌کند؛ پخت‌وپز، سرمایش و جمع شدن آب شبیه‌سازی نشده‌اند. | Current free placement does not reject item overlaps or table edges; cooking, refrigeration and water accumulation are not simulated. | Das freie Ablegen verhindert derzeit weder Überlappungen noch Tischkanten; Kochen, Kühlung und Wasseransammlung werden nicht simuliert. |
-| GDD-29 | Done | اصلاح بصری سطوح چوب، گچ، سنگ، کاشی و فلز؛ لبه‌های نرم‌شده، مدل پالایش‌شدهٔ کاسه/بشقاب/لیوان و قاشق/چنگال/چاقو/سیب/گوجه، قرنیز و پوشش کاشی، نور و بازتاب محیط و رندر موبایل با وضوح اصلی. | Visual polish adds wood, plaster, stone, tile and metal surfaces; softened edges, refined bowl/plate/glass and spoon/fork/knife/apple/tomato models, baseboards and tile cladding, environment light/reflections and native-resolution mobile rendering. | Optische Überarbeitung mit Holz-, Putz-, Stein-, Fliesen- und Metalloberflächen; weicheren Kanten, verfeinerten Schüssel-/Teller-/Glas- sowie Löffel-/Gabel-/Messer-/Apfel-/Tomatenmodellen, Sockelleisten und Fliesenverkleidung, Umgebungslicht/-reflexionen und mobiler Darstellung in nativer Auflösung. |
-| GDD-30 | Done | فهرست برنامه‌ریزی اکنون ۸۰ ردیف عادی و صفر ردیف وسیلهٔ [ ] دارد؛ وضعیت نمونه‌های هم‌نام در اتاق‌های متفاوت مستقل است. | The furnishing plan now has 80 normal entries and zero [ ] item entries; same-named instances in different rooms have independent status. | Der Einrichtungsplan hat jetzt 80 normale und null [ ]-Gegenstandseinträge; gleichnamige Instanzen verschiedener Räume haben getrennten Status. |
-| GDD-31 | Done | هود و وسایل مهم موجود نام دارند. اجزای قابل تشخیص مانند پایه و صفحهٔ میز، در و دستگیرهٔ کابینت، قاب پنجره و اجزای حمام نام و صدا دارند؛ Anhören فقط نام صاحب و Detail فقط نام جزء را ارائه می‌کند؛ عمل اصلی صاحب حفظ می‌شود. | The hood and major existing objects are named. Recognizable parts such as table legs/top, cabinet doors/handles, window frames and bathroom parts have names and voices; Anhören names only the owner and Detail names only the part, preserving the owner's action. | Abzugshaube und wichtige vorhandene Objekte sind benannt. Erkennbare Teile wie Tischbeine/-platte, Schranktüren/-griffe, Fensterrahmen und Badteile haben Namen und Stimmen; Anhören benennt nur das Gesamtobjekt und Detail nur das Teil; die ursprüngliche Aktion bleibt erhalten. |
-| GDD-32 | Done | حمام ۵۴–۶۳، اتاق خواب ۶۴–۸۳، پذیرایی/راهرو ۸۴–۱۰۳، لوازم خانه ۱۰۴–۱۲۳، ده مورد آخر ۱۲۴–۱۳۳ و SORT-DER/DIE/DAS اکنون ۱۳۴–۱۳۶ هستند؛ ذخیرهٔ قبلی وضعیت معادل خود را حفظ می‌کند. | Bathroom tasks are 54–63, bedrooms 64–83, living room/hallway 84–103, house accessories 104–123, final ten 124–133 and SORT-DER/DIE/DAS 134–136; existing saves retain equivalent phases. | Badaufgaben sind 54–63, Schlafzimmer 64–83, Wohnzimmer/Flur 84–103, Haushaltszubehör 104–123, letzte zehn 124–133 und SORT-DER/DIE/DAS 134–136; bisherige Speicherstände behalten entsprechende Phasen. |
-| GDD-33 | Limit | تجهیزات حمام در این نسخه برای شناسایی‌اند؛ آب دوش، فلاش و تخلیه شبیه‌سازی نمی‌شوند. دو درِ کابینت روشویی باز می‌شوند؛ عملکرد شیر آشپزخانهٔ قبلی حفظ شده است. | Bathroom fixtures currently support identification; shower water, flushing and drainage are not simulated. The vanity's two doors open; the existing kitchen faucet remains functional. | Badobjekte dienen derzeit der Benennung; Duschwasser, Spülung und Abfluss werden nicht simuliert. Die zwei Waschtischtüren öffnen sich; der bisherige Küchenwasserhahn bleibt funktionsfähig. |
-| GDD-34 | Done | ۲۰ نمونهٔ F01–F04 شامل تخت و وسایل خواب، کمد، دراور، پاتختی، چراغ، چوب‌لباسی، میز تحریر، صندلی کار، قفسه و کتاب ساخته شدند؛ هر نمونه هدف مستقلِ شناسایی دارد. هشت در/کشو باز می‌شوند و اجزای مهم نام و صدا دارند. | 20 F01–F04 instances provide beds/bedding, wardrobe, dresser, bedside furniture, lamps, hanger, desk, office chair, bookcase and book; each instance has its own identification target. Eight doors/drawers open and meaningful parts have names/voices. | 20 F01–F04-Instanzen umfassen Betten/Bettzeug, Schrank, Kommode, Nachttisch, Lampen, Bügel, Schreibtisch, Bürostuhl, Regal und Buch; jede hat ein eigenes Benennungsziel. Acht Türen/Schubladen öffnen sich, wichtige Teile haben Namen/Stimmen. |
-| GDD-35 | Limit | اشیای اتاق خواب ثابت‌اند؛ بالش، کتاب و چوب‌لباسی قابل حمل نیستند. چراغ پاتختی اتاق اول و چراغ مطالعهٔ اتاق دوم اکنون پس از آماده‌شدن سناریو کنترل زمان اجرا دارند؛ سایر چراغ‌های این گروه کلید مستقل ندارند. | Bedroom objects remain fixed; pillows, book and hanger are not portable. First-bedroom bedside lamp and second-bedroom desk lamp now receive runtime action owners when scenarios initialize; other lamps in this batch have no independent controls. | Schlafzimmerobjekte bleiben fest; Kissen, Buch und Bügel sind nicht tragbar. Nachttischlampe im ersten und Leselampe im zweiten Schlafzimmer erhalten bei Szenariostart Laufzeitbedienung; andere Lampen dieser Gruppe haben keine eigene Steuerung. |
-| GDD-36 | Done | ۲۰ مورد F05–F08 با نام، صدا و هدف مستقل ساخته شدند؛ دو در جاکفشی باز می‌شوند و اجزای مهم نام دارند. | Twenty F05–F08 instances have names, voice and separate identification targets; two shoe-cabinet doors open and meaningful components are named. | Zwanzig F05–F08-Instanzen haben Namen, Stimme und eigene Benennungsziele; zwei Schuhschranktüren öffnen sich, wichtige Teile sind benannt. |
-| GDD-37 | Limit | وسایل F05–F08 ثابت‌اند؛ تلویزیون تصویر ثابت و آینه سطح فلزی براق دارد؛ تعویض کانال و بازتاب زنده پیاده نشده‌اند. چراغ‌های پذیرایی اکنون با کلید F15 خاموش و روشن می‌شوند. | F05–F08 objects are fixed; TV shows a still image and the mirror uses polished metal; channel control and live reflections are not implemented. Living-room lights now toggle with the F15 switch. | F05–F08-Objekte sind fest; TV zeigt ein Standbild, der Spiegel nutzt poliertes Metall; Kanalwahl und Echtzeitspiegelung sind nicht umgesetzt. Wohnzimmerlampen werden jetzt mit dem F15-Schalter geschaltet. |
-| GDD-38 | Done | ۲۰ مورد F09، F12، F13 و چهار ردیف اول F14 ساخته شدند؛ نام و صدای اجزا، هدف مستقل و دو عمل بازکردن لباس‌شویی دارند. | Twenty F09, F12, F13 and first-four-F14 instances have independent targets, named/spoken parts and two washer opening actions. | Zwanzig Instanzen aus F09, F12, F13 und den ersten vier F14-Zeilen haben eigene Ziele, benannte/gesprochene Teile und zwei Waschmaschinen-Öffnungsaktionen. |
-| GDD-39 | Limit | اشیای این گروه ثابت‌اند؛ شست‌وشو، جاروکردن، باز و بسته شدن چتر، زمان زندهٔ ساعت و بازتاب زندهٔ آینه پیاده نشده‌اند. | This batch is fixed; washing, cleaning, opening/folding the umbrella, a live clock and live mirror reflections are not implemented. | Diese Gruppe ist fest; Waschen, Reinigen, Schirm-Auf-/Zuklappen, laufende Uhr und Echtzeitspiegelung sind nicht umgesetzt. |
-| GDD-40 | Done | ده وسیلهٔ آخر F14–F16 نام، صدای آلمانی، هدف مستقل و نام اجزای مهم دارند؛ کلید برق سه چراغ پذیرایی را قطع و وصل می‌کند و وضعیتش با ورود دوباره روشن می‌شود. | Final ten F14–F16 objects have German names/voice, independent targets and named parts; the switch controls three living-room lights and resets on at scene reload. | Letzte zehn F14–F16-Objekte haben deutsche Namen/Stimme, eigene Ziele und benannte Teile; der Schalter steuert drei Wohnzimmerlampen und ist nach Neuladen wieder an. |
-| GDD-41 | Limit | این ده مورد ثابت‌اند؛ گرمایش، عملکرد پریز، برش، توست‌کردن، قهوه‌سازی و وزن‌کشی شبیه‌سازی نشده‌اند. | These ten objects are fixed; heating, socket operation, cutting, toasting, brewing and weighing are not simulated. | Diese zehn Objekte sind fest; Heizung, Steckdosenbetrieb, Schneiden, Toasten, Kaffeebrühen und Wiegen werden nicht simuliert. |
-
-| GDD-42 | Next | ۴۳۰ اقتباس گزینه‌ای اجرا می‌شوند؛ معیارهای اصلی تولید آزاد هنوز Next هستند. | 430 selection-based adaptations run; original free-production criteria remain Next. | 430 Auswahlanpassungen laufen; ursprüngliche freie Produktionskriterien bleiben Next. |
-| GDD-43 | Done | متن، پاسخ و شرط عمل برای ۴۳۰ وظیفه و چهار پرونده در منابع بازی تعریف شده‌اند؛ تولید آزاد در GDD-42/GDD-44 و تست موتور در GDD-49 جداگانه باز است. | Text, choices and action criteria for 430 tasks/four packets are defined in runtime resources; free production remains open in GDD-42/GDD-44 and engine testing in GDD-49. | Text, Auswahl und Handlungskriterien für 430 Aufgaben/vier Pakete liegen in Laufzeitressourcen; freie Produktion bleibt in GDD-42/GDD-44 und Engineprüfung in GDD-49 offen. |
-| GDD-44 | Next | هدف دوره A1.1–C1.2 با مرور هر ده و سنجش هر بیست مرحله؛ .1/.2 تقسیم داخلی‌اند. C1 به متن چنددیدگاهی، استنباط، پاسخ باز و پرسش تازه نیاز دارد؛ تعداد کلیک مدرک سطح نیست. | Target A1.1–C1.2 with review every ten and checks every twenty stages; .1/.2 are internal divisions. C1 needs multiple perspectives, inference, open responses and fresh follow-ups; click counts do not certify level. | Ziel A1.1–C1.2 mit Wiederholung je zehn und Prüfung je zwanzig Aufgaben; .1/.2 sind interne Abschnitte. C1 braucht Perspektiven, Schlussfolgern, offene Antworten und neue Rückfragen; Klickzahlen belegen kein Niveau. |
-| GDD-45 | Verify | فلاش، هود، دوش، شیر روشویی، چراغ پاتختی و مطالعه با کنترل زمان اجرا، شمارندهٔ رویداد و چیدمان مستقل در کد پیاده شده‌اند. صدا/جریان، شبیه‌سازی آموزشی است؛ اجرای کامل موتور و دستگاه تأیید نشده است. شناسه و پیشرفت حفظ‌اند. | Flush, hood, shower, basin tap, bedside and desk lamps have runtime controls, event counters and independent presets in code. Effects are educational simulations; full engine/device execution remains unverified. IDs/progress are retained. | Spülung, Haube, Dusche, Waschtischarmatur, Nacht-/Leselampe haben Laufzeitbedienung, Ereigniszähler und unabhängige Vorgaben im Code. Effekte sind Lernsimulationen; vollständige Engine-/Geräteausführung ungeprüft. IDs/Fortschritt bleiben. |
-| GDD-46 | Verify | ۴۳۰ ردیف، شناسه‌ها، اتصال به ۵۳ قابل حمل/۸۰ ثابت، چهار منبع و شمار صدا به‌صورت ایستا/مدیریت‌شده بررسی شده‌اند. هم‌ارزی سطح، کیفیت ارزیاب و تجربهٔ زبان‌آموز نیازمند بازبینی آموزشی و آزمون‌اند؛ نتیجهٔ رسمی C1 ثبت نشده است. | 430 rows, IDs, 53-portable/80-fixed bindings, four packets and voice counts passed static/managed checks. Level equivalence, assessor quality and learner experience still require teaching review/trials; no formal C1 result is recorded. | 430 Zeilen, IDs, Bindungen an 53 tragbare/80 feste Ziele, vier Quellen und Sprachanzahl sind statisch/verwaltet geprüft. Niveaugerechtigkeit, Bewertungsqualität und Lernerfahrung brauchen didaktische Prüfung/Tests; kein formales C1-Ergebnis. |
-
-| GDD-47 | Done | محتوای داخلی A1.1–C1.2؛ سنجش رسمی یا تولید آزاد C1 اجرا نشده است. | Internal A1.1–C1.2 content; formal/free-production C1 assessment not implemented. | Interner Inhalt A1.1–C1.2; formale/freie C1-Produktionsbewertung nicht umgesetzt. |
-| GDD-48 | Limit | دسترسی تولید فایل با Sonna تأیید نشد؛ پس از درخواست تازهٔ کاربر، صدای آلمانی دیگری انتخاب و Tanja نصب شد؛ این صدا Sonna نامیده نمی‌شود. | Sonna file-generation access remains unconfirmed; after the new user request another German voice was selected and Tanja installed, without labeling it Sonna. | Sonna-Dateierzeugung bleibt unbestätigt; auf neue Nutzeranweisung andere deutsche Stimme gewählt und Tanja installiert, nicht als Sonna bezeichnet. |
-| GDD-49 | Verify | کامپایل/آزمون مدیریت‌شده موفق است؛ اجرای جداگانهٔ تازه پیش از آزمون با کد ‎−9 و بدون لاگ Unity بسته شد. codesign امضای هر دو نصب Editor را نامعتبر گزارش کرد؛ تلاش‌های قبلی خطای Licensing Client/headless داشتند. هیچ نتیجهٔ کامل موتور/گوشی ثبت نشده است. | Compilation/managed checks pass. Latest isolated launch exited −9 before tests without a Unity log; codesign reports invalid signatures for both Editor installations. Earlier runs failed on Licensing Client/headless. No full engine/device pass is recorded. | Kompilierung/verwaltete Prüfungen bestanden. Neuester isolierter Start endete vor Tests mit −9 ohne Unity-Log; codesign meldet ungültige Signaturen beider Editorinstallationen. Frühere Läufe scheiterten an Licensing Client/headless. Kein vollständiger Engine-/Gerätepass. |
-
-| GDD-50 | Done | صدای de-DE-TanjaNeural با تأیید انتخاب جایگزین توسط کاربر برای ۱۲۵ عبارتِ ۳۰ مرحله نصب و از نظر قالب، مدت، سکوت و پوشش کلیدها بررسی شد؛ آزمون شنیداری گوشی هنوز Verify است. | User-authorized replacement de-DE-TanjaNeural is installed for all 125 phrases of thirty stages; format, duration, silence and key coverage checked; phone listening remains Verify. | Nutzerautorisierter Ersatz de-DE-TanjaNeural für alle 125 Sätze von dreißig Aufgaben installiert; Format, Dauer, Stille und Schlüsselabdeckung geprüft; Smartphone-Hörtest bleibt Verify. |
-
-| GDD-51 | Done | مراحل ۳۱–۸۰ طبق برنامه اضافه شدند؛ ۲۳ برداشتن، ده شناسایی حمام و ۱۷ شناسایی اتاق‌خواب. شناسه و ذخیرهٔ قبلی حفظ و پایان ۳۰ به مرحلهٔ ۳۱ ادامه می‌یابد؛ جسم ثابت با Detail یا برداشتن تأیید نمی‌شود. | Added planned tasks 31–80: 23 pickups, ten bathroom and seventeen bedroom identifications. IDs/saves preserved; old completion at thirty resumes at 31; Detail/pickup cannot complete a fixed target. | Geplante Aufgaben 31–80 ergänzt: 23 Aufhebe-, zehn Bad- und siebzehn Schlafzimmerbenennungen. IDs/Speicherstände erhalten; alter Abschluss dreißig setzt bei 31 fort; Detail/Aufheben erfüllt kein festes Ziel. |
-
-| GDD-52 | Done | بستهٔ Tanja برای ۸۰ مرحله به ۳۱۹ فایل رسید؛ ۱۹۴ ضبط تازه ساخته و تمام ۱۲۵ فایل قبلی عیناً حفظ شدند. ممیزی فایل‌ها صفر مفقود/نامعتبر داشت؛ پخش گوشی هنوز Verify است. | Tanja pack expanded to 319 clips for eighty tasks: 194 new recordings, all previous 125 byte-preserved. Audit found no missing/invalid clips; phone playback remains Verify. | Tanja-Paket für achtzig Aufgaben auf 319 Dateien erweitert: 194 neue Aufnahmen, alle bisherigen 125 bytegleich erhalten. Audit ohne fehlende/ungültige Dateien; Smartphone-Wiedergabe Verify. |
-
-| GDD-53 | Done | ۵۰ هدف شناسایی CUR-081–130 با نمونهٔ واقعی و دستور صریح اضافه شد؛ پایان ۸۰ از ۸۱ ادامه می‌یابد، بدون تغییر ۸۰ هدف قبلی یا کلید ذخیره. | Added fifty actual fixed-identification targets CUR-081–130 with explicit instructions; completed eighty resumes at 81 without altering prior eighty targets/save key. | Fünfzig echte feste Benennungsziele CUR-081–130 mit klaren Texten ergänzt; alter Achtzigerabschluss setzt bei 81 fort, bisherige achtzig Ziele/Speicherschlüssel unverändert. |
-| GDD-54 | Done | ۱۹۹ ضبط تازهٔ Tanja به بسته اضافه شد؛ تمام ۳۱۹ ضبط قبلی حفظ و ۵۱۸ فایل بررسی شدند؛ مرحلهٔ تازهٔ صوتی جدا ساخته نشد. | Added 199 Tanja recordings, retained all previous 319 and checked all 518; audio creates no separate extra stage. | 199 Tanja-Aufnahmen ergänzt, bisherige 319 erhalten, alle 518 geprüft; Audio erzeugt keine zusätzliche Aufgabe. |
-
-| GDD-55 | Done | CUR-131–180 شامل سه شناسایی باقی و ۴۷ مرور کاربردی با reviewOf معتبر اضافه شد؛ اهداف تکراری بدون مرجع معرفی معتبر پذیرفته نمی‌شوند. | CUR-131–180 adds three remaining identifications and 47 contextual reviews with valid reviewOf; duplicate targets without valid introduction references are rejected. | CUR-131–180 ergänzt drei letzte Benennungen und 47 Kontextwiederholungen mit gültigem reviewOf; Zielwiederholung ohne gültige Einführungsreferenz abgelehnt. |
-| GDD-56 | Done | مرور با شناسهٔ مستقل، برداشتن تازه و کمک اختیاری نقشه اجرا می‌شود؛ CarrySequence مانع تأیید وسیلهٔ ازپیش‌در‌دست و رویداد قدیمی است. | Reviews use independent IDs, fresh pickups and optional map help; CarrySequence rejects already-held targets/stale notifications. | Wiederholungen mit eigenen IDs, frischem Aufheben und optionaler Kartenhilfe; CarrySequence lehnt zuvor getragene Ziele/alte Meldungen ab. |
-| GDD-57 | Done | ۱۰۹ فایل Tanja افزوده و همهٔ ۵۱۸ فایل قبلی حفظ شدند؛ بستهٔ ۶۲۷تایی از نظر قالب/مدت/سکوت بررسی شد. مرحلهٔ اضافی صرفاً صوتی ساخته نشد. | Added 109 Tanja clips and retained all previous 518; 627-file pack checked for format/duration/silence. No extra audio-only stage created. | 109 Tanja-Dateien ergänzt, bisherige 518 erhalten; 627er-Paket auf Format/Dauer/Stille geprüft. Keine zusätzliche reine Audioaufgabe. |
-| GDD-58 | Done | حذف مسیر قدیمی و دکمهٔ آن؛ فقط CUR-001–430 با حفظ ذخیرهٔ جدید اجرا می‌شود. | Removed the old course and its button; only CUR-001–430 runs, retaining its save. | Altpfad und Schaltfläche entfernt; ausschließlich CUR-001–430 mit erhaltenem Speicherstand. |
-| GDD-59 | Done | همهٔ ۲۴۲ نام واقعی اشیا و اجزا صدای معتبر دارند؛ بررسی خودکار اضافه شد. | All 242 actual object/part names have valid audio; automated coverage added. | Alle 242 tatsächlichen Objekt-/Teilnamen haben gültiges Audio; automatische Abdeckungsprüfung ergänzt. |
-| GDD-60 | Done | آموزش ۲۱گامی با تاریک‌کردن اطراف کنترل؛ فقط بار اول خودکار و سپس از منو؛ توقف بازی و انسداد ورودی پشت آموزش. | 21-step spotlight tutorial; automatic only once, then menu replay; paused game and blocked underlying input. | 21-Schritt-Einführung mit hervorgehobener Bedienung; automatisch nur einmal, danach über Menü; Spiel pausiert, darunterliegende Eingaben gesperrt. |
-
-## ساختار و منابع / Structure and sources / Aufbau und Quellen
-
-| فایل / File | فارسی | English | Deutsch |
-|---|---|---|---|
-| [GameStages.md](GameStages.md) | مرحلهٔ ۰، ترتیب واقعی هدف‌ها و شرط تکمیل | Stage 0, actual objective order and completion rules | Stufe 0, tatsächliche Zielreihenfolge und Abschlussregeln |
-| [CurriculumPlan.md](CurriculumPlan.md) · [JSON](CurriculumPlan.json) | طرح ۴۰۰ مرحله؛ ۴۳۰ اقتباس گزینه‌ای در کد Done؛ تولید آزاد Next | 400-stage design; 430 selection-based adaptations Done in code; free production Next | 400er-Entwurf; 430 Auswahlanpassungen im Code Done; freie Produktion Next |
-| [tools.txt](tools.txt) | نام اشیا و معماری به سه زبان؛ شمارهٔ بخش‌ها مربوط به توسعه است | Trilingual object/architecture names; section numbers refer to development | Dreisprachige Objekt-/Architekturnamen; Abschnittsnummern beziehen sich auf die Entwicklung |
-| [Learning.md](Learning.md) | راهنمای پیاده‌سازی، کنترل و بررسی | Implementation, controls and validation guide | Leitfaden für Umsetzung, Steuerung und Prüfung |
-| [IntroVoice.json](IntroVoice.json) | متن متناظر با کلید فایل صوتی | Text mapped to each audio-file key | Text zu jedem Audiodateischlüssel |
-| [IntroVoiceProfile.json](IntroVoiceProfile.json) | پروفایل صدای فعلی | Current voice profile | Aktuelles Stimmprofil |
-| [SampleScene.unity](../Assets/Scenes/SampleScene.unity) | صحنهٔ فعلی | Current scene | Aktuelle Szene |
-| [LearningProgress.cs](../Assets/scripts/LearningProgress.cs) | منبع منطق و ترتیب مراحل | Source of progression/order rules | Quelle der Fortschritts- und Reihenfolgeregeln |
-
-## قواعد پذیرش / Acceptance rules / Abnahmeregeln
-
-**فارسی:** هدف جست‌وجو باید با شیء واقعی، صدای نام، متن و نقطهٔ مینی‌مپ یکی باشد. در تمرین مقاله‌ها، میز از قبل خالی شود، وسیلهٔ اشتباه مانع تکمیل باشد و جابه‌جایی یک وسیله دوبار شمرده نشود. کاربر بی‌صدا نباید بدون راهنمای نوشتاری بماند. هر ۸۰ نمونهٔ F01–F16 ساخته‌اند؛ وسایل جدیدِ خارج از این صف به درخواست بعدی نیاز دارند.
-
-**English:** Search targets must agree across scene object, spoken name, text and minimap marker. Article tasks must begin with an empty table, reject completion with wrong items and prevent duplicate counting. A user without audible guidance must have readable instructions. All eighty F01–F16 instances are built; additional items beyond this queue require a subsequent request.
-
-**Deutsch:** Suchziel, Szenenobjekt, gesprochener Name, Text und Minikartenmarkierung müssen übereinstimmen. Artikelaufgaben beginnen mit leerem Tisch, dürfen mit falschen Gegenständen nicht abschließen und zählen nicht doppelt. Bei fehlendem Ton müssen Anweisungen lesbar bleiben. Alle achtzig F01–F16-Instanzen sind gebaut; weitere Gegenstände außerhalb dieses Plans erfordern eine neue Anweisung.
-
-## نگهداری / Maintenance / Pflege
-
-**فارسی:** همراه هر درخواست جدید، الزام مرتبط در سه زبان و وضعیت واقعی آن اصلاح شود. تغییر مراحل در GameStages.md ثبت شود؛ برای تغییری که مرحلهٔ قابل بازی نمی‌سازد، شمارهٔ تازه اختراع نشود. نام هر شیء جدید در tools.txt ثبت شود. موارد انجام‌نشده فقط با وضعیت Next یا Verify درج شوند؛ محدودیت‌ها پنهان نشوند. راهنمای پایدار این کار در [AGENTS.md](../AGENTS.md) ثبت شده است.
-
-**English:** With each new request, update the related trilingual requirement and actual status. Record stage changes in GameStages.md; do not invent a new playable stage for a feature-only change. Register every new object name in tools.txt. Mark unfinished work Next or Verify and retain known limitations. Persistent instructions are in [AGENTS.md](../AGENTS.md).
-
-**Deutsch:** Bei jeder neuen Anweisung die zugehörige dreisprachige Anforderung und ihren tatsächlichen Status aktualisieren. Aufgabenänderungen in GameStages.md nachführen; für reine Funktionsänderungen keine neue spielbare Stufe erfinden. Neue Objektnamen in tools.txt eintragen. Unfertige Arbeit als Next oder Verify kennzeichnen und bekannte Einschränkungen beibehalten. Dauerhafte Anweisungen stehen in [AGENTS.md](../AGENTS.md).
-
-## تغییرات سند / Document changes / Dokumentänderungen
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | نسخهٔ نخست از وضعیت فعلی: خانه، آشپزخانه، ۵۶ هدف، متن/صدا، صداهای عصبی، باغ و مینی‌مپ؛ ساخت اسناد زنده طبق درخواست کاربر | First baseline of the current home, kitchen, 56 objectives, text/voice, neural speech, garden and minimap; living documents created as requested | Erste Bestandsaufnahme von Haus, Küche, 56 Aufgaben, Text/Sprache, neuronaler Stimme, Garten und Minikarte; lebendige Dokumente auf Nutzerwunsch erstellt |
-
-
-## جزئیات اصلاح بصری و صف وسایل / Visual polish and furnishing queue / Optische Überarbeitung und Einrichtungsplan
-
-**فارسی:** تصاویر مقایسهٔ قبل و بعد در Documentation/VisualReview نگه‌داری می‌شوند. اصلاح فعلی جنس سطح و شکل چند ظرف را بهتر می‌کند؛ ۵۳ وسیلهٔ قابل حمل حفظ شده‌اند؛ با افزودن شناسایی حمام، شمار وظیفه‌ها اکنون ۱۳۶ است. قرنیز و پوشش کاشی جزئیات معماری‌اند. اتاق‌های خواب گروه‌های F01–F04 و حمام گروه‌های F10/F11 را دارند؛ پذیرایی و ورودی گروه‌های F05–F08 را دارند. بخش ۱۴ tools.txt اکنون هر ۸۰ مورد ساخته‌شده را ثبت می‌کند و ردیف وسیلهٔ [ ] ندارد. کیفیت و سرعت رندر روی گوشی واقعی باید بررسی شود.
-
-**English:** Before/after comparison images are stored in Documentation/VisualReview. This pass improves surface materials and several tableware shapes; the 53 portable objects remain, and bathroom identification now brings the task count to 136. Baseboards and tile cladding are architectural details. Bedrooms contain F01–F04 and the bathroom F10/F11; living room and entrance contain F05–F08. Section 14 of tools.txt now records all eighty built instances with no [ ] item rows. Rendering quality and performance require real-device checks.
-
-**Deutsch:** Vorher-/Nachher-Vergleiche liegen in Documentation/VisualReview. Die Überarbeitung verbessert Oberflächen und einige Geschirrformen; die 53 tragbaren Gegenstände bleiben bestehen, mit Badbenennung gibt es nun 136 Aufgaben. Sockelleisten und Fliesenverkleidung sind Architekturdetails. Schlafzimmer enthalten F01–F04 und das Bad F10/F11; Wohnzimmer und Eingang enthalten F05–F08. Abschnitt 14 von tools.txt erfasst jetzt alle achtzig gebauten Instanzen ohne [ ]-Gegenstandszeilen. Darstellungsqualität und Leistung müssen auf echten Geräten geprüft werden.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | اصلاح گرافیک محیط و وسایل موجود؛ ثبت ۸۰ مورد در انتظار در ۱۶ گروه، بدون چیدن وسایل جدید | Improved existing environment/prop graphics; recorded 80 pending instances in 16 batches without adding new furnishings | Grafik vorhandener Umgebung/Gegenstände verbessert; 80 offene Instanzen in 16 Gruppen erfasst, ohne neue Einrichtung hinzuzufügen |
-
-
-## وسایل و اجزای جدید / New fixtures and parts / Neue Objekte und Bauteile
-
-**فارسی:** ده وسیلهٔ حمام با شناسایی نام کامل می‌شوند، نه برداشتن. شناسایی یک جزءِ متعلق به هدف هم آن هدف را پیدا‌شده حساب می‌کند. لایهٔ نام جزء مستقل از KitchenInteractable است تا دستگیرهٔ کابینت همچنان در را باز کند. واژه‌ها و ترتیب قطعات ثابت در BathroomContent.json و فهرست سه‌زبانه ثبت شده‌اند. همهٔ ۸۰ مورد اکنون ساخته‌اند.
-
-**English:** The ten bathroom objectives complete by identifying, not carrying. Identifying a part belonging to the target also counts as finding it. Part metadata is separate from KitchenInteractable so cabinet handles retain opening actions. BathroomContent.json and the trilingual inventory record names and fixed-target order. All eighty planned instances are now built.
-
-**Deutsch:** Die zehn Badaufgaben werden durch Benennen statt Tragen abgeschlossen. Auch das Benennen eines zum Ziel gehörenden Teils zählt. Bauteil-Metadaten sind von KitchenInteractable getrennt, damit Schrankgriffe weiterhin Türen öffnen. BathroomContent.json und das dreisprachige Verzeichnis erfassen Namen und Zielreihenfolge. Alle achtzig geplanten Instanzen sind jetzt gebaut.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | ساخت ۱۰ وسیلهٔ F10/F11، تکمیل نام هود و اجزا، افزایش وظیفه‌ها به ۶۶ و حفظ ۷۰ ردیف در انتظار | Built 10 F10/F11 fixtures, named hood/parts, expanded to 66 tasks and retained 70 pending rows | 10 F10-/F11-Objekte gebaut, Haube/Teile benannt, auf 66 Aufgaben erweitert und 70 offene Zeilen erhalten |
-
-
-## گروه‌های F01–F04 / Batches F01–F04 / Gruppen F01–F04
-
-**فارسی:** هر دو اتاق خواب اکنون چیده شده‌اند؛ فهرست دقیق نمونه‌ها و نام اجزا در BedroomContent.json است. بالش و رختخواب با سطح نرم و لحاف آویخته، چوب با متریال مشترک و چراغ با کلاهک و نور گرم ساخته شده‌اند. کمد، کشوها، قفسه و محل مطالعه از مسیر ورود قابل دسترسی‌اند. وسایل تکراریِ دو اتاق هدف‌های جدا با محل متفاوت روی مینی‌مپ دارند. موردی از صف ۸۰تایی باقی نمانده است.
-
-**English:** Both bedrooms are now furnished; BedroomContent.json records exact instances and component vocabulary. Bedding uses soft surfaces and draped duvets, furniture shares wood materials, and lamps have shades and warm light. Storage, shelves and study areas remain reachable from the entrance. Repeated nouns in the two rooms are separate targets at different minimap positions. No planned instances remain pending.
-
-**Deutsch:** Beide Schlafzimmer sind eingerichtet; BedroomContent.json dokumentiert genaue Instanzen und Bauteilnamen. Bettzeug nutzt weiche Flächen und herabhängende Decken, Möbel gemeinsame Holzmaterialien und Lampen Schirme mit warmem Licht. Aufbewahrung, Regal und Arbeitsplatz bleiben vom Eingang erreichbar. Gleiche Wörter in beiden Räumen sind getrennte Ziele mit unterschiedlichen Minikartenpositionen. Keine geplante Instanz bleibt offen.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | ساخت ۲۰ مورد بعدی از F01–F04، افزودن وظیفه‌های ۶۴–۸۳، جابه‌جایی مقاله‌ها به ۸۴–۸۶؛ ۳۰ مورد ساخته و ۵۰ مورد در انتظار | Built the next 20 F01–F04 instances, added tasks 64–83 and moved articles to 84–86; 30 built and 50 pending | Nächste 20 F01–F04-Instanzen gebaut, Aufgaben 64–83 ergänzt und Artikel auf 84–86 verschoben; 30 gebaut, 50 offen |
-
-## گروه‌های F05–F08 / Batches F05–F08 / Gruppen F05–F08
-
-**فارسی:** ۱۵ وسیلهٔ پذیرایی و ۵ وسیلهٔ ورودی اضافه شدند. مبل و صندلی روکش پارچه‌ای، پرده چین‌دار، پتو افتادگی، تلویزیون تصویر منظره و گیاه برگ‌های جدا دارند. جاکفشی دو در بازشو دارد. کنترل، کوسن، پتو و گلدان هدف‌های مستقل‌اند؛ نام اجزا عمل درها را حفظ می‌کند. فهرست دقیق در [LivingHallContent.json](LivingHallContent.json) است. هر ۸۰ مورد از صف ساخته‌اند؛ تعداد کل وظیفه‌ها ۱۳۶ است. آزمون دستگاه واقعی هنوز انجام نشده است.
-
-**English:** Added 15 living-room and five entrance objects. Sofa/chair use fabric upholstery, curtains are pleated, the throw drapes, the TV shows landscape art and the plant has individual leaves. The shoe cabinet has two working doors. Remote, cushion, throw and pot are independent targets; component metadata preserves door actions. [LivingHallContent.json](LivingHallContent.json) records exact instances. All eighty planned instances are built; total task count is 136. Real-device testing is still pending.
-
-**Deutsch:** 15 Wohnzimmer- und fünf Eingangsobjekte ergänzt. Sofa/Sessel haben Stoffpolster, Vorhänge Falten, die Decke einen Überhang, TV ein Landschaftsbild und die Pflanze einzelne Blätter. Der Schuhschrank besitzt zwei bedienbare Türen. Fernbedienung, Kissen, Decke und Topf sind eigene Ziele; Bauteil-Metadaten erhalten Türaktionen. [LivingHallContent.json](LivingHallContent.json) dokumentiert die Instanzen. Alle achtzig geplanten Instanzen sind gebaut; insgesamt 136 Aufgaben. Tests auf echten Geräten stehen noch aus.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | ساخت ۲۰ مورد F05–F08؛ ۵۰ ساخته و ۳۰ در انتظار؛ شناسایی ۸۴–۱۰۳ و مقاله‌های ۱۰۴–۱۰۶ | Built twenty F05–F08 instances; 50 built/30 pending; identification 84–103 and articles 104–106 | Zwanzig F05–F08-Instanzen gebaut; 50 gebaut/30 offen; Benennung 84–103 und Artikel 104–106 |
-
-## لوازم بعدی خانه / Next house accessories / Weiteres Haushaltszubehör
-
-**فارسی:** F09 پنج وسیلهٔ روزمرهٔ راهرو، F12 شش وسیلهٔ کوچک حمام، F13 پنج وسیلهٔ رخت‌شویی و F14 چهار وسیلهٔ نظافت اضافه شدند. کلید جدا از آویز و چتر جدا از جاچتری شناسایی می‌شوند. آینهٔ حمام بالای روشویی، حوله روی آویز، صابون کنار روشویی و برس/نگهدارندهٔ دستمال کنار توالت‌اند. لباس‌شویی، سبد و شوینده در گوشهٔ شمال‌شرقی حمام، بند رخت و گیره در اتاق خواب ۲ و وسایل نظافت کنار دیوار جنوبی حمام‌اند. در و محفظهٔ شویندهٔ لباس‌شویی باز می‌شوند. کلید، گیره و تمام وسایل این نوبت ثابت‌اند؛ ۵۳ وسیلهٔ قابل حمل قبلی حفظ شده‌اند. [HouseAccessoryContent.json](HouseAccessoryContent.json) نام‌ها و ترتیب ۵۰–۶۹ را ثبت می‌کند. هر ۸۰ مورد ساخته‌اند؛ عملکرد روی گوشی واقعی هنوز بررسی نشده است.
-
-**English:** Added F09's five everyday hallway items, F12's six bathroom accessories, F13's five laundry items and four F14 cleaning items. Key/rack and umbrella/stand are separate targets. Bathroom mirror is over the basin, towel on its rail, soap beside the basin and brush/paper holder beside the toilet. Washer, basket and detergent occupy the bathroom's northeast corner, drying rack/peg bedroom 2 and cleaning tools the bathroom's south wall. Washer door and detergent compartment open. All new objects, including key and peg, are fixed; the previous 53 portable objects remain. [HouseAccessoryContent.json](HouseAccessoryContent.json) records names and orders 50–69. All eighty planned instances are built; real-phone performance remains untested.
-
-**Deutsch:** Fünf F09-Alltagsobjekte im Flur, sechs F12-Badaccessoires, fünf F13-Wäschepflegeobjekte und vier F14-Reinigungsobjekte ergänzt. Schlüssel/Brett und Schirm/Ständer sind getrennte Ziele. Badspiegel über dem Becken, Handtuch an seiner Stange, Seife neben dem Becken und Bürste/Papierhalter neben der Toilette. Waschmaschine, Korb und Waschmittel stehen im Nordosten des Bads, Wäscheständer/Klammer in Schlafzimmer 2 und Reinigungsgeräte an der südlichen Badwand. Waschmaschinentür und Waschmittelfach öffnen sich. Alle neuen Objekte, auch Schlüssel und Klammer, sind fest; die bisherigen 53 tragbaren Objekte bleiben. [HouseAccessoryContent.json](HouseAccessoryContent.json) erfasst Namen und Reihenfolge 50–69. Alle achtzig geplanten Instanzen sind gebaut; Leistung auf echten Smartphones ist noch ungeprüft.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | ۲۰ وسیلهٔ بعدی؛ ۷۰ ساخته و ۱۰ در انتظار؛ شناسایی ۱۰۴–۱۲۳ و مقاله‌های ۱۲۴–۱۲۶ | Next twenty accessories; 70 built/10 pending; identification 104–123 and articles 124–126 | Nächste zwanzig Zubehörgegenstände; 70 gebaut/10 offen; Benennung 104–123 und Artikel 124–126 |
-
-## تکمیل صف وسایل / Furnishing queue completion / Abschluss des Einrichtungsplans
-
-**فارسی:** ده مورد نهایی شامل کیسهٔ زباله در حمام، کلید برق و پریز در راهرو، رادیاتور و ترموستات زیر پنجرهٔ پذیرایی و قیچی، دستمال رولی، توستر، قهوه‌ساز و ترازو روی پیشخوان آشپزخانه‌اند. هر نمونه هدف مستقلِ ثابت و اجزای مهم نام و صدا دارند. کلید برق سه چراغ پذیرایی را قطع/وصل می‌کند؛ نام‌گذاریِ صفحهٔ کلید این عمل را حفظ می‌کند. هر ۸۰ ردیف ساخته شده و هیچ ردیف وسیلهٔ [ ] باقی نمانده است. [FinalFurnishingContent.json](FinalFurnishingContent.json) ترتیب ۷۰–۷۹ را ثبت می‌کند. ۵۳ وسیلهٔ قابل حمل و ترتیب قبلی حفظ شده‌اند؛ مجموع وظیفه‌ها ۱۳۶ است. آزمون روی گوشی واقعی را کاربر انجام می‌دهد؛ در این کار نتیجهٔ دستگاه واقعی ثبت نشده است.
-
-**English:** Final ten: bin bag in the bathroom, switch/socket in the hallway, radiator/thermostat below the living-room window, and scissors, paper roll, toaster, coffee machine and scale on kitchen counters. Each is a separate fixed target; meaningful parts have names/voice. The switch toggles three living-room lights and rocker identification preserves that action. All eighty item rows are built; zero [ ] item rows remain. [FinalFurnishingContent.json](FinalFurnishingContent.json) records orders 70–79. Previous 53 portable objects and task order remain; total task count is 136. The user will perform real-phone testing; no real-device result was recorded in this task.
-
-**Deutsch:** Letzte zehn: Mülltüte im Bad, Schalter/Steckdose im Flur, Heizkörper/Thermostat unter dem Wohnzimmerfenster und Schere, Küchenrolle, Toaster, Kaffeemaschine und Waage auf Küchenarbeitsplatten. Jede Instanz ist ein eigenes festes Ziel; wichtige Teile haben Namen/Stimme. Der Schalter steuert drei Wohnzimmerlampen; Benennung der Wippe erhält diese Aktion. Alle achtzig Gegenstandszeilen sind gebaut; null [ ]-Gegenstandszeilen bleiben. [FinalFurnishingContent.json](FinalFurnishingContent.json) dokumentiert Reihenfolge 70–79. Bisherige 53 tragbare Gegenstände und Aufgabenreihenfolge bleiben; insgesamt 136 Aufgaben. Tests auf echten Smartphones übernimmt der Nutzer; in dieser Aufgabe wurde kein Ergebnis auf einem echten Gerät erfasst.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | ساخت ده مورد نهایی و کلید چراغ؛ تکمیل هر ۸۰ مورد؛ وظیفه‌های ۱۲۴–۱۳۳ و مقاله‌های ۱۳۴–۱۳۶ | Built final ten and working light switch; completed all eighty instances; tasks 124–133 and articles 134–136 | Letzte zehn und bedienbaren Lichtschalter gebaut; alle achtzig Instanzen fertig; Aufgaben 124–133 und Artikel 134–136 |
-
-## GDD-32 — اصلاح رابط و راهنما / HUD and guidance / Oberfläche und Hinweise
-
-وضعیت / Status: **Done (code)**; **Verify (visual/device)**; **Limit (furniture routing)**
-
-**فارسی:** پیاده‌شده در کد در 2026-11-20: متن راهنما شش ثانیه می‌ماند و طی یک ثانیه محو می‌شود؛ هر جملهٔ تازه زمان را تمدید می‌کند. تکرار راهنما متن را برمی‌گرداند؛ حالت فقط صدا بدون هشدار بی‌صدایی متن ندارد. نقشهٔ کوچک بالا چپ با لمس بزرگ و با لمس دوباره کوچک می‌شود؛ فقط کف و دیوارهای واقعی، جهت بازیکن، هدف، فاصله و مسیر زرد از درگاه‌ها دیده می‌شوند. سقف و شبکهٔ تزئینی حذف شدند. در نقشهٔ بزرگ حرکت متوقف می‌شود. یک دکمه کنار نقشه گزینه‌های توقف و موسیقی را باز می‌کند. مربع‌های روی اشیا حذف شدند. نزدیک شوید و به شیء نگاه کنید تا دکمهٔ گرد برداشتن یا استفاده ظاهر شود؛ گذاشتن و چرخش هنگام حمل باقی‌اند. نام با دکمهٔ Anhören یا F پخش می‌شود؛ عبور از کنار اشیا و استفاده در پیش‌نمایش نام‌گویی خودکار ندارند. راهنمای مرحله و بازخورد موفقیت باقی‌اند. مسیر، مبلمان را دور نمی‌زند و درهای بسته را قابل بازکردن فرض می‌کند. کامپایل مستقل همهٔ اسکریپت‌های زمان اجرا با اسمبلی‌های Unity موفق بود. اجرای دیداری Unity و آزمون گوشی هنوز تأیید نشده‌اند؛ Unity در این محیط پیش از گزارش با کد ۱۳۷ متوقف شد. ۵۳ هدف برداشتن با قاشقِ اول، ۸۰ هدف ثابت و سه تمرین مقاله، مجموع ۱۳۶ وظیفه و ذخیره‌ها تغییر نکرده‌اند.
-
-**English:** Implemented in code on 2026-11-20: captions stay for six seconds and fade for one; each new sentence restarts the timer. Repeat restores captions; voice-only without an audio warning has no captions. The small top-left map expands on tap and collapses on another tap, showing actual floors/walls, heading, target, distance and yellow routing through doorways. Ceilings and decorative grid are excluded. Movement stops with the expanded map. One button beside the map reveals Pause and Music. Object squares are removed. Approach and aim to reveal the round pickup/use button; place/rotate remain contextual while carrying. Anhören or F names the object; walking past objects and using them in preview do not automatically identify them. Lesson guidance and success feedback remain. Routing does not avoid furniture and assumes closed doors can be opened. Standalone compilation of all runtime scripts against Unity assemblies passed. Unity visual execution and phone tests remain unverified; Unity exited 137 before logging in this environment. The 53 spoon-first pickup targets, 80 fixed targets and three article tasks, 136 total, and saves are unchanged.
-
-**Deutsch:** Im Code am 2026-11-20 umgesetzt: Hinweise bleiben sechs Sekunden und verblassen eine Sekunde; jeder neue Satz startet die Zeit neu. Wiederholen zeigt Hinweise erneut; nur Stimme ohne Tonwarnung bleibt ohne Hinweistext. Die kleine Karte oben links wird durch Antippen vergrößert und erneut verkleinert; sie zeigt echte Böden/Wände, Blickrichtung, Ziel, Entfernung und gelbe Wege durch Türöffnungen. Decken und Ziergitter entfallen. Bei großer Karte stoppt Bewegung. Eine Taste neben der Karte öffnet Pause und Musik. Objektquadrate entfallen. Nähern und anvisieren zeigt die runde Aufheben-/Benutzen-Taste; Ablegen/Drehen bleiben beim Tragen situationsabhängig. Anhören oder F benennt das Objekt; Vorbeigehen und Benutzen in der Vorschau benennen nicht automatisch. Aufgabenansagen und Erfolgsrückmeldung bleiben. Wege umgehen keine Möbel und setzen öffenbare Türen voraus. Separate Kompilierung aller Laufzeitskripte gegen Unity-Assemblies erfolgreich. Sichtprüfung in Unity und Smartphone-Tests bleiben unbestätigt; Unity endete hier vor dem Protokoll mit Code 137. Die 53 Aufhebeziele mit Löffel zuerst, 80 festen Ziele und drei Artikelaufgaben, insgesamt 136, sowie Speicherstände bleiben unverändert.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | متن محوشونده، نقشه و مسیر، منوی توقف/موسیقی و شناسایی دستی؛ مرحلهٔ تازه اضافه نشد | Fading captions, map/routes, pause/music menu and explicit identification; no new stages | Verblassende Hinweise, Karte/Wege, Pause-/Musikmenü und ausdrückliche Benennung; keine neuen Aufgaben |
-
-
-### اصلاح Anhören / Anhören correction / Anhören-Korrektur — 2026-11-20
-
-**فارسی — پیاده‌شده در کد:** شنیدن نام شیء یا جزء با Anhören یا F، زمان نمایش متن مرحله را دوباره فعال نمی‌کند. فقط کارت نام نمایش داده می‌شود و پس از پایان نام‌گویی، متن مرحله به‌عنوان جایگزین برنمی‌گردد. تکرار مرحله و پیشرفت واقعیِ هدف ثابت همچنان راهنمای مرحله را فعال می‌کنند. شرط تکمیل و ترتیب ۵۳ هدف قابل حمل، ۸۰ هدف ثابت و سه تمرین مقاله (۱۳۶ وظیفه، قاشق اول) تغییر نکرده‌اند. کامپایل مستقل بررسی شد؛ آزمون دیداری Unity و گوشی هنوز تأیید نشده است.
-
-**English — implemented in code:** Hearing an object/part name with Anhören or F does not restart the stage-caption timer. Only the name card appears, and the stage text does not return as a fallback after naming finishes. Task repetition and actual fixed-target progression still activate stage guidance. Completion rules and the sequence of 53 portable targets, 80 fixed targets and three article tasks (136 tasks, spoon first) are unchanged. Standalone compilation checked; Unity visual and phone testing remain unverified.
-
-**Deutsch — im Code umgesetzt:** Objekt-/Teilnamen über Anhören oder F starten die Aufgabenanzeige nicht erneut. Nur die Namenskarte erscheint; nach der Benennung kehrt der Aufgabentext nicht als Ersatz zurück. Aufgabenwiederholung und tatsächlicher Fortschritt bei festen Zielen aktivieren weiterhin Aufgabenhinweise. Abschlussregeln und Reihenfolge von 53 tragbaren, 80 festen Zielen und drei Artikelaufgaben (136 Aufgaben, Löffel zuerst) bleiben unverändert. Separate Kompilierung geprüft; Sichtprüfung in Unity und Smartphone-Tests bleiben unbestätigt.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | رفع بازگشت متن مرحله پس از شنیدن نام؛ بدون مرحلهٔ جدید | Fixed stage text returning after object naming; no new stages | Rückkehr des Aufgabentexts nach Benennung behoben; keine neuen Aufgaben |
-
-
-### خوانایی وسایل کوچک / Small-object readability / Erkennbarkeit kleiner Gegenstände — 2026-11-20
-
-**فارسی — پیاده‌شده:** ظاهر پنج هدف موجود بازسازی شد: قاشق با کاسهٔ گود و لبهٔ واقعی، چنگال با چهار دندانهٔ جدا و خمیده، چاقو با تیغه و دستهٔ تیره و پرچ، سیب با بدنهٔ لوب‌دار و فرورفتگی بالا و ساقه و برگ، و گوجه با بدنهٔ تخت‌تر و پنج کاسبرگ. فلز روشن‌تر با وابستگی کمتر به بازتاب و پوست میوهٔ بافت‌دار، تشخیص را آسان‌تر می‌کنند. شناسه، جای اولیه، برخوردگر و صاحب تعامل وسایل حفظ شده‌اند؛ این کار وسیله یا مرحلهٔ تازه نمی‌افزاید. هدف‌های ۱، ۳، ۸، ۱۸ و ۵۱ همچنان با برداشتن کامل می‌شوند. ترتیب قاشق اول، ۵۳ هدف قابل حمل، ۸۰ هدف ثابت، سه تمرین مقاله و ذخیره‌ها تغییر نکرده‌اند. ابزار Apply Visual Polish این مدل‌ها را دوباره اعمال می‌کند.
-
-**English — implemented:** Five existing targets have rebuilt visuals: a spoon with a concave bowl and rim, a fork with four separated curved tines, a knife with blade/dark riveted grip, a lobed apple with top depression/stem/leaf, and a flatter tomato with five sepals. Lighter metal with less dependence on reflections and textured fruit skins improve recognition. IDs, initial poses, colliders and interaction owners are preserved; no object or stage was added. Targets 1, 3, 8, 18 and 51 still require pickup. Spoon-first order, 53 portable targets, 80 fixed targets, three article tasks and saves are unchanged. Apply Visual Polish reapplies these models.
-
-**Deutsch — umgesetzt:** Fünf vorhandene Ziele erhielten neue Modelle: Löffel mit konkaver Mulde und Rand, Gabel mit vier getrennten gebogenen Zinken, Messer mit Klinge/dunklem vernietetem Griff, gelappter Apfel mit oberer Vertiefung/Stiel/Blatt und flachere Tomate mit fünf Kelchblättern. Helleres, weniger spiegelungsabhängiges Metall und strukturierte Fruchtschalen erleichtern das Erkennen. Kennungen, Ausgangspositionen, Collider und Interaktionsbesitzer bleiben erhalten; kein Gegenstand und keine Aufgabe kam hinzu. Ziele 1, 3, 8, 18 und 51 erfordern weiterhin Aufheben. Löffel zuerst, 53 tragbare Ziele, 80 feste Ziele, drei Artikelaufgaben und Speicherstände bleiben unverändert. Apply Visual Polish wendet diese Modelle erneut an.
-
-**بررسی / Verification / Prüfung:** Unity geometry/normal/collider checks and 53/80 population validation passed in an isolated project. Before/after desktop renders are in [VisualReview](VisualReview/README.md). Real-phone readability and performance remain unverified. / بررسی هندسه، جهت سطح و برخوردگر و شمار ۵۳/۸۰ در کپی جدا موفق بود؛ تصاویر قبل/بعد ثبت شدند؛ خوانایی و عملکرد روی گوشی هنوز تأیید نشده‌اند. / Geometrie-, Normalen-, Collider- und 53/80-Zielprüfung im separaten Projekt bestanden; Vorher-/Nachher-Bilder erfasst; Erkennbarkeit und Leistung auf echten Smartphones bleiben ungeprüft.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | بازسازی ظاهر قاشق، چنگال، چاقو، سیب و گوجه؛ هدف تازه ندارد | Refined spoon, fork, knife, apple and tomato visuals; no new objectives | Löffel, Gabel, Messer, Apfel und Tomate überarbeitet; keine neuen Ziele |
-
-
-### دکمه‌های دایره‌ای و نام کل/جزء / Circular controls and whole/part names / Runde Tasten und Gesamt-/Teilnamen — 2026-11-20
-
-**فارسی — پیاده‌شده در کد:** دکمهٔ مستطیلی شنیدن از رابط گوشی حذف شده است. فقط یک دایرهٔ Anhören وجود دارد؛ برای وسیلهٔ ثابت، دایرهٔ استفادهٔ تکراری حذف می‌شود. برداشتن، بازکردن، بستن و استفاده در دایرهٔ عمل جداگانه کنار شنیدن باقی‌اند. هنگام نگاه به جزء دارای نام متفاوت، دایرهٔ Detail کنار Anhören ظاهر می‌شود. Anhören نام کل وسیله یا صاحب جزء را می‌گوید، مثل der Regenschirm، der Kühlschrank یا der Spiegel؛ Detail فقط نام دقیق جزء روبه‌رو را می‌گوید، مثل das Schirmdach، der Griff یا der Rahmen، بدون تکرار نام صاحب. جزئیات فقط وقتی دادهٔ نام‌گذاری موجود باشد در دسترس‌اند. F نام کل و Shift+F نام جزء است. Detail وظیفهٔ کل وسیله را کامل نمی‌کند؛ شناسایی اصلی از روی خود وسیله یا جزء آن، هدف ثابت را طبق قاعدهٔ قبلی جلو می‌برد. بازکردن، برداشتن و کلید چراغ صاحب جزء حفظ شده‌اند. نام‌گویی عادی متن مرحله را برنمی‌گرداند. ۵۳ هدف برداشتن، ۸۰ هدف ثابت و سه تمرین مقاله (۱۳۶ وظیفه)، قاشق اول و ذخیره‌ها حفظ شده‌اند؛ مرحلهٔ جدیدی اضافه نشد.
-
-**English — implemented in code:** The rectangular mobile hearing button is removed. There is one circular Anhören control; fixed vocabulary objects no longer have a duplicate use/identify circle. Pickup, open, close and use retain a separate action circle beside hearing. A Detail circle appears beside Anhören when the aimed part has a distinct annotated name. Anhören names only the whole object/part owner, such as der Regenschirm, der Kühlschrank or der Spiegel; Detail names only the exact aimed part, such as das Schirmdach, der Griff or der Rahmen, without repeating the owner. Details require existing part metadata. F names the whole and Shift+F names the part. Detail does not complete the whole-object lesson; primary identification while aiming at the whole or a part still advances its fixed target. The owner's opening, pickup and light-switch actions remain intact. Ordinary naming does not restore stage captions. The 53 pickup targets, 80 fixed targets and three article tasks (136 total), spoon-first order and saves remain unchanged; no new stages.
-
-**Deutsch — im Code umgesetzt:** Die rechteckige mobile Anhören-Taste entfällt. Es gibt eine runde Anhören-Taste; feste Vokabelobjekte haben keine doppelte Benutzen-/Benennen-Taste mehr. Aufheben, Öffnen, Schließen und Benutzen bleiben als eigene runde Aktion daneben erhalten. Eine Detail-Taste erscheint neben Anhören, wenn das anvisierte Teil einen eigenen abweichenden Namen hat. Anhören nennt nur das Gesamtobjekt/den Besitzer, etwa der Regenschirm, der Kühlschrank oder der Spiegel; Detail nennt nur das genaue anvisierte Teil, etwa das Schirmdach, der Griff oder der Rahmen, ohne den Besitzer zu wiederholen. Details benötigen vorhandene Teilmetadaten. F benennt das Gesamtobjekt, Shift+F das Teil. Detail erfüllt keine Gesamtobjektaufgabe; die Hauptbenennung beim Anvisieren des Objekts oder eines Teils erfüllt weiterhin sein festes Ziel. Öffnen, Aufheben und Lichtschalten bleiben erhalten. Gewöhnliche Benennung zeigt den Aufgabentext nicht erneut. Die 53 Aufhebeziele, 80 festen Ziele und drei Artikelaufgaben (136 insgesamt), Löffel zuerst und Speicherstände bleiben erhalten; keine neuen Aufgaben.
-
-**بررسی / Verification / Prüfung:** Standalone runtime compilation passed. Unity Play Mode verification passed for real part owners, separate speech, circular touch routing and the full interaction/progression suite; real-phone visual/touch verification remains pending. / کامپایل مستقل موفق بود؛ آزمون Play Mode صاحب واقعی جزء، صدای جدا، لمس دایره‌ها و مجموعهٔ کامل تعامل و پیشرفت موفق بود؛ آزمون دیداری و لمس روی گوشی هنوز تأیید نشده است. / Separate Laufzeitkompilierung erfolgreich; Play-Mode-Prüfung für echte Teilbesitzer, getrennte Sprache, runde Touch-Steuerung und die vollständige Interaktions-/Fortschrittsprüfung bestanden; Sicht-/Touchprüfung auf echten Smartphones bleibt offen.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | دایره‌های یگانهٔ شنیدن/عمل؛ نام کل با Anhören و جزء با Detail؛ بدون مرحلهٔ جدید | Single hearing/action circles; whole via Anhören, part via Detail; no new stages | Einzelne Anhören-/Aktionskreise; Gesamtobjekt über Anhören, Teil über Detail; keine neuen Aufgaben |
-
-
-### اندازهٔ شمارهٔ وظیفه / Task-number text size / Schriftgröße der Aufgabennummer — 2026-11-20
-
-**فارسی — پیاده‌شده در کد:** شمارهٔ وظیفه در کادر بالای صفحه با قلم کوچک‌ترِ ۱۶ و بدون شکستن سطر نمایش داده می‌شود؛ اگر متن از عرض داخلی بیشتر شود، قلم تا ۱۰ کوچک می‌شود. شماره‌های دو و سه‌رقمی مانند Aufgabe 10 / 136 و Aufgabe 136 / 136 در همان کادر جا می‌گیرند. این اصلاح فقط نمایش است؛ ۵۳ هدف برداشتن، ۸۰ هدف ثابت، سه تمرین مقاله، قاشق اول و ذخیره‌ها تغییر ندارند. آزمون دیداری روی گوشی هنوز تأیید نشده است.
-
-**English — implemented in code:** The top task-number card uses a smaller 16-point single-line style; text that exceeds its padded width shrinks down to 10 points. Two-/three-digit labels such as Aufgabe 10 / 136 and Aufgabe 136 / 136 fit the same card. This is display-only: 53 pickup targets, 80 fixed targets, three article tasks, spoon-first order and saves are unchanged. Phone visual verification remains pending.
-
-**Deutsch — im Code umgesetzt:** Die Aufgabennummer oben nutzt eine kleinere einzeilige Schrift mit Größe 16; bei Überschreiten der Innenbreite schrumpft sie bis Größe 10. Zwei-/dreistellige Angaben wie Aufgabe 10 / 136 und Aufgabe 136 / 136 passen in dieselbe Karte. Nur die Darstellung ändert sich: 53 Aufhebeziele, 80 feste Ziele, drei Artikelaufgaben, Löffel zuerst und Speicherstände bleiben erhalten. Sichtprüfung auf Smartphones steht noch aus.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | کوچک‌کردن و تطبیق شمارهٔ وظیفه با عرض کادر؛ مرحلهٔ تازه ندارد | Smaller task-number text fitted to card width; no new stages | Kleinere, an Kartenbreite angepasste Aufgabennummer; keine neuen Aufgaben |
-
-
-### شخصیت بازیکن در اول‌شخص / First-person player avatar / Spielfigur in der Ichperspektive — 2026-11-20
-
-**فارسی — پیاده‌شده در کد:** بازیکن یک بدن انسانی ساده و سبک با لباس سبزآبی، شلوار تیره، کفش، دست و انگشت شست دارد. دست‌ها نزدیک پایین دید و بدن و پاها با نگاه به پایین دیده می‌شوند. حرکت دست‌وپا از جابه‌جایی واقعی پیروی می‌کند؛ در توقف بازی ثابت است. بدن با ارتفاع فعلی نشستن/درازکشیدن هماهنگ می‌شود و دست راست هنگام حمل به نزدیکی وسیله می‌رود. سر و مو و اجزای صورت برای دوربین خود بازیکن فقط سایه دارند تا دید را نپوشانند. مدل هنگام شروع یک‌بار ساخته و با بازیکن پاک می‌شود؛ برخوردگرهای تزئینی حذف می‌شوند و برخورد حرکت فقط با CharacterController موجود است. هدف آموزشی، نام قابل لمس یا صدای تازه‌ای اضافه نشده است. مدل بازیکن عضو صف وسایل F01–F16 نیست. قاشق اول، ۵۳ هدف قابل حمل، ۸۰ هدف ثابت، سه تمرین مقاله و ذخیره‌ها حفظ شده‌اند. دست‌ها انیمیشن گرفتن انگشتی یا تطبیق با شکل هر وسیله ندارند؛ زیر میز یا کنار دیوار ممکن است اجزای نمایشی از سطح رد شوند، چون برخوردگر بدن همان کپسول فعلی است. آزمون گوشی و عملکرد روی دستگاه هنوز تأیید نشده‌اند.
-
-**English — implemented in code:** The player has a lightweight stylized human body with a teal sweatshirt, dark trousers, sneakers, hands and thumbs. Hands sit near the lower view; looking down reveals the body and feet. Limb motion follows actual displacement and freezes while paused. The body follows the current sitting/lying height, and the right hand moves near a carried item. Head, hair and facial features cast shadows only in normal play so they cannot block the player's camera. The model is created once at startup and cleaned up with the player; decorative colliders are removed, leaving the existing CharacterController responsible for movement collision. No learning target, tappable vocabulary or new speech is added. The avatar is outside the F01–F16 furnishing queue. Spoon-first order, 53 portable targets, 80 fixed targets, three article tasks and saves are preserved. Hands have no finger-grip animation or per-object fitting; visual limbs may intersect surfaces near walls/under furniture because the existing capsule remains the collision body. Phone appearance and device performance remain unverified.
-
-**Deutsch — im Code umgesetzt:** Die Spielfigur hat einen einfachen leichten menschlichen Körper mit türkisgrünem Sweatshirt, dunkler Hose, Turnschuhen, Händen und Daumen. Hände liegen am unteren Bildrand; beim Herunterschauen sind Körper und Füße sichtbar. Gliedmaßen folgen der tatsächlichen Bewegung und stehen bei Pause still. Der Körper folgt der aktuellen Sitz-/Liegehöhe; die rechte Hand nähert sich einem getragenen Gegenstand. Kopf, Haare und Gesichtsteile werfen im normalen Spiel nur Schatten, damit sie die eigene Kamera nicht verdecken. Das Modell entsteht einmal beim Start und wird mit der Spielfigur entfernt; dekorative Collider entfallen, Bewegungskollision bleibt beim vorhandenen CharacterController. Keine neuen Lernziele, antippbaren Wörter oder Sprachaufnahmen. Die Spielfigur gehört nicht zum Einrichtungsplan F01–F16. Löffel zuerst, 53 tragbare Ziele, 80 feste Ziele, drei Artikelaufgaben und Speicherstände bleiben erhalten. Keine Finger-Greifanimation oder Anpassung an einzelne Gegenstände; sichtbare Gliedmaßen können Wände/Möbel durchdringen, da die bisherige Kollisionskapsel bleibt. Smartphone-Darstellung und Geräteleistung sind noch ungeprüft.
-
-
-**بررسی / Validation / Prüfung:** آزمون Play Mode بدن، دست‌وپا، حذف برخوردگر تزئینی و دیده‌نشدن سر توسط دوربین خود، همراه مجموعهٔ کامل تعامل، وضعیت بدن و پیشرفت موفق بود. / Play Mode body, limb, collider-exclusion and own-head visibility checks passed with the full interaction, posture and progression suite. / Play-Mode-Prüfungen für Körper, Gliedmaßen, Collider-Ausschluss und Ausblendung des eigenen Kopfes sowie sämtliche Interaktions-, Haltungs- und Fortschrittsprüfungen bestanden.
-
-[تصاویر شخصیت / Avatar previews / Vorschau der Spielfigur](VisualReview/README.md)
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-20 | بدن و دست‌وپای بازیکن با حرکت و حالت بدن؛ بدون مرحلهٔ تازه | Player body/limbs follow movement and posture; no new stages | Spielerkörper/Gliedmaßen folgen Bewegung und Haltung; keine neuen Aufgaben |
-
-
-## بازطراحی آموزشی — 2026-11-21 / Curriculum redesign / Didaktischer Neuentwurf
-
-**فارسی:** درخواست تازه ابتدا برنامه‌ریزی است، نه پیاده‌سازی. برنامهٔ کامل در [CurriculumPlan.md](CurriculumPlan.md) و دادهٔ همراه [CurriculumPlan.json](CurriculumPlan.json) ثبت شد: ۲۰۰ هدف جست‌وجو با معرفی/مرور ۱۳۳ نمونهٔ موجود، ۱۰۰ تمرین ترکیبی و ۱۰۰ عمل/سناریو با مسیر هدف A1.1–C1.2. عمل مورد نیاز باید در متن و صوت صریح باشد؛ «Finde den Löffel» برای شرط برداشتن کافی نیست. کد GermanLessonSpeech هنوز عبارت قبلی را تولید می‌کند و صداها عوض نشده‌اند. مسیر فعلی ۱۳۶ وظیفه، قاشق اول، اشیا و ذخیره‌ها حفظ شده‌اند. برنامه‌ریزی از ابتدا به معنی پاک‌کردن پروفایل نیست. بازبینی زبان و آزمون آموزشی هنوز لازم است.
-
-**English:** This request is planning first, not implementation. The complete proposal is in [CurriculumPlan.md](CurriculumPlan.md) with [CurriculumPlan.json](CurriculumPlan.json): 200 search objectives introducing/retrieving 133 existing instances, 100 mixed tasks and 100 action/scenario tasks targeting A1.1–C1.2. Text/speech must state the required action; Finde den Löffel is insufficient for pickup. GermanLessonSpeech still generates the old phrase and audio is unchanged. Runtime remains 136 tasks, spoon first, with objects/saves preserved. Redesign from the beginning does not mean clearing profiles. Language/teaching review remains necessary.
-
-**Deutsch:** Zunächst Planung, keine Umsetzung. Vollständiger Vorschlag in [CurriculumPlan.md](CurriculumPlan.md) und [CurriculumPlan.json](CurriculumPlan.json): 200 Suchziele mit Einführung/Abruf von 133 vorhandenen Instanzen, 100 Misch- und 100 Aktions-/Szenarioaufgaben für Zielbereiche A1.1–C1.2. Text/Stimme müssen die Handlung nennen; Finde den Löffel genügt bei Aufhebeziel nicht. GermanLessonSpeech erzeugt noch den alten Satz, Audio bleibt unverändert. Weiterhin 136 Laufzeitaufgaben, Löffel zuerst, Objekte/Speicherstände erhalten. Neuentwurf ab Beginn bedeutet keine Profillöschung. Sprachliche/didaktische Prüfung bleibt nötig.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-21 | ثبت برنامهٔ ۴۰۰مرحله‌ای و الزامات GDD-42–46؛ همگی آینده/نیازمند بررسی، بدون تغییر گیم‌پلی | Recorded 400-stage proposal and GDD-42–46; future/review status, gameplay unchanged | 400er-Vorschlag und GDD-42–46 dokumentiert; künftig/zu prüfen, Spielablauf unverändert |
-
-
-## سابقهٔ بستهٔ نخست پیش از انتخاب صدای جایگزین / First-pack history before voice replacement / Erstpaket vor Stimmersatz — 2026-11-21
-
-**فارسی:** CUR-001–030 طبق ترتیب برنامه در IntroA11.json اجرا می‌شوند. پیش‌فرض ۳۰ مرحله است و با دکمهٔ «Zu bisherigen Aufgaben (136)» مسیر قدیمی با پروفایل خودش باز می‌شود. ذخیرهٔ جدید DeutschRoom.Learning.IntroA11.v1 مستقل و با completedTasks است؛ کلید قدیمی DeutschRoom.Learning.v1 پاک یا بازشماری نمی‌شود. تمام ۵۳ وسیله و ۸۰ هدف ثابت در صحنه باقی‌اند. صدای Sonna طبق پاسخ صریح کاربر منتظر است؛ ۱۲۵ عبارت در IntroVoice.json و وضعیت در IntroVoiceProfile.json ثبت شده‌اند. بستهٔ جدید از VoiceIntroA11 می‌خواند و در نبود آن حتی در حالت فقط صدا متن نشان می‌دهد؛ موسیقی مستقل است. مرور تطبیقی و معیار ۸ از ۱۰ هنوز ساخته نشده‌اند. ایراد رندر اندروید در این کار رفع نشده است.
-
-**English:** CUR-001–030 run in planned order from IntroA11.json. Default is thirty stages; Zu bisherigen Aufgaben (136) opens the old course with its own profile. New DeutschRoom.Learning.IntroA11.v1 uses completedTasks independently; legacy DeutschRoom.Learning.v1 is neither deleted nor renumbered. All 53 pickups and 80 fixed targets remain in the scene. Sonna is deferred following the user’s explicit reply; IntroVoice.json prepares 125 phrases and IntroVoiceProfile.json records pending status. New audio loads from VoiceIntroA11, with readable fallback even in voice-only mode; music is independent. Adaptive review/8-of-10 gate are not built. Android rendering is not fixed in this task.
-
-**Deutsch:** CUR-001–030 laufen nach Plan aus IntroA11.json. Standard sind dreißig Aufgaben; Zu bisherigen Aufgaben (136) öffnet alten Pfad mit eigenem Profil. Neues DeutschRoom.Learning.IntroA11.v1 nutzt completedTasks unabhängig; altes DeutschRoom.Learning.v1 wird weder gelöscht noch umnummeriert. Alle 53 tragbaren/80 festen Ziele bleiben in der Szene. Sonna wartet gemäß ausdrücklicher Antwort; IntroVoice.json enthält 125 vorbereitete Sätze, IntroVoiceProfile.json dokumentiert ausstehendes Audio. Neuer Pfad lädt VoiceIntroA11 mit Textersatz auch bei nur Stimme; Musik bleibt unabhängig. Adaptive Wiederholung/8-von-10-Hürde fehlen noch. Android-Darstellung hier nicht korrigiert.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-21 | اجرای ۳۰ هدف اول، مسیر و ذخیرهٔ مستقل، متن روشن و تعویق صدای Sonna به درخواست کاربر | Implemented first thirty targets, separate course/save, explicit prompts and Sonna deferral at user request | Erste dreißig Ziele, separater Pfad/Speicherstand, klare Texte und Sonna-Verschiebung auf Nutzerwunsch umgesetzt |
-
-
-### بررسی بستهٔ اول — 2026-11-21 / First-pack validation / Prüfung des ersten Pakets
-
-**فارسی:** کامپایل مستقل تمام کدهای اجرا و Editor با اسمبلی‌های Unity موفق بود. تطبیق هر ۳۰ دستور و جملهٔ موفقیت با نام واقعی هدف در SampleScene، ترتیب برنامه، شناسهٔ یکتا، ۱۲۵ کلید صوتی، ۳۰ وضعیت Done و ۳۷۰ Next، تمام ردیف‌ها و ترتیب قدیمی و جمعیت ۵۳/۸۰ و پیوندهای محلی موفق بود. ممیزی generate.py فقط منتظربودن ۱۲۵ فایل Sonna را گزارش کرد و چیزی ننوشت. آزمون Play Mode در کپی جدا با نام محصول آزمایشی راه‌اندازی شد؛ پیش از اجرای آزمون، Licensing Client متصل نشد و راه‌اندازی مجوز Unity شکست خورد. اجرای گیرکرده متوقف شد؛ بنابراین هیچ نتیجهٔ موفق Play Mode یا گوشی ادعا نمی‌شود. آزمون IntroLessonValidation آماده است و از Tools > DeutschRoom > Validate Interactions (Play Mode) پس از آماده‌شدن Unity اجرا می‌شود. صحنه و فایل‌های صدای نصب‌شده تغییر نکردند.
-
-**English:** Standalone compilation of every runtime/Editor script against Unity assemblies passed. Static checks passed for all thirty prompts/success lines against actual SampleScene targets, planned order, unique IDs, 125 voice keys, thirty Done/370 Next statuses, all legacy rows/order, 53/80 populations and local links. generate.py audit only reported 125 pending Sonna files without writes. Play Mode was launched in a separate copy with a test product identity; before tests executed, the Licensing Client failed to connect and Unity license initialization failed. The stalled run was stopped; no Play Mode or phone pass is claimed. IntroLessonValidation is ready through Tools > DeutschRoom > Validate Interactions (Play Mode) once Unity is ready. Scene and installed audio are unchanged.
-
-**Deutsch:** Separate Kompilierung sämtlicher Laufzeit-/Editor-Skripte gegen Unity-Assemblies bestanden. Statische Prüfungen für dreißig Anweisungen/Erfolgssätze gegen echte SampleScene-Ziele, Planreihenfolge, eindeutige IDs, 125 Sprachschlüssel, dreißig Done/370 Next, alle Altzeilen/-reihenfolgen, 53/80-Populationen und lokale Links bestanden. generate.py meldete nur 125 ausstehende Sonna-Dateien ohne Schreibvorgang. Play Mode wurde in separater Kopie mit Testproduktidentität gestartet; vor Testausführung scheiterten Licensing-Client-Verbindung und Unity-Lizenzinitialisierung. Hängender Lauf gestoppt; kein Play-Mode-/Smartphoneerfolg behauptet. IntroLessonValidation über Tools > DeutschRoom > Validate Interactions (Play Mode) bereit, sobald Unity bereit ist. Szene/installiertes Audio unverändert.
-
-
-## صدای آلمانیِ فعال — 2026-11-21 / Active German voice / Aktive deutsche Stimme
-
-**فارسی:** کاربر پس از درخواست Sonna، صریحاً انتخاب و ساخت یک صدای آلمانی دیگر را خواست. فهرست زندهٔ سرویس de-DE-TanjaNeural (زن، آلمانی آلمان) را ارائه کرد. هر ۱۲۵ عبارتِ بستهٔ ۳۰مرحله‌ای — دستور، تأیید، نام هدف، شماره و پنج راهنمای مشترک — با سرعت ۸٪ آرام‌تر ساخته و به‌صورت WAV تک‌کانالهٔ PCM16 و ۲۴ کیلوهرتز در Assets/Resources/VoiceIntroA11 نصب شد. ممیزی ۱۲۵ معتبر، صفر مفقود و صفر نامعتبر گزارش داد؛ مجموع مدت ۳۸۱٫۱ ثانیه است. نمونه در [IntroVoicePreview.wav](IntroVoicePreview.wav) و پروفایل واقعی در [IntroVoiceProfile.json](IntroVoiceProfile.json) است. بستهٔ قدیمی Katja و GUIDهای آن، صحنه، ترتیب قاشق اول، ۵۳/۸۰ شیء و ذخیره‌ها تغییر نکردند. مرحلهٔ تازه‌ای ایجاد نشد. متن/صدا/هر دو از تنظیمات قابل انتخاب‌اند؛ متن جایگزین برای صدای مفقود حفظ شد. نام اشیای خارج از ۱۲۵ عبارت در مسیر جدید ممکن است هنوز متن جایگزین داشته باشد؛ این تغییر صدای کل خانه نیست. آزمون شنیداری و پخش روی گوشی هنوز Verify است؛ شکست قبلی راه‌اندازی مجوز Unity همچنان مانع تأیید Play Mode است.
-
-**English:** After requesting Sonna, the user explicitly authorized selecting and generating another German voice. The live service offered de-DE-TanjaNeural (female, Germany German). All 125 phrases of the thirty-stage pack — instructions, success, target names, numbers and five shared guides — were generated 8% slower and installed as mono PCM16 24-kHz WAV under Assets/Resources/VoiceIntroA11. Audit: 125 valid, zero missing/invalid; total duration 381.1 seconds. [IntroVoicePreview.wav](IntroVoicePreview.wav) provides a sample and [IntroVoiceProfile.json](IntroVoiceProfile.json) records the actual voice. Legacy Katja/GUIDs, scene, spoon-first order, 53/80 objects and saves are unchanged. No stage was added. Text/voice/both are selectable; missing-recording text fallback remains. Names outside the 125 phrases may still use text in the new course; this does not revoice the entire house. Phone listening/playback remains Verify; the previous Unity licensing startup failure still prevents a Play Mode pass claim.
-
-**Deutsch:** Nach Sonna-Wunsch autorisierte der Nutzer ausdrücklich Auswahl/Erzeugung einer anderen deutschen Stimme. Der Live-Dienst bot de-DE-TanjaNeural (weiblich, Deutsch/Deutschland). Alle 125 Sätze des Dreißigerpakets — Anweisungen, Erfolg, Zielnamen, Nummern und fünf gemeinsame Hinweise — mit 8 % langsamerer Rate als Mono-PCM16-24-kHz-WAV in Assets/Resources/VoiceIntroA11 erzeugt/installiert. Audit: 125 gültig, keine fehlend/ungültig; insgesamt 381,1 Sekunden. Hörprobe [IntroVoicePreview.wav](IntroVoicePreview.wav), echte Stimme in [IntroVoiceProfile.json](IntroVoiceProfile.json). Katja-Altpack/GUIDs, Szene, Löffelreihenfolge, 53/80 Objekte und Speicherstände unverändert. Keine neue Aufgabe. Text/Stimme/beides wählbar, Textersatz bei fehlender Aufnahme bleibt. Namen außerhalb der 125 Sätze können im neuen Pfad weiter Textersatz nutzen; nicht das ganze Haus neu vertont. Smartphone-Hören/-Wiedergabe bleibt Verify; vorheriger Unity-Lizenzstartfehler verhindert weiterhin eine Play-Mode-Erfolgsaussage.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-21 | انتخاب مجاز Tanja آلمانی و نصب/اعتبارسنجی ۱۲۵ فایل آفلاین برای ۳۰ مرحله؛ تعویق قبلی Sonna با انتخاب جایگزین پایان یافت | Authorized German Tanja selected; 125 offline clips installed/validated for thirty stages; previous Sonna deferral superseded by replacement choice | Autorisierte deutsche Tanja gewählt, 125 Offline-Dateien für dreißig Aufgaben installiert/geprüft; Sonna-Aufschub durch Ersatzwahl abgelöst |
-
-
-## گسترش مراحل ۳۱–۸۰ — 2026-11-21 / Expansion 31–80 / Erweiterung 31–80
-
-**فارسی:** پنجاه هدف بعدی با همان ترتیب طرح اجرا شد: ۲۳ وسیلهٔ آشپزخانه با برداشتن واقعی، ده هدف حمام و ۱۷ هدف اتاق‌خواب با شناسایی اصلی. موجودی صحنه همان ۵۳ وسیلهٔ قابل حمل و ۸۰ هدف ثابت است؛ شیء یا مبلمان تازه ساخته نشد. منطق مشترک به‌صورت صریح نوع P/I را می‌خواند و نقشه/دستور/تأیید را به همان نمونه وصل می‌کند. یک جزء نام‌دار عمل صاحبش را عوض نمی‌کند؛ Detail مرحلهٔ کل را کامل نمی‌کند و شناسایی نمونهٔ دیگر حتی با نام مشابه کافی نیست. نام اتاق در دستور آلمانی «اتاق اول/دوم» است و شمارهٔ فنی به واژگان شیء وارد نشده است.
-
-**English:** Fifty next targets run in planned order: 23 kitchen pickups, ten bathroom and seventeen bedroom primary-identification targets. The scene still contains 53 portable and 80 fixed objects; no new furniture/objects were built. Shared logic explicitly reads P/I and binds map/prompt/acceptance to the exact instance. Named parts preserve owner actions; Detail does not complete the whole task and a different instance with a similar name is insufficient. German room instructions use first/second bedroom without technical numbers in object vocabulary.
-
-**Deutsch:** Fünfzig nächste Ziele in Planreihenfolge umgesetzt: 23 Küchen-Aufhebe-, zehn Bad- und siebzehn Schlafzimmer-Hauptbenennungsziele. Szene weiter mit 53 tragbaren/80 festen Objekten; keine neuen Möbel/Objekte. Gemeinsame Logik liest P/I ausdrücklich und bindet Karte/Text/Abschluss an genaue Instanz. Benannte Teile erhalten Besitzeraktionen; Detail erfüllt nicht Gesamtaufgabe, gleiche Namen anderer Instanzen genügen nicht. Deutsche Raumanweisungen nutzen erstes/zweites Schlafzimmer ohne technische Nummern im Objektwortschatz.
-
-**فارسی:** پیشرفت با همان کلید ذخیره و completedTasks منتقل می‌شود؛ هیچ بازشماری یا پاک‌کردنی لازم نیست. ۳۰ هدف کامل قبلی مستقیماً از ۳۱ ادامه دارند. UI هشتاد هدف نشان می‌دهد؛ پایان پس از ۸۰ است و ۸۱ هنوز ساخته نشده. همهٔ ردیف‌های ۸۱–۴۰۰ Next می‌مانند. مسیر قدیمی با ترتیب LessonOrder و جابه‌جایی قاشق، ۸۰ FixedLearningTarget و سه تمرین حرف تعریف همچنان ۱۳۶ وظیفه دارد و ذخیره‌اش مستقل است. اعتبارسنجی آموزشی، Play Mode و گوشی هنوز تأیید نشده‌اند؛ کامپایل مستقل کدهای اجرا و Editor موفق بود. مشکل قبلی مجوز Unity برطرف‌شده فرض نشده است.
-
-**English:** The same save key/completedTasks retain progress without renumbering or clearing. Thirty previously completed targets resume directly at 31. UI shows eighty; completion follows 80 and 81 is not built. All 81–400 remain Next. The independent legacy path still has 136 tasks using original LessonOrder/spoon swap, eighty FixedLearningTarget entries and three article tasks. Teaching, Play Mode and phone results remain unverified; standalone runtime/Editor compilation passed. The prior Unity licensing issue is not assumed resolved.
-
-**Deutsch:** Gleicher Speicherschlüssel/completedTasks erhalten Fortschritt ohne Umnummerierung/Löschung. Dreißig abgeschlossene Ziele setzen direkt bei 31 fort. Anzeige achtzig, Abschluss nach 80, 81 nicht gebaut. Alle 81–400 bleiben Next. Unabhängiger Altpfad weiter 136 Aufgaben mit ursprünglichem LessonOrder/Löffeltausch, achtzig FixedLearningTarget-Einträgen und drei Artikelaufgaben. Didaktik-, Play-Mode-/Smartphoneergebnisse unbestätigt; separate Laufzeit-/Editor-Kompilierung bestanden. Vorheriges Unity-Lizenzproblem nicht als gelöst angenommen.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-21 | افزودن دقیق ۵۰ هدف CUR-031–080؛ مسیر جدید ۸۰، با حفظ ۳۰ شناسهٔ قبلی و ذخیره‌ها؛ بدون ساخت اشیا | Added exactly fifty CUR-031–080 targets; new course eighty, retaining previous thirty IDs/saves; no objects built | Genau fünfzig CUR-031–080 ergänzt; neuer Pfad achtzig, bisherige dreißig IDs/Speicherstände erhalten; keine Objekte gebaut |
-
-
-### بررسی نهایی مراحل ۳۱–۸۰ / Final checks for 31–80 / Abschlussprüfung 31–80 — 2026-11-21
-
-**فارسی:** کامپایل کدهای اجرا و Editor موفق بود. متد واقعیِ کامپایل‌شدهٔ IntroLessonCatalog.ResumeStage در اجرای مستقل .NET آزمایش شد: ذخیرهٔ پایان ۳۰ به ۳۱، ذخیرهٔ میانی ۱۷ بدون تغییر، پایان برداشتن‌ها به شناسایی ۵۴ و پایان ۸۰ به تکمیل می‌رسد؛ شناسهٔ ناشناخته یا شکاف در فهرست، مرحله‌ای را رد نمی‌کند. این آزمون، اجرای برخورد/تعامل Unity نیست. تمام ۸۰ دستور و هدف با صحنه، plan و کلید صوتی تطبیق داده شدند. ممیزی بسته ۳۱۹ معتبر، صفر مفقود و صفر نامعتبر داشت؛ ۳۱۷ عبارت جاری و دو عبارت قبلی برای سازگاری نگه داشته شده‌اند. ۱۹۴ صدای تازه ساخته شد و ۱۲۵ ضبط قبلی با مقایسهٔ بایت‌ها تغییر نکرده‌اند؛ مجموع مدت بسته 1078.0 ثانیه است. نمونهٔ جدید در [Stages31-80VoicePreview.wav](Stages31-80VoicePreview.wav) است. تاریخ، شناسه‌ها و سابقه حفظ شدند؛ اجرای تعاملی Unity و گوشی هنوز Verify هستند. اشیا و صحنه و پروفایل قدیمی عوض نشده‌اند.
-
-**English:** Runtime/Editor compilation passed. The actual compiled IntroLessonCatalog.ResumeStage ran in a standalone .NET check: old completion at thirty resumes 31, partial seventeen stays unchanged, completed pickups resume identification 54, and eighty completes; unknown IDs/holes cannot skip unfinished tasks. This is not a Unity collision/interaction test. All eighty prompts/targets were matched to scene, plan and speech keys. Pack audit: 319 valid, zero missing/invalid, comprising 317 current phrases plus two retained compatibility phrases. Generated 194 new recordings; all previous 125 remain byte-identical. Total pack duration 1078.0 seconds. New sample: [Stages31-80VoicePreview.wav](Stages31-80VoicePreview.wav). Date, IDs/history preserved; Unity interaction and phone checks remain Verify. Objects, scene and legacy profile are unchanged.
-
-**Deutsch:** Laufzeit-/Editor-Kompilierung bestanden. Echte kompilierte IntroLessonCatalog.ResumeStage-Methode separat unter .NET geprüft: alter Abschluss dreißig setzt bei 31 fort, Zwischenstand siebzehn unverändert, abgeschlossene Aufhebeziele zu Benennung 54, achtzig abgeschlossen; unbekannte IDs/Lücken überspringen keine offenen Ziele. Kein Unity-Kollisions-/Interaktionstest. Alle achtzig Texte/Ziele mit Szene, Plan und Sprachschlüsseln abgeglichen. Paket-Audit: 319 gültig, keine fehlend/ungültig, davon 317 aktuelle und zwei erhaltene Kompatibilitätssätze. 194 neue Aufnahmen, alle bisherigen 125 bytegleich; Gesamtdauer 1078.0 Sekunden. Neue Hörprobe: [Stages31-80VoicePreview.wav](Stages31-80VoicePreview.wav). Datum, IDs/Verlauf erhalten; Unity-Interaktion/Smartphone Verify. Objekte, Szene und Altprofil unverändert.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-21 | تأیید کامپایل، متد واقعی ادامهٔ ذخیره و ۳۱۹ فایل Tanja برای مسیر ۸۰تایی؛ بدون ادعای موفقیت Play Mode/گوشی | Verified compilation, real save-continuation method and 319 Tanja clips for eighty-task path; no Play Mode/phone pass claimed | Kompilierung, echte Speicherfortsetzung und 319 Tanja-Dateien für Achtzigerpfad geprüft; kein Play-Mode-/Smartphoneerfolg behauptet |
-
-
-## مراحل ۸۱–۱۳۰ — 2026-11-21 / Stages 81–130 / Aufgaben 81–130
-
-**فارسی:** دقیقاً ۵۰ هدف شناسایی از برنامه اضافه شد: سه مورد باقی اتاق‌خواب، ۲۰ مورد پذیرایی/ورودی، ۲۰ مورد لوازم خانه و هفت مورد از گروه نهایی. برای نمونه، هدف کلید برق فقط شناسایی کلید است؛ روشن/خاموش‌کردن، فلاش، شست‌وشو یا کارکرد لوازم خانگی به عنوان مرحلهٔ تازه فعال نشده است. اجزای نام‌دار عمل صاحب را حفظ می‌کنند. همهٔ ۵۳ وسیلهٔ قابل حمل و ۸۰ FixedLearningTarget موجود در صحنه خوانده شدند؛ مسیر جدید فقط ۷۷ هدف ثابت اول را می‌آموزد و سه هدف باقی در CUR-131–133 هنوز Next هستند. هیچ شیء یا معماری بازسازی نشد؛ فهرست tools.txt تغییر لازم ندارد. ترتیب قدیمی LessonOrder و جابه‌جایی قاشق اول و مسیر مستقل ۱۳۶تایی حفظ است.
-
-**English:** Added exactly fifty planned identifications: three remaining bedroom, twenty living/entrance, twenty accessory and seven final-batch targets. For example the light-switch task identifies the switch; it does not introduce switching, flushing, washing or appliance-operation missions. Named parts preserve owner actions. All 53 portable and eighty FixedLearningTarget scene instances were read; the new path teaches the first 77 fixed targets, leaving CUR-131–133 Next. No objects/architecture rebuilt or tools.txt inventory changes needed. Original LessonOrder/spoon swap and independent 136-task legacy course remain.
-
-**Deutsch:** Genau fünfzig geplante Benennungen ergänzt: drei restliche Schlafzimmer-, zwanzig Wohnzimmer-/Eingangs-, zwanzig Zubehör- und sieben Abschlussgruppenziele. Lichtschalteraufgabe benennt z. B. nur den Schalter; keine neuen Schalt-, Spül-, Wasch- oder Gerätebedienungsmissionen. Benannte Teile erhalten Besitzeraktionen. Alle 53 tragbaren/achtzig FixedLearningTarget-Instanzen gelesen; neuer Pfad lehrt erste 77 feste Ziele, CUR-131–133 bleiben Next. Keine Objekt-/Architekturneuerstellung oder tools.txt-Änderung nötig. Alter LessonOrder/Löffeltausch und eigener 136er-Altpfad bleiben.
-
-**فارسی:** ذخیرهٔ قبلی با completedTasks بدون پاک‌شدن منتقل می‌شود؛ پایان ۸۰ به هدف ۸۱ و پایان ۳۰ به ۳۱ ادامه می‌یابد. پایان جدید ۱۳۰ است و ۱۳۱ اعلام نمی‌شود. آزمون اجرایی .NET از متد واقعی کامپایل‌شدهٔ ResumeStage، ادامهٔ ۳۰/۸۰ و حالت میانی را بررسی کرد؛ این آزمون تعامل فیزیکی Unity نیست. کامپایل اجرا و Editor و بررسی ایستای نام/نوع/دستور/صدا موفق بود. ۱۹۹ صدای تازه ساخته و تمام ۳۱۹ فایل قبلی حفظ شدند؛ ممیزی ۵۱۸ معتبر، صفر مفقود و صفر نامعتبر داشت. ۵۱۵ عبارت جاری و سه عبارت سازگاری، مجموعاً 1848.1 ثانیه‌اند. نمونه: [Stages81-130VoicePreview.wav](Stages81-130VoicePreview.wav). Play Mode و گوشی پس از مانع قبلی مجوز Unity همچنان Verify هستند. ردیف‌های ۱۳۱–۴۰۰ به‌عنوان مرحلهٔ قابل بازی معرفی نشده‌اند.
-
-**English:** Existing completedTasks progress continues without deletion: eighty→81, thirty→31. New ending is 130, without 131 announcement. An executable .NET test ran the actual compiled ResumeStage for thirty/eighty/partial continuation; it is not a Unity physics-interaction test. Runtime/Editor compilation and static name/type/prompt/audio checks passed. Generated 199 new clips, preserved all previous 319; audit: 518 valid, zero missing/invalid. 515 current and three compatibility phrases total 1848.1 seconds. Sample: [Stages81-130VoicePreview.wav](Stages81-130VoicePreview.wav). Play Mode/phone remain Verify after the previous Unity licensing blocker. Tasks 131–400 are not presented as playable.
-
-**Deutsch:** Bestehende completedTasks ohne Löschung fortgesetzt: achtzig→81, dreißig→31. Neues Ende 130 ohne 131-Ansage. Ausführbarer .NET-Test nutzt echte kompilierte ResumeStage für Dreißiger-/Achtziger-/Zwischenstände, kein Unity-Physikinteraktionstest. Laufzeit-/Editor-Kompilierung und statische Namen-/Typ-/Text-/Audioprüfung bestanden. 199 neue Dateien erzeugt, bisherige 319 erhalten; Audit: 518 gültig, keine fehlend/ungültig. 515 aktuelle und drei Kompatibilitätssätze, insgesamt 1848.1 Sekunden. Hörprobe: [Stages81-130VoicePreview.wav](Stages81-130VoicePreview.wav). Play Mode/Smartphone nach vorheriger Unity-Lizenzhürde Verify. Aufgaben 131–400 nicht als spielbar dargestellt.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-21 | افزودن CUR-081–130 و ۱۹۹ فایل Tanja؛ مسیر جدید ۱۳۰، حفظ اهداف/صدا/ذخیرهٔ قبلی و ۲۷۰ هدف آینده | Added CUR-081–130 and 199 Tanja clips; new course 130, previous targets/audio/saves retained, 270 targets future | CUR-081–130 und 199 Tanja-Dateien ergänzt; neuer Pfad 130, bisherige Ziele/Aufnahmen/Speicherstände erhalten, 270 Ziele künftig |
-
-
-## مراحل ۱۳۱–۱۸۰ — 2026-11-22 / Stages 131–180 / Aufgaben 131–180
-
-**فارسی:** سه هدف ثابت آخر و ۴۷ مرور برداشتن به ترتیب برنامه اضافه شدند؛ همان ۱۳۳ نمونهٔ ساخته‌شده استفاده می‌شوند، نه پنجاه شیء تازه. در ۱۳۴–۱۸۰، نام هدف ممکن است در دستور نیاید و کاربردش سرنخ باشد؛ مرجع reviewOf شناسهٔ معرفی قبلی همان شیء/عمل است. اعتبارسنج، شناسهٔ تکراری، مرجع آینده، مرورِ مرور یا هدف/عمل ناسازگار را رد می‌کند. برداشتنِ قبل از شروع مرور کافی نیست؛ شمارندهٔ حمل باید پس از فعال‌شدن هدف تغییر کند. این شمارنده وضعیت ذخیرهٔ قدیمی را بازنویسی نمی‌کند. کمک نقشه اختیاری، با دکمهٔ موبایل یا H، بدون امتیازدهی مستقل است؛ در هر مرحله از نو مخفی می‌شود. این تنها کاهش کمک مرحلهٔ مرور است، نه پیاده‌سازی مرور تطبیقی یا قاعدهٔ ۸ از ۱۰.
-
-**English:** Three final fixtures and 47 pickup reviews were added in planned order, reusing 133 built instances rather than creating fifty new objects. In 134–180 the clue may give function without naming the target; reviewOf references the earlier introduction of the same object/action. Validation rejects duplicate IDs, future references, review-of-review and mismatched targets/actions. Pickup before review activation is insufficient; carry sequence must change after activation. This counter does not overwrite old save data. Optional mobile-button/H map help has no independent scoring and resets each stage. This is review-help reduction, not adaptive review or 8/10 gating.
-
-**Deutsch:** Drei letzte feste Ziele und 47 Aufhebewiederholungen in Planreihenfolge ergänzt, gleiche 133 Instanzen statt fünfzig neue Objekte. Bei 134–180 kann der Hinweis Funktion statt Zielnamen nennen; reviewOf verweist auf frühere Einführung desselben Objekts/derselben Aktion. Prüfung lehnt doppelte IDs, Zukunftsverweise, Wiederholung-von-Wiederholung und abweichende Ziele/Aktionen ab. Aufheben vor Aktivierung genügt nicht; Tragesequenz muss sich danach ändern. Zähler überschreibt keine alten Speicherdaten. Optionale Mobil-/H-Kartenhilfe ohne eigene Wertung, je Aufgabe zurückgesetzt. Hilfeabbau bei Wiederholung, keine adaptive Wiederholung/8-von-10-Hürde.
-
-**فارسی:** کلید ذخیره و ۱۳۰ ردیف قبلی دست‌نخورده‌اند؛ پایان ۱۳۰ از ۱۳۱ و پایان تمام معرفی‌ها از مرور ۱۳۴ ادامه دارد. اهداف ۱۸۱–۴۰۰ هنوز Next هستند. متدهای واقعی کامپایل‌شدهٔ Validate/ResumeStage در .NET برای ذخیرهٔ میانی، پایان‌های قبلی، شکاف شناسه و مرور نامعتبر آزمایش شدند؛ کامپایل اجرا/Editor موفق بود. آزمون تعامل Unity جداست و وضعیت نهایی‌اش بعداً ثبت می‌شود؛ آزمون گوشی انجام نشده است. تمام ۶۲۷ فایل Tanja معتبرند، صفر مفقود/نامعتبر؛ ۱۰۹ ضبط تازه و ۵۱۸ قبلی عیناً حفظ‌شده‌اند. ۶۲۲ عبارت جاری و پنج عبارت سازگاری، مجموعاً 2280.3 ثانیه. نمونه: [Stages131-180VoicePreview.wav](Stages131-180VoicePreview.wav). تاریخ با Europe/Berlin به 2026-11-22 به‌روز شد؛ تاریخچه و شناسه‌ها حفظ شدند. اشیا، صحنه، ریشه‌های مبلمان، نام اجزا و مسیر قدیمی ۱۳۶تایی تغییر نکردند.
-
-**English:** Save key and previous 130 rows are unchanged; completed 130 resumes 131, completed introductions resume review 134. Tasks 181–400 remain Next. Actual compiled Validate/ResumeStage ran under .NET for partial/old completions, ID holes and invalid reviews; runtime/Editor compilation passed. Unity interaction is separate and its final outcome will be recorded; phone testing not performed. All 627 Tanja files validate with none missing/invalid: 109 new recordings, previous 518 byte-preserved. 622 current/five compatibility phrases total 2280.3 seconds. Sample: [Stages131-180VoicePreview.wav](Stages131-180VoicePreview.wav). Date updated to 2026-11-22 Europe/Berlin; history/IDs retained. Objects, scene, furnishing roots, part names and legacy 136-task course unchanged.
-
-**Deutsch:** Speicherschlüssel/bisherige 130 Zeilen unverändert; Abschluss 130 setzt bei 131 fort, Einführungsabschluss bei Wiederholung 134. Aufgaben 181–400 Next. Echte kompilierte Validate/ResumeStage unter .NET für Zwischen-/Altabschlüsse, ID-Lücken und ungültige Wiederholungen geprüft; Laufzeit-/Editor-Kompilierung bestanden. Unity-Interaktion separat mit späterem Endergebnis, Smartphone nicht geprüft. Alle 627 Tanja-Dateien gültig, keine fehlend/ungültig: 109 neu, bisherige 518 bytegleich. 622 aktuelle/fünf Kompatibilitätssätze, insgesamt 2280.3 Sekunden. Hörprobe: [Stages131-180VoicePreview.wav](Stages131-180VoicePreview.wav). Datum auf 2026-11-22 Europe/Berlin aktualisiert, Verlauf/IDs erhalten. Objekte, Szene, Einrichtungswurzeln, Teilnamen und 136er-Altpfad unverändert.
-
-| تاریخ / Date / Datum | فارسی | English | Deutsch |
-|---|---|---|---|
-| 2026-11-22 | افزودن سه شناسایی و ۴۷ مرور، کمک اختیاری و کنترل برداشتن تازه؛ مسیر ۱۸۰ و ۱۰۹ صدای Tanja تازه، با حفظ پروفایل و تمام صداهای قبلی | Added three identifications/47 reviews, optional hints and fresh-pickup guard; course 180 plus 109 Tanja clips, profiles/prior audio retained | Drei Benennungen/47 Wiederholungen, optionale Hilfe/frisches Aufheben ergänzt; Pfad 180 und 109 Tanja-Dateien, Profile/Altaufnahmen erhalten |
-
-
-### نتیجهٔ آزمون تعاملی — 2026-11-22 / Interaction-test outcome / Ergebnis Interaktionstest
-
-**فارسی:** اجرای تازهٔ Play Mode در پروژهٔ کپی‌شده با هویت محصول آزمایشی نیز پیش از اجرای آزمون متوقف ماند: اتصال Licensing Client راه نیفتاد، انتظار ۶۰ثانیه‌ای چندبار تمام شد و com.unity.editor.headless پیدا نشد. فرایند گیرکرده متوقف شد. بنابراین نتیجهٔ تعامل Unity، لمس H/دکمه و کنترل CarrySequence فقط با آزمون آماده پوشش داده شده و هنوز در موتور تأیید نشده است؛ آزمون .NET صرفاً اعتبارسنج و ادامهٔ پیشرفت واقعی را اجرا کرد. گوشی آزمایش نشده است. در معرفی‌های ۱–۱۳۳ نقشهٔ دقیق باقی است؛ کاهش کمک در این تغییر فقط برای مرورهاست و سنجش امتیاز کمک/مرور تطبیقی آینده است.
-
-**English:** A fresh Play Mode attempt in the copied project with test product identity again stalled before tests: Licensing Client could not connect, repeated sixty-second waits expired and com.unity.editor.headless was not found. The stalled process was stopped. Unity interaction, H/button input and CarrySequence behavior have prepared harness coverage but no engine pass; the .NET run executed only the real validator/progress-resume methods. Phone untested. Introductions 1–133 retain precise maps; this change reduces help only for reviews, with assistance scoring/adaptive review still future work.
-
-**Deutsch:** Neuer Play-Mode-Versuch in Projektkopie mit Testproduktidentität blieb erneut vor Tests hängen: Licensing Client nicht verbunden, wiederholte Sechzig-Sekunden-Wartezeiten abgelaufen, com.unity.editor.headless nicht gefunden. Hängender Prozess gestoppt. Unity-Interaktion, H-/Tasteneingabe und CarrySequence im vorbereiteten Harness abgedeckt, ohne Engine-Erfolgsnachweis; .NET führte nur echte Validierungs-/Fortsetzungsmethoden aus. Smartphone ungeprüft. Einführungen 1–133 behalten genaue Karten; Hilfeabbau hier nur bei Wiederholungen, Hilfebewertung/adaptive Wiederholung künftig.
-
-## GDD-58 — CUR-181–230 / Artikelwahl — 2026-11-22
-
-**فارسی:** CUR-001–230 در کد پیاده شده‌اند؛ ۱۸۱–۲۰۰ شامل ۶ مرور برداشتن و ۱۴ مرور هدف ثابت، و ۲۰۱–۲۳۰ شامل ۳۰ تمرین ترکیبی حرف تعریف هستند. مجموع: ۱۰۶ برداشتن، ۹۴ شناسایی و ۳۰ دستور زبان؛ ۱۳۳ معرفی، ۶۷ مرور کاربردی و ۳۰ ترکیبی. سطح داخلی تا A2.2 است و مدرک مهارت زبان نیست. هر تمرین ترکیبی فقط با برداشتن تازهٔ هدف دقیق و سپس انتخاب درست تأیید می‌شود؛ پاسخ اشتباه اجازهٔ تلاش دوباره می‌دهد. سه گروه: حرف تعریف پایه، معین Akkusativ و نامعین Akkusativ. پنجرهٔ پاسخ با لمس یا کلیدهای ۱–۳ کار می‌کند و حرکت/کنترل دوربین را هنگام پاسخ متوقف می‌کند. دستور آلمانی حرف تعریف پاسخ را لو نمی‌دهد. شناسه‌ها و ذخیرهٔ قبلی حفظ می‌شوند؛ پایان ۱۸۰ از ۱۸۱ ادامه دارد. مسیر قدیمی ۱۳۶تایی، ترتیب قاشق و اشیای صحنه حفظ شده‌اند. ۲۳۱–۴۰۰ برنامهٔ آینده‌اند. کامپایل اجرا/Editor و آزمون مدیریت‌شدهٔ کاتالوگ/ذخیره/پاسخ انجام شده؛ تعامل Unity و گوشی هنوز تأیید نشده‌اند (مانع قبلی مجوز Unity).
-
-**English:** CUR-001–230 are implemented in code. Stages 181–200 add six pickup and fourteen fixed-target reviews; 201–230 add thirty pickup-plus-article tasks. Totals: 106 pickup, 94 identification and 30 grammar tasks; 133 introductions, 67 contextual reviews and 30 combinations. Internal levels reach A2.2, without claiming language certification. Grammar completion requires fresh pickup of the exact target followed by a correct choice; wrong choices allow retry. Groups cover dictionary articles, definite accusative and indefinite accusative. The answer panel accepts touch or keys 1–3 and blocks movement/camera controls while answering. German prompts avoid revealing the answer article. Stable IDs and saves persist; completed 180 resumes at 181. The legacy 136-task path, spoon-first order and scene objects remain. Stages 231–400 are future plans. Runtime/Editor compilation and managed catalog/save/answer tests were performed; Unity interaction and device testing remain unverified due to the previous Unity licensing blocker.
-
-**Deutsch:** CUR-001–230 sind im Code umgesetzt. 181–200 ergänzen sechs Aufhebe- und vierzehn feste Suchwiederholungen; 201–230 ergänzen dreißig Aufgaben aus Aufheben und Artikelwahl. Gesamt: 106 Aufhebe-, 94 Identifikations- und 30 Grammatikaufgaben; 133 Einführungen, 67 kontextuelle Wiederholungen und 30 Kombinationen. Interne Stufen reichen bis A2.2, ohne Sprachnachweis. Grammatik erfordert frisches Aufheben des genauen Ziels und danach die richtige Auswahl; falsche Antworten erlauben erneute Versuche. Geübt werden Grundartikel, bestimmter und unbestimmter Akkusativ. Das Antwortfenster unterstützt Touch oder Tasten 1–3 und sperrt dabei Bewegung/Kamera. Deutsche Anweisungen verraten den Lösungsartikel nicht. Stabile IDs und Speicherstände bleiben erhalten; nach 180 geht es mit 181 weiter. Altpfad mit 136 Aufgaben, Löffel zuerst und Szenenobjekte bleiben erhalten. 231–400 sind Zukunftspläne. Laufzeit-/Editor-Kompilierung und verwaltete Katalog-/Speicher-/Antworttests wurden durchgeführt; Unity-Interaktion und Gerätetests bleiben wegen der bisherigen Unity-Lizenzblockade ungeprüft.
-
-**فارسی:** صدای Tanja نصب و ممیزی شد: ۷۸۷ فایل معتبر، صفر مفقود/نامعتبر؛ ۱۶۰ عبارت تازه و ۶۲۷ ضبط قبلی عیناً حفظ شدند. نمونه: [Stages181-230VoicePreview.wav](Stages181-230VoicePreview.wav).
-
-**English:** Tanja installed and audited: 787 valid files, zero missing/invalid; 160 new phrases and all 627 prior recordings preserved byte-for-byte. Preview: [Stages181-230VoicePreview.wav](Stages181-230VoicePreview.wav).
-
-**Deutsch:** Tanja installiert und geprüft: 787 gültige Dateien, keine fehlend/ungültig; 160 neue Ausdrücke und alle 627 bisherigen Aufnahmen bytegleich erhalten. Hörprobe: [Stages181-230VoicePreview.wav](Stages181-230VoicePreview.wav).
-
-## GDD-59 — CUR-231–280 / مکان و دستور زبان / Raum und Grammatik — 2026-11-22
-
-**فارسی:** CUR-001–280 در کد پیاده شده‌اند؛ ۲۸۱–۴۰۰ هنوز آینده‌اند. ۵۰ مرحلهٔ تازه: ۲۳۱–۲۴۰ منفی‌سازی با kein، ۲۴۱–۲۵۰ جمع اسم با حرف تعریف، ۲۵۱–۲۶۰ داتیوِ مکان، ۲۶۱–۲۷۰ تفاوت جهت/مکان، ۲۷۱–۲۸۰ صفت ملکی در Akkusativ. مجموع ۱۰۶ برداشتن، ۹۴ شناسایی و ۸۰ ترکیبی است؛ ۱۳۳ معرفی و ۶۷ مرور کاربردی پیشین حفظ شده‌اند. سطح داخلی تا B1.1 است؛ این تقسیم‌بندی مدرک زبان نیست. شرط ترکیبی: برداشتن تازه (۵۰ تمرین)، شناسایی اصلیِ هدف دقیق با Anhören/F (۱۰ تمرین جمع)، یا برداشتن تازه و گذاشتن صحیح در محدودهٔ میز (۲۰ تمرین مکانی)، سپس انتخاب پاسخ درست. پاسخ‌ها سه‌گزینه‌ای‌اند؛ تایپ آزاد و سنجش گفتار اجرا نشده‌اند. پاسخ غلط امکان تلاش دوباره دارد؛ پاسخ قدیمی و تکرار رویداد مرحله را جلو نمی‌برند. پنجرهٔ پاسخ با لمس یا کلیدهای ۱–۳ کار می‌کند و حرکت/دوربین را متوقف می‌کند. هر تمرین مکانی، هدف و مرجع را مستقل روی میز موجود آماده می‌کند؛ وسایل مزاحم روی میز موقتاً مخفی می‌شوند. فلش روی میز جهت جلو را مشخص می‌کند؛ کل سطح زیرین هدف باید با تلورانس در محدوده و روی همان صفحهٔ میز قرار بگیرد. زمین، سطح دیگر، جای اشتباه، لغو برداشتن یا شناسایی تنها پذیرفته نمی‌شوند. مرجع قابل برداشتن نیست؛ Neu anordnen همان تمرین را بازچینی می‌کند. جای تمرینی در ذخیرهٔ دائمی نوشته نمی‌شود و پس از بخش مکانی جای قبلی وسایل برمی‌گردد؛ بارگذاری مجدد تمرین را از چیدمان مستقل آغاز می‌کند. کلید ذخیره و شناسه‌های قبلی حفظ‌اند؛ پایان ۲۳۰ از ۲۳۱ ادامه دارد و پایان جدید ۲۸۰ است. مسیر قدیمیِ ۱۳۶تایی، قاشق در ابتدا، ۵۳ قابل حمل و ۸۰ ثابت و تمام ریشه‌های مبلمان حفظ شده‌اند. بستهٔ Tanja اکنون ۹۷۴ فایل معتبر دارد، شامل ۱۸۷ عبارت تازه؛ تمام ۷۸۷ ضبط قبلی عیناً حفظ شده‌اند. کامپایل اجرا/Editor و آزمون‌های مدیریت‌شدهٔ کاتالوگ، ذخیره، پاسخ و قاعدهٔ محدوده موفق بوده‌اند؛ تست کامل تعامل Unity و گوشی هنوز تأیید نشده و مانع قبلی مجوز Unity رفع‌شده فرض نشده است.
-
-**English:** CUR-001–280 are implemented in code; 281–400 remain future work. The next fifty cover 231–240 kein negation, 241–250 noun plurals with articles, 251–260 dative location, 261–270 direction versus location, and 271–280 accusative possessives. Totals: 106 pickup, 94 identification and 80 grammar combinations, retaining 133 introductions and 67 contextual reviews. Internal levels reach B1.1 without claiming certification. Grammar requires fresh pickup (50 tasks), exact primary Anhören/F identification (10 plural tasks), or fresh pickup and valid marked-table placement (20 spatial tasks), followed by the correct choice. Answers use three choices; free typing and speech assessment are not implemented. Wrong answers allow retry; stale answers and repeated events cannot advance. Touch or keys 1–3 operate the answer panel, which blocks movement/camera. Each spatial task independently presets its target and reference on the existing table, temporarily hiding other tabletop clutter. A visible arrow defines front; the complete target footprint must fit the zone tolerance and contact that same tabletop. Floor/other surfaces, wrong positions, cancelled carries and identification alone fail. The reference cannot be picked up; Neu anordnen resets the current practice. Temporary poses never enter persistent saves; original poses return after the spatial section and reload rebuilds the independent preset. Existing IDs/save key remain; completed 230 resumes at 231, with a new ending at 280. Legacy 136 tasks, spoon-first order, 53 pickups, 80 fixtures and furnishing roots remain. Tanja now contains 974 validated clips, including 187 new phrases; all 787 earlier recordings remain byte-identical. Runtime/Editor compilation and managed catalog/save/answer/zone-rule tests passed. Full Unity interaction and phone testing remain unverified; the previous Unity licensing blocker is not assumed resolved.
-
-**Deutsch:** CUR-001–280 sind im Code umgesetzt; 281–400 bleiben künftig. Die nächsten fünfzig behandeln 231–240 Verneinung mit kein, 241–250 Plural mit Artikel, 251–260 Ortsangaben im Dativ, 261–270 Richtung gegenüber Ort und 271–280 Possessivartikel im Akkusativ. Gesamt: 106 Aufhebe-, 94 Identifikations- und 80 Grammatikkombinationen; 133 Einführungen und 67 Kontextwiederholungen bleiben erhalten. Interne Stufen reichen bis B1.1 ohne Zertifizierungsanspruch. Grammatik verlangt frisches Aufheben (50 Aufgaben), genaue Hauptbenennung mit Anhören/F (10 Pluralaufgaben) oder frisches Aufheben und korrektes Ablegen in der Tischzone (20 Raumaufgaben), danach die richtige Auswahl. Drei Antwortoptionen; freie Eingabe und Sprachbewertung sind nicht umgesetzt. Falsche Antworten erlauben Wiederholung; alte Antworten und wiederholte Ereignisse überspringen nichts. Touch oder Tasten 1–3 bedienen das Antwortfenster, das Bewegung/Kamera sperrt. Jede Raumaufgabe ordnet Ziel und Bezug unabhängig auf dem vorhandenen Tisch an; andere Tischgegenstände werden vorübergehend verborgen. Ein sichtbarer Pfeil definiert vorne. Die ganze Grundfläche muss innerhalb der Zonentoleranz auf genau dieser Tischplatte liegen. Boden/andere Flächen, falsche Positionen, abgebrochenes Tragen und bloße Benennung genügen nicht. Das Bezugsobjekt bleibt liegen; Neu anordnen setzt die aktuelle Übung zurück. Temporäre Posen gelangen nicht in dauerhafte Speicherstände; nach dem Raumabschnitt kehren Originalposen zurück, Neuladen erstellt die unabhängige Anordnung erneut. IDs/Speicherschlüssel bleiben; nach 230 folgt 231, neues Ende bei 280. Altpfad 136, Löffel zuerst, 53 tragbare/80 feste Ziele und Möbelwurzeln bleiben. Tanja enthält jetzt 974 geprüfte Dateien, darunter 187 neue Ausdrücke; alle 787 bisherigen Aufnahmen bleiben bytegleich. Laufzeit-/Editor-Kompilierung und verwaltete Katalog-/Speicher-/Antwort-/Zonenregeltests bestanden. Vollständige Unity-Interaktion und Gerätetests bleiben ungeprüft; die bisherige Lizenzblockade gilt nicht als behoben.
-
-## GDD-60 — صدای این بخش / Section audio / Abschnittsaudio — 2026-11-22
-
-**فارسی:** ۱۸۷ عبارت جدید Tanja ساخته و نصب شد؛ نمونهٔ شنیداری در فایل مراحل ثبت شده است.
-
-**English:** 187 new Tanja phrases generated and installed; the stage document links the preview.
-
-**Deutsch:** 187 neue Tanja-Ausdrücke erzeugt und installiert; die Aufgabendatei verlinkt die Hörprobe.
-
-## GDD-61 — CUR-281–330 / ترکیب و عمل / Kombination und Handlung — 2026-11-22
-
-**فارسی:** CUR-001–330 در کد پیاده شده‌اند؛ ۳۳۱–۴۰۰ هنوز آینده‌اند. بخش جدید: ۲۸۱–۲۹۰ جملهٔ موصولی و نام جزء، ۲۹۱–۳۰۰ کارهای ترکیبیِ میز و انتخاب جمله، ۳۰۱–۳۲۰ کارهای مستقل وسایل خانه و ۳۲۱–۳۳۰ ترتیب چند عمل. مجموع کد: ۱۰۶ برداشتن، ۹۴ شناسایی، ۹۰ تمرین زبانی G و ۴۰ سناریوی C؛ ده سناریوی اول بخش دستور زبان ۲۰۱–۳۰۰ را کامل می‌کنند و سی سناریوی بعدی بخش عمل را آغاز می‌کنند. سطح داخلی تا B2.1 است؛ سنجش رسمی B2 یا گفتار/تایپ آزاد اجرا نشده است. همهٔ پاسخ‌های زبانی سه‌گزینه‌ای‌اند؛ متن مأموریت‌ها همین محدودیت را روشن می‌کند و هدف تولید آزاد آینده در plannedFreeResponse حفظ شده است. سناریو فقط پس از عمل واقعی و پاسخ درست کامل می‌شود؛ شنیدن نام، تکرار، پاسخ قدیمی یا وضعیت آمادهٔ قبلی جای عمل را نمی‌گیرد. درها باید پس از تعامل تازه از حرکت بایستند؛ فلاش چرخهٔ تازهٔ کامل لازم دارد. مأموریت‌های ترتیبی هر گام را جدا می‌سنجند، از جمله کشو→قاشق→بستن، یخچال→شیر→بستن، روشن→خاموشِ دوش، و انتظار برای Fertig. ترتیب بستن دو در و خاموش‌کردن آب/چراغ در ۳۲۹/۳۳۰ آزاد است. دست‌زدن به درِ دیگ در ۳۲۶ یا خاموش‌کردن زودهنگام هود/آب هنگام انتظار/تأیید، نیازمند شروع مجدد همان سناریو است. تأیید Spülen beendet با لمس یا T فقط پس از بازکردن شیر پذیرفته می‌شود؛ شستن واقعی ظروف ارزیابی نمی‌شود. در ۳۲۴ باید پس از خاموش‌کردن چراغ وارد محدودهٔ مشخص راهرو در امتداد کلید شد. غذاها و وسایلِ گزارش‌شده واقعاً در چیدمان مستقل کشو/یخچال/کابینت آماده می‌شوند. کنترل‌های جدید روی مدل موجود برای فلاش، هود، شیر روشویی، دوش، چراغ پاتختی و درپوش توالت فعال‌اند؛ آب و جریان هود نمایش شبیه‌سازی‌شده دارند، نه شبیه‌سازی سیال. کنترل فرزند جای مالک شناسایی یا Metadata اجزا را نمی‌گیرد. اشیا و وضعیت وسایل قبل از سناریو ثبت می‌شوند؛ هر سناریو چیدمان مستقل دارد، جای تمرینی وارد ذخیرهٔ دائمی نمی‌شود و هنگام خروج، وضعیت قبلی برمی‌گردد. Neu anordnen همان سناریو را بازنشانی می‌کند؛ بارگذاری مجدد از چیدمان مستقل شروع می‌شود. پیشرفت با همان شناسه‌ها و کلید حفظ است؛ پایان ۲۸۰ از ۲۸۱ ادامه دارد، پایان جدید ۳۳۰ است. مسیر قدیمی ۱۳۶تایی، قاشق در ابتدا، ۵۳ قابل حمل، ۸۰ ثابت و ریشه‌های مبلمان حفظ‌اند. بستهٔ Tanja با ۱۲۶۰ عبارت شامل عبارات سازگاری گسترش یافته؛ ۲۸۶ عبارت نسبت به بستهٔ ۹۷۴تایی اضافه شده است. کامپایل اجرا/Editor و آزمون مدیریت‌شدهٔ کاتالوگ، ذخیره، پاسخ، تازگی رویداد، توقف حرکت و قواعد محدوده انجام شده‌اند. تست کامل تعامل، نمایش، انیمیشن و دسترسی روی Unity/گوشی هنوز تأیید نشده است؛ مانع قبلی مجوز Unity رفع‌شده فرض نشده است.
-
-**English:** CUR-001–330 are implemented in code; 331–400 remain future work. New content: 281–290 relative clauses/parts, 291–300 integrated table tasks and sentence choices, 301–320 standalone household actions, and 321–330 ordered routines. Code totals: 106 pickup, 94 identification, 90 language G tasks and 40 C scenarios; the first ten scenarios complete grammar 201–300, while the next thirty start the action section. Internal labels reach B2.1; formal B2, speech and free-typing assessment are not implemented. All language responses use three choices; mission wording says so, with future free-production objectives retained as plannedFreeResponse. A scenario needs actual actions AND a correct response; hearing names, repeats, stale answers and existing desired states do not substitute. Doors require a fresh interaction and settled motion; flushing requires a newly completed cycle. Routines validate each step, including drawer→spoon→close, fridge→milk→close, shower on→off, and waiting for Fertig. Closing the two doors and switching water/lights off in 329/330 may occur in either order. Touching the drum door in 326 or switching hood/water off during a guarded wait/confirmation requires resetting that scenario. Spülen beendet via touch or T is accepted only after opening the tap; actual dish cleanliness is not assessed. Stage 324 requires entering a marked hall zone beyond the switch after lights-off. Reported objects/foods are physically preset in the drawer/fridge/cupboard. New action owners on existing models enable flushing, hood, basin tap, shower, bedside lamp and toilet lid; water/airflow are visual simulations, not fluid physics. Child controls preserve whole-object identification and part metadata. Pre-scenario poses/device states are captured; each preset is independent, temporary poses never enter persistent saves, and original states return on exit. Neu anordnen resets the current scenario; reload rebuilds its preset. Existing IDs/save key persist; completed 280 resumes at 281, new ending 330. Legacy 136 tasks, spoon-first order, 53 pickups, 80 fixtures and furnishing roots remain. Tanja expands to 1260 phrases including compatibility recordings, 286 more than the 974 pack. Runtime/Editor compilation and managed catalog/save/answer/event-freshness/settled-state/zone-rule checks were performed. Full Unity/device interaction, rendering, animation and reachability remain unverified; the previous Unity licensing blocker is not assumed resolved.
-
-**Deutsch:** CUR-001–330 sind im Code umgesetzt; 331–400 bleiben künftig. Neu: 281–290 Relativsätze/Teile, 291–300 kombinierte Tischaufgaben mit Satzwahl, 301–320 einzelne Gerätehandlungen und 321–330 geordnete Abläufe. Codegesamt: 106 Aufheben, 94 Benennen, 90 Sprachaufgaben G und 40 Szenarien C; die ersten zehn Szenarien vervollständigen Grammatik 201–300, die nächsten dreißig beginnen den Handlungsteil. Interne Stufen reichen bis B2.1; formale B2-, Sprach- und freie Schreibbewertung fehlen. Alle Sprachantworten haben drei Optionen; Missionstexte sagen dies ausdrücklich, zukünftige freie Produktion bleibt unter plannedFreeResponse erhalten. Szenarien brauchen echte Handlungen UND richtige Antworten; Benennung, Wiederholung, alte Antworten und bereits passende Zustände genügen nicht. Türen verlangen neue Interaktion und abgeschlossene Bewegung, Spülen einen neu beendeten Zyklus. Abläufe prüfen jeden Schritt: Schublade→Löffel→schließen, Kühlschrank→Milch→schließen, Dusche an→aus und Warten auf Fertig. Zwei Türen schließen bzw. Wasser/Licht ausschalten ist in 329/330 in beliebiger Reihenfolge erlaubt. Trommeltürbetätigung in 326 oder vorzeitiges Ausschalten von Haube/Wasser während geschütztem Warten/Bestätigen verlangt Neustart des Szenarios. Spülen beendet per Touch oder T gilt erst nach Öffnen des Hahns; tatsächliche Geschirrsauberkeit wird nicht geprüft. 324 verlangt nach Licht-aus den Eintritt in die markierte Flurzone hinter dem Schalter. Genannte Gegenstände/Lebensmittel werden tatsächlich in Schublade/Kühlschrank/Schrank vorbereitet. Neue Bedienkomponenten an vorhandenen Modellen ermöglichen Spülung, Haube, Waschtischarmatur, Dusche, Nachttischlampe und Toilettendeckel; Wasser/Luftstrom sind visuelle Simulationen, keine Strömungsphysik. Kindbedienungen erhalten Ganzobjektbenennung und Teilmetadaten. Originalposen/Gerätezustände werden gesichert; jede Anordnung ist unabhängig, temporäre Posen gelangen nicht in dauerhafte Speicherstände, Originalzustände kehren beim Verlassen zurück. Neu anordnen setzt das aktuelle Szenario zurück; Neuladen erstellt dessen Vorgabe erneut. IDs/Speicherschlüssel bleiben; nach 280 folgt 281, neues Ende 330. Altpfad 136, Löffel zuerst, 53 tragbare/80 feste Ziele und Möbelwurzeln bleiben. Tanja wächst auf 1260 Ausdrücke einschließlich Kompatibilitätsaufnahmen, 286 mehr als zuvor 974. Laufzeit-/Editor-Kompilierung und verwaltete Katalog-/Speicher-/Antwort-/Ereignis-/Ruhezustands-/Zonenprüfungen wurden durchgeführt. Vollständige Unity-/Geräteinteraktion, Darstellung, Animation und Erreichbarkeit bleiben ungeprüft; die bisherige Lizenzblockade gilt nicht als behoben.
-
-## GDD-62 — صوت و محدودیت پاسخ / Audio and response limits / Audio und Antwortgrenzen — 2026-11-22
-
-**فارسی:** گزارش‌ها گزینه‌ای‌اند؛ تولید آزادِ طرح اولیه آینده است. صدای Tanja برای دستور، گام، پرسش و تأیید ثبت شده است.
-
-**English:** Reports use choices; the original free-production design remains future work. Tanja covers mission/step/question/success narration.
-
-**Deutsch:** Berichte sind Auswahlaufgaben; ursprüngliche freie Produktion bleibt künftig. Tanja spricht Mission/Schritt/Frage/Bestätigung.
-
-## GDD-63 — CUR-331–380 / شرط، رفع ابهام و پرونده / Bedingungen, Klärung und Fälle — 2026-11-22
-
-**فارسی:** CUR-001–380 در کد پیاده شده‌اند؛ ۳۸۱–۴۰۰ آینده‌اند. بخش تازه: ۳۳۱–۳۴۰ شرط و انتخاب وسیله، ۳۴۱–۳۶۰ رفع ابهام و حل مسئله، ۳۶۱–۳۷۰ پروندهٔ E و ۳۷۱–۳۸۰ پروندهٔ M. مجموع: ۱۰۶ برداشتن، ۹۴ شناسایی، ۹۰ تمرین G و ۹۰ سناریوی C. سطح داخلی تا C1.1 است؛ برچسب C1 به منبع و برنامه اشاره دارد، نه تأیید مهارت تولید آزاد. همهٔ پاسخ‌ها و گفت‌وگوها گزینه‌ای‌اند؛ نوشتن متن بلند، شمار واژه، گفتار خودجوش و ارزیابی C1 هنوز آینده‌اند و در plannedFreeResponse/freeProductionStatus حفظ شده‌اند. پرونده‌های آلمانی E و M عیناً از منبع طراحی، هرکدام در چهار صفحه، قابل خواندن/شنیدن‌اند. نخستین مراجعه تأیید تمام صفحات می‌خواهد؛ مراجعه‌های بعدی همان نشست میان‌بر دارند، اما هر مرحله تأیید جدا می‌خواهد. منبع از پنجرهٔ پاسخ هم دوباره باز می‌شود؛ هنگام خواندن، پاسخ پشت پنجره پذیرفته نمی‌شود. سؤال روشن‌کننده باید درست انتخاب شود، سپس پاسخ شخصیت و عملِ تأییدشده دنبال می‌شود. تغییر چراغ یا یخچالِ ممنوع حتی با بازگرداندن وضعیت، نیازمند بازنشانی است. در ۳۳۵ روشن‌نکردن چراغِ خاموش همراه با تأیید، شرط درست است. لیوان/بشقابِ مستثنا نباید داخل محدودهٔ غذای مشخص باشد؛ نبودن در کل اتاق شرط نیست. وسایل آماده‌شده، تعویض گابل با قاشق، حمل اولیهٔ بشقاب و انتقال چاقو از محدودهٔ لبه به وسط واقعاً بررسی می‌شوند. چراغ مطالعهٔ اتاق دوم و درِ نشان‌داده‌شدهٔ جاکفشی از مدل موجود کنترل می‌شوند. تمرین‌های فاصله، بازیکن را نزدیک در قرار می‌دهند؛ محافظ آموزشی فاصلهٔ کمتر از ۰٫۸۵ متر تلاش اول را رد می‌کند و عقب‌رفتن تا دست‌کم ۰٫۹۵ متر و بازکردن تازه و پایان حرکت لازم است. بررسی برخورد قبلی در هم حفظ است؛ این محافظ، تشخیص خرابی یا مدل کامل مکانیکی نیست. جای قبلی بازیکن پس از تمرین فاصله برمی‌گردد. همهٔ چیدمان‌ها مستقل‌اند؛ جای موقت وارد ذخیره نمی‌شود. پایان ۳۳۰ از ۳۳۱ ادامه دارد، پایان جدید ۳۸۰ است؛ مسیر قدیمی ۱۳۶تایی، قاشق در ابتدا و جمعیت ۵۳ قابل حمل/۸۰ ثابت حفظ‌اند. کامپایل و آزمون‌های مدیریت‌شدهٔ کاتالوگ، ذخیره، گزینه‌ها، پرونده‌ها و قواعد موفق‌اند؛ تست کامل نمایش/تعامل/فاصله/انیمیشن Unity و گوشی هنوز تأیید نشده و مانع قبلی مجوز Unity رفع‌شده فرض نشده است.
-
-**English:** CUR-001–380 are implemented in code; 381–400 remain future work. New bands: 331–340 conditions/item selection, 341–360 clarification/problem solving, 361–370 case E, 371–380 case M. Totals: 106 pickup, 94 identification, 90 G tasks and 90 C scenarios. Internal labels reach C1.1, referring to source/design bands, not certified free-production proficiency. All responses/dialogues use choices. Long writing, word-count rubrics, spontaneous speech and C1 production assessment remain future work in plannedFreeResponse/freeProductionStatus. German E/M source packets are reproduced from the design source in four readable/listenable pages each. First consultation requires acknowledging all pages; later visits in the same session have a shortcut, with a separate acknowledgement per stage. Sources reopen from response panels; hidden answers cannot be submitted while reading. Correct clarification precedes the character reply and confirmed action. Touching protected lights/fridge requires reset even if restored. In 335, leaving the lamp off plus explicit confirmation is correct. Excluded glass/plate must be outside the marked meal zones, not absent from the whole room. Actual checks cover prepared objects, replacing fork with spoon, initial held plate and knife edge-to-centre placement. Existing second-bedroom desk lamp and marked shoe-cabinet door gain action bindings. Clearance tasks place the player near the door; an educational proximity guard rejects the first attempt below 0.85 m, then requires retreat to at least 0.95 m and fresh settled opening. Existing collision checks remain; this is not fault diagnosis or a full mechanical model. Previous player position returns after clearance practice. Presets are independent and temporary poses never enter saves. Completed 330 resumes at 331; new ending 380. Legacy 136, spoon-first order and 53 portable/80 fixed targets remain. Compilation and managed catalog/save/choice/source/rule checks passed; full Unity/device rendering, interaction, clearance and animation remain unverified, with the previous licensing blocker not assumed resolved.
-
-**Deutsch:** CUR-001–380 sind im Code umgesetzt; 381–400 bleiben künftig. Neu: 331–340 Bedingungen/Gegenstandswahl, 341–360 Klärung/Problemlösen, 361–370 Fall E, 371–380 Fall M. Gesamt: 106 Aufheben, 94 Benennen, 90 G-Aufgaben und 90 C-Szenarien. Interne Stufen reichen bis C1.1; gemeint sind Quellen-/Entwurfsstufen, kein Nachweis freier Sprachproduktion. Antworten/Dialoge sind Auswahlaufgaben. Lange Texte, Wortzahlraster, spontanes Sprechen und C1-Produktionsbewertung bleiben unter plannedFreeResponse/freeProductionStatus künftig. Die deutschen E-/M-Quellen stehen unverändert aus dem Entwurf auf je vier les-/hörbaren Seiten bereit. Erstes Lesen verlangt Bestätigung aller Seiten; später in derselben Sitzung gibt es eine Abkürzung, aber je Aufgabe eine eigene Bestätigung. Quellen lassen sich aus Antwortfenstern erneut öffnen; verdeckte Antworten werden beim Lesen nicht angenommen. Richtige Rückfrage, Figurenantwort und bestätigte Handlung folgen aufeinander. Betätigung geschützter Lampen/Kühlschranktüren verlangt Neustart, auch nach Rückstellung. In 335 sind ausgeschaltete Lampe und ausdrückliche Bestätigung richtig. Ausgeschlossene Gläser/Teller gehören nicht in die markierten Esszonen; sie müssen nicht aus dem ganzen Raum verschwinden. Geprüft werden tatsächliche Anordnungen, Gabel-Löffel-Tausch, anfangs getragener Teller und Messer vom Rand zur Mitte. Vorhandene Leselampe im zweiten Schlafzimmer und markierte Schuhschranktür erhalten Bedienbindungen. Abstandsübungen setzen die Figur nahe an die Tür: Eine didaktische Nähenprüfung weist den ersten Versuch unter 0,85 m ab; mindestens 0,95 m Abstand und erneutes abgeschlossenes Öffnen sind nötig. Bestehende Kollisionsprüfung bleibt; keine Defektdiagnose oder vollständige Mechaniksimulation. Danach kehrt die vorherige Spielerposition zurück. Vorgaben sind unabhängig; temporäre Posen gelangen nicht in Speicherstände. Nach 330 folgt 331, neues Ende 380. Altpfad 136, Löffel zuerst und 53 tragbare/80 feste Ziele bleiben. Kompilierung und verwaltete Katalog-/Speicher-/Auswahl-/Quellen-/Regeltests bestanden; vollständige Unity-/Gerätedarstellung, Interaktion, Abstand und Animation bleiben ungeprüft, die bisherige Lizenzblockade gilt nicht als behoben.
-
-## GDD-64 — خواندن، صدا و محدودیت تولید / Reading, audio and production limits / Lesen, Audio und Produktionsgrenzen — 2026-11-22
-
-**فارسی:** ۱۵۲۱ فایل Tanja نصب و ممیزی شد؛ صفر مفقود/نامعتبر، ۲۶۱ عبارت تازه و ۱۲۶۰ ضبط قبلی عیناً حفظ‌شده. نمونه: [Stages331-380VoicePreview.wav](Stages331-380VoicePreview.wav).
-
-**English:** 1521 Tanja files installed/audited; zero missing/invalid, 261 new phrases and all 1260 prior recordings preserved byte-for-byte. Preview: [Stages331-380VoicePreview.wav](Stages331-380VoicePreview.wav).
-
-**Deutsch:** 1521 Tanja-Dateien installiert/geprüft; keine fehlend/ungültig, 261 neue Ausdrücke und alle 1260 bisherigen Aufnahmen bytegleich erhalten. Hörprobe: [Stages331-380VoicePreview.wav](Stages331-380VoicePreview.wav).
-
-## GDD-65 — CUR-381–430 / تکمیل پایه و گسترش / Baseline completion and extension / Grundplan und Erweiterung — 2026-11-22
-
-**فارسی:** CUR-001–430 به‌صورت اقتباس گزینه‌ای در کد پیاده شده‌اند. بستهٔ جدید ۳۸۱–۴۳۰، بیست هدف باقی‌ماندهٔ برنامهٔ ۴۰۰تایی و سی تمرین تکمیلی C1.2 را شامل می‌شود؛ مرحلهٔ ۴۰۰ اکنون جمع‌بندی میانی و پایان فعلی ۴۳۰ است. برنامهٔ زنده ۲۰۰ جست‌وجو، ۱۰۰ دستور زبان و ۱۳۰ عمل/ترکیب دارد؛ baselineTotal/baselineCounts و تاریخچهٔ گسترش، طرح اولیهٔ ۴۰۰تایی را حفظ می‌کنند. شمار نوع کد: ۱۰۶ P، ۹۴ I، ۹۰ G و ۱۴۰ C. پرونده‌های W و H از همان متن آلمانی طراحی، هرکدام چهار صفحه، به E و M اضافه شده‌اند: جمعاً چهار پرونده و شانزده صفحه با خواندن و شنیدن و تأیید مرحله‌ای. محتوای داخلی تا C1.2 می‌رسد، اما نوشتن متن بلند، سنجش شمار واژه و گفتار خودجوش هنوز ارزیابی نمی‌شود؛ plannedFreeResponse/freeProductionStatus معیارهای آینده را جدا نگه می‌دارند. مرحله‌های ۴۰۱–۴۱۰ استثنا و توافق، ۴۱۱–۴۲۰ شواهد و گزارش، و ۴۲۱–۴۳۰ تصمیم تازه و تحویل را تمرین می‌کنند. سؤال دقیق باید پیش از پاسخ شخصیت و عمل مرتبط درست انتخاب شود. در تحویل‌هایی که چراغ مطالعه روشن می‌ماند، استفادهٔ فعلی با پاسخ تازه تأیید می‌شود؛ پیام قدیمی به‌تنهایی کافی نیست. مرحله‌های ۳۸۵/۴۰۴/۴۲۶ خاموش‌ماندن شیر با منع تعامل و تأیید صریح را می‌خواهند. استثنای جست‌وجو محدود به هدف و حداکثر ده دقیقه است؛ ۳۹۰/۴۱۰ اجرای شروع استثنا را می‌سنجند، ۴۰۱/۴۲۲ با پیام داستانی پایان جست‌وجو بازگشت را می‌سنجند؛ ده دقیقهٔ واقعی انتظار اجباری یا تایمر اندازه‌گیری‌شده ادعا نمی‌شود. در ۳۹۹/۴۰۶/۴۲۱ پایان مطالعه پیش از خاموش‌کردن چراغ تأیید می‌شود. در ۴۰۰/۴۲۹/۴۳۰ پاسخ تازهٔ خروج همه، هر سه گروه چراغ قابل‌کنترلِ آموزشی را همراه آب/هود خاموش و دو در را بسته می‌خواهد؛ کنتور، علت خرابی و صرفه‌جویی مشخص همچنان نامعلوم‌اند. تمام سناریوها مستقل و موقت‌اند؛ شیء یا مبلمان تازه و نصب گوشی انجام نشده است. جمعیت صحنه ۵۳ قابل حمل/۸۰ ثابت و قاشق در ابتدا حفظ‌اند؛ مسیر قدیمی حذف شده و شناسه‌ها/کلید ذخیرهٔ مسیر جدید حفظ‌اند؛ پایان ۳۸۰ از ۳۸۱ و جمع‌بندی ۴۰۰ از ۴۰۱ ادامه دارد. کامپایل اجرا/Editor و آزمون‌های مدیریت‌شدهٔ کاتالوگ/ذخیره/پاسخ/منبع موفق بوده‌اند. اجرای کامل Unity، نمایش و دسترسی/انیمیشن و گوشی هنوز تأیید نشده‌اند؛ محدودیت قبلی مجوز Unity رفع‌شده فرض نشده است.
-
-**English:** CUR-001–430 are implemented as selection-based adaptations in code. This 381–430 batch contains the twenty remaining baseline stages plus thirty new C1.2 integration tasks. Stage 400 is now an intermediate checkpoint; the current ending is 430. Live design totals are 200 search, 100 grammar and 130 action/integration; baselineTotal/baselineCounts and extension history retain the original 400 baseline. Code kinds: 106 P, 94 I, 90 G, 140 C. W/H are added from the original German design sources as four pages each, joining E/M for four packets and sixteen readable/listenable pages with per-stage acknowledgement. Internal content reaches C1.2; long writing, word-count rubrics and spontaneous speech are not assessed. plannedFreeResponse/freeProductionStatus retain future criteria separately. New bands: 401–410 bounded agreements/exceptions, 411–420 evidence/reporting, 421–430 updates/handover. A correct precise clarification precedes character reply and action. Handovers retaining desk light require a fresh confirmation of current reading; an older note alone is insufficient. Stages 385/404/426 require protected tap-off plus explicit confirmation without interaction. Search exceptions are purpose-bound, at most ten minutes: 390/410 validate initial implementation, 401/422 restore the rule after a fictional search-finished cue; no forced real ten-minute wait or measured timer is claimed. In 399/406/421 reading-finished information precedes desk-off. In 400/429/430 a fresh all-residents-left answer requires all three controllable learning-light groups, tap and hood off, both doors closed. Meter reading, fault causes and specific savings remain unverified. All scenarios are independent temporary presets; no new furniture/objects or phone installation. Scene populations 53 portable/80 fixed and spoon-first order remain; the legacy course is removed and new-course save IDs/key remain. Completed 380 resumes 381; checkpoint 400 continues 401. Runtime/Editor compilation and managed catalog/save/answer/source tests passed. Full Unity/device rendering, reachability, animation and interaction remain unverified; the previous licensing blocker is not assumed resolved.
-
-**Deutsch:** CUR-001–430 sind als Auswahlanpassungen im Code umgesetzt. Das Paket 381–430 umfasst zwanzig verbleibende Grundplanaufgaben und dreißig neue C1.2-Integrationsaufgaben. 400 ist ein Zwischenabschluss, aktuelles Ende 430. Live-Entwurf: 200 Suche, 100 Grammatik, 130 Handlung/Integration; baselineTotal/baselineCounts und Erweiterungshistorie erhalten den ursprünglichen 400er-Plan. Codetypen: 106 P, 94 I, 90 G, 140 C. W/H ergänzen E/M unverändert aus den deutschen Entwurfsquellen auf je vier Seiten: vier les-/hörbare Pakete mit sechzehn Seiten und Bestätigung je Aufgabe. Interner Inhalt reicht bis C1.2; lange Texte, Wortzahlraster und spontanes Sprechen werden nicht bewertet. plannedFreeResponse/freeProductionStatus halten Zukunftskriterien getrennt fest. Neu: 401–410 begrenzte Vereinbarungen/Ausnahmen, 411–420 Belege/Berichte, 421–430 Aktualisierung/Übergabe. Richtige präzise Rückfrage kommt vor Figurenantwort und Handlung. Bei Übergaben mit Leselicht wird aktuelle Nutzung neu bestätigt; eine alte Notiz genügt nicht. 385/404/426 verlangen geschützten Hahn-aus-Zustand und ausdrückliche Bestätigung ohne Betätigung. Suchausnahmen sind zweckgebunden und auf höchstens zehn Minuten begrenzt: 390/410 prüfen ihren Beginn, 401/422 die Rückkehr nach einer fiktiven Suchende-Meldung; keine erzwungene reale Zehn-Minuten-Wartezeit oder gemessene Zeitsteuerung. In 399/406/421 geht Lesen-beendet der Abschaltung voraus. In 400/429/430 verlangt die neue Auskunft alle Bewohner gegangen alle drei steuerbaren Lernlichtgruppen, Wasser und Haube aus sowie beide Türen zu. Zählerstand, Fehlerursachen und konkrete Ersparnis bleiben ungeprüft. Alle Vorgaben sind unabhängig/temporär; keine neuen Möbel/Objekte oder Telefoninstallation. Bestand 53 tragbare/80 feste Ziele und Löffel zuerst bleiben; Altpfad entfernt, Speicher-IDs/-schlüssel des neuen Pfads bleiben. Nach 380 folgt 381, nach Zwischenabschluss 400 folgt 401. Laufzeit-/Editor-Kompilierung und verwaltete Katalog-/Speicher-/Antwort-/Quellentests bestanden. Vollständige Unity-/Gerätedarstellung, Erreichbarkeit, Animation und Interaktion bleiben ungeprüft; bisherige Lizenzblockade gilt nicht als behoben.
-
-## GDD-66 — پرونده‌های W/H و صدای تازه / W/H packets and audio / W/H-Pakete und Audio — 2026-11-22
-
-**فارسی:** ۱۷۶۲ فایل Tanja نصب و ممیزی شد؛ صفر مفقود/نامعتبر، ۲۴۱ عبارت تازه و تمام ۱۵۲۱ ضبط قبلی عیناً حفظ‌شده‌اند. نمونه: [Stages381-430VoicePreview.wav](Stages381-430VoicePreview.wav).
-
-**English:** 1762 Tanja files installed/audited; zero missing/invalid, 241 new phrases and all 1521 earlier recordings preserved byte-for-byte. Preview: [Stages381-430VoicePreview.wav](Stages381-430VoicePreview.wav).
-
-**Deutsch:** 1762 Tanja-Dateien installiert/geprüft; keine fehlend/ungültig, 241 neue Ausdrücke und alle 1521 bisherigen Aufnahmen bytegleich erhalten. Hörprobe: [Stages381-430VoicePreview.wav](Stages381-430VoicePreview.wav).
-
-## GDD-67 — ممیزی وضعیت تکمیل / Completion-status audit / Prüfung des Abschlussstands — 2026-11-22
-
-**فارسی:** ممیزی تکمیل، شمار ۴۳۰ و حفظ پروفایل‌ها را تغییر نمی‌دهد. ردیف‌های قدیمی GDD-35/43/45/46 با کد فعلی همسان شدند؛ قابلیت موجود دیگر آینده نامیده نمی‌شود. آزمون مدیریت‌شده، اجرای کامل Unity/گوشی و ارزیابی تولید آزاد سه وضعیت جدا هستند. هیچ هدف بازی، شیء یا صدای تازه اضافه نشد.
-
-**English:** Completion audit retains 430 tasks/profiles. Older GDD-35/43/45/46 entries now match current code; existing features are no longer called future work. Managed checks, full Unity/device execution and free-production assessment remain distinct statuses. No new objective, object or audio was added.
-
-**Deutsch:** Abschlussprüfung erhält 430 Aufgaben/Profile. Ältere GDD-35/43/45/46-Einträge entsprechen jetzt dem Code; vorhandene Funktionen gelten nicht länger als Zukunftsarbeit. Verwaltete Prüfungen, vollständige Unity-/Geräteausführung und freie Produktionsbewertung bleiben getrennt. Keine neuen Aufgaben, Objekte oder Aufnahmen.
-
-## GDD-68 — نتیجهٔ راه‌اندازی آزمون تکمیل / Completion-test launch result / Start der Abschlussprüfung — 2026-11-22
-
-**فارسی:** تلاش تکمیل در کپی /tmp/deutschroom-completion-playmode-20261122 انجام شد. Editor جایگزین با کد ‎−9 پیش از تولید لاگ بسته شد؛ codesign --verify هر دو مسیر 6000.6.7f1 و 6000.6.7f1-arm64 را با امضای نامعتبر گزارش داد. باینری Editor تغییر یا امضای مجدد نشد. این نتیجه، شکست اجرای محیط است نه نتیجهٔ آزمون برخورد/مراحل. ۴۳۰ هدف، ذخیره و صحنهٔ اصلی حفظ‌اند؛ هیچ هدف تازه‌ای افزوده نشد.
-
-**English:** Completion attempt used /tmp/deutschroom-completion-playmode-20261122. Alternate Editor exited −9 before writing a log; codesign --verify reports invalid signatures for both 6000.6.7f1 and 6000.6.7f1-arm64. Editor binaries were not altered or re-signed. This is an environment launch failure, not an interaction/stage test result. All 430 objectives, saves and original scene remain; no new objectives added.
-
-**Deutsch:** Abschlussversuch in /tmp/deutschroom-completion-playmode-20261122. Alternativer Editor endete mit −9 vor dem Log; codesign --verify meldet ungültige Signaturen für 6000.6.7f1 und 6000.6.7f1-arm64. Editor-Binärdateien wurden weder geändert noch neu signiert. Dies ist ein Umgebungsstartfehler, kein Interaktions-/Aufgabentestergebnis. 430 Ziele, Speicherstände und Originalszene bleiben; keine neuen Aufgaben.
-
-
-## GDD-69 — آموزش انگلیسی و پاک‌سازی / English onboarding and cleanup / Englische Einführung und Bereinigung — 2026-11-22
-
-**فارسی:** شش صفحهٔ آموزش انگلیسی در اولین اجرا و منوی How to play (English) پیاده شد: هدف بازی، حرکت/نگاه/حالت بدن، برداشتن/گذاشتن/چرخش، نام کل/جزء، هدف/نقشه/سناریو و تنظیمات/ذخیره. توضیح کنترل‌ها مطابق حالت Touch یا Mouse + Keyboard است و نام دکمه‌های آلمانی را توضیح می‌دهد. آموزش در منوی متوقف‌شده و محدودهٔ امن صفحه، با متن قابل پیمایش، نمایش داده می‌شود؛ Finish کلید مستقل DeutschRoom.ControlsTutorial.v1 را ثبت می‌کند. خروج زودهنگام آن را کامل‌شده حساب نمی‌کند؛ بازکردن دوباره از منو ممکن است. منوی اصلی روی صفحهٔ کوتاه پیمایش دارد. آموزش هدف تازه یا ارزیابی هوشمند نیست؛ مسیرهای ۴۳۰/۱۳۶ و ذخیره‌ها تغییر نمی‌کنند. راهنمای قالب URP (Assets/Readme.asset و TutorialInfo همراه metaها) پس از بررسی نبود ارجاع خارجی حذف شد؛ دو برچسب همیشه‌خالی موبایل نیز حذف شد. منابع مراحل/صدا و ابزارهای اعتبارسنجی حفظ شدند. تست نمایش و لمس واقعی هنوز تأیید نشده است.
-
-**English:** Six English guide pages are implemented for first launch and How to play (English): purpose, movement/look/posture, pickup/place/rotation, whole/part names, task/map/scenarios, settings/saves. Instructions follow Touch or Mouse + Keyboard mode and explain German button labels. The guide uses the paused menu, safe area and scrollable text. Finish records the separate DeutschRoom.ControlsTutorial.v1 preference; early exit does not mark completion and the menu can reopen it. The main menu scrolls on short screens. This adds no objective or intelligent assessment; 430/136 paths and saves remain unchanged. Removed the URP template guide (Assets/Readme.asset and TutorialInfo with metadata) after checking for external references, plus two permanently empty mobile labels. Lesson/audio resources and validation tools remain. Actual rendering/touch verification remains pending.
-
-**Deutsch:** Sechs englische Anleitungsseiten für Erststart und How to play (English) sind umgesetzt: Spielziel, Bewegung/Blick/Haltung, Aufheben/Ablegen/Drehen, Gesamt-/Teilnamen, Aufgabe/Karte/Szenarien und Einstellungen/Speicherstände. Hinweise folgen Touch oder Maus/Tastatur und erklären deutsche Tastenbeschriftungen. Die Anleitung verwendet das pausierte Menü, den sicheren Bildschirmbereich und scrollbaren Text. Finish speichert die separate Einstellung DeutschRoom.ControlsTutorial.v1; vorzeitiges Verlassen zählt nicht als Abschluss, erneutes Öffnen ist im Menü möglich. Auf niedrigen Bildschirmen scrollt das Hauptmenü. Keine neuen Ziele oder intelligente Bewertung; 430/136 Pfade und Speicherstände bleiben unverändert. URP-Vorlagenhilfe (Assets/Readme.asset und TutorialInfo samt Metadaten) nach Prüfung externer Referenzen sowie zwei dauerhaft leere Mobilbeschriftungen entfernt. Aufgaben-/Audioressourcen und Prüfwerkzeuge bleiben. Tatsächliche Darstellung/Berührung ist noch ungeprüft.
-
-
-**فارسی — نتیجهٔ تست:** هر ۳۰ اسکریپت اجرا و ۲۲ اسکریپت Editor بدون خطا و با هشدارهای موجود کامپایل شدند. آزمون مدیریت‌شدهٔ ۴۳۰ مرحله/ذخیره/پاسخ/قواعد، سازگاری صحنه/سند، ۱۷۶۲ صوت و نبود ارجاع به منابع حذف‌شده موفق‌اند. تلاش Unity در کپی موقت پس از ۲۵ ثانیه در اتصال سرویس‌ها و تلاش دوم با دسترسی سرویس پس از ۵۰ ثانیه در وضعیت Licensing is not yet initialized متوقف شد؛ آزمون تعامل شروع نشده است. امضای نصب نیز نامعتبر گزارش می‌شود؛ علت قطعی توقف فقط از آن تعیین نمی‌شود. نمایش آموزش، تعامل واقعی و Samsung A34/Android 13 هنوز تأیید نشده‌اند. Editor و گوشی تغییر نکردند.
-
-**English — Test result:** All 30 runtime and 22 Editor scripts compile without errors, with existing warnings. Managed 430-task/save/answer/rule checks, scene/document consistency, 1762 recordings and deleted-asset reference checks pass. Isolated Unity timed out after 25 seconds connecting services; a retry with service access timed out after 50 seconds at Licensing is not yet initialized, before interaction checks started. Signature verification still reports an invalid installation; this alone does not establish the cause. Guide rendering, real interactions and Samsung A34/Android 13 remain unverified. Editor binaries and phone were not changed.
-
-**Deutsch — Prüfergebnis:** Alle 30 Laufzeit- und 22 Editor-Skripte kompilieren ohne Fehler, mit bestehenden Warnungen. Verwaltete Prüfungen für 430 Aufgaben/Speicherstände/Antworten/Regeln, Szenen-/Dokumentkonsistenz, 1762 Aufnahmen und Referenzen entfernter Assets bestanden. Isoliertes Unity endete nach 25 Sekunden bei der Dienstverbindung; ein erneuter Versuch mit Dienstzugriff nach 50 Sekunden bei Licensing is not yet initialized, bevor Interaktionsprüfungen begannen. Die Signaturprüfung meldet eine ungültige Installation; daraus allein folgt keine sichere Ursache. Anleitungsdarstellung, echte Interaktionen und Samsung A34/Android 13 bleiben ungeprüft. Editor und Telefon wurden nicht verändert.
-
-
-## GDD-70 — ترجمهٔ دستور مرحله / Task instruction translation / Übersetzung der Aufgabenanweisung — 2026-11-22
-
-**فارسی:** دکمهٔ دایره‌ای i کنار کارت مرحله، دستور جاری آلمانی و ترجمهٔ انگلیسی را در پنجرهٔ قابل پیمایش باز می‌کند؛ Back to task یا Escape می‌بندد؛ کلید I در رایانه پنجره را باز یا بسته می‌کند. ترجمهٔ آفلاین englishInstruction برای هر ۴۳۰ دستور از متن انگلیسی برنامهٔ مصوب ثبت شده است. مسیر قدیمی برای هر ۱۳۳ هدف، ترجمهٔ دستور معرفی همان شیء و برای خالی‌کردن میز/مقاله دستور انگلیسی متناسب با وضعیت جاری دارد. این کمک فقط دستور مرحله را توضیح می‌دهد؛ ترجمهٔ همهٔ صفحات پرونده، گفت‌وگوها، بازخوردها و گزینه‌ها نیست. پنجره ورودی حرکت و انتخاب پاسخ پشت خود را می‌بندد؛ پیشرفت یا تکمیل هدف را تغییر نمی‌دهد. آموزش انگلیسی روش استفاده را توضیح می‌دهد. AGENTS.md الزام به‌روزکردن آموزش با هر قابلیت قابل‌مشاهدهٔ جدید/تغییریافته و حفظ ترجمهٔ دستورها را ثبت می‌کند. شماره‌ها، قاشق در ابتدا، ۵۳ هدف قابل حمل و ۸۰ ثابت و ذخیره‌ها حفظ‌اند. نمایش و لمس واقعی همچنان نیازمند تست Unity/گوشی است.
-
-**English:** A circular i beside the task card opens the current German instruction and English translation in a scrollable panel; Back to task or Escape closes it; keyboard I opens or closes it. All 430 instructions have offline englishInstruction content from the authored English plan. The legacy path uses the corresponding object's introduction instruction for each of its 133 targets and state-specific English for table clearing/article tasks. This help covers the task instruction, not every case page, dialogue, feedback or answer option. The panel blocks movement and answer input behind it; it does not alter progress or satisfy objectives. The English guide explains this feature. AGENTS.md now requires guide updates for every new/changed player-facing feature and maintained instruction translations. Numbering, spoon-first order, 53 portable/80 fixed targets and saves remain. Actual rendering/touch still requires Unity/device verification.
-
-**Deutsch:** Ein rundes i neben der Aufgabenkarte öffnet die aktuelle deutsche Anweisung und englische Übersetzung in einem scrollbaren Fenster; Back to task oder Escape schließt es; Taste I öffnet oder schließt das Fenster. Alle 430 Anweisungen enthalten offline englishInstruction aus dem verfassten englischen Plan. Der Altpfad verwendet für seine 133 Ziele die Einführung desselben Gegenstands sowie zustandsbezogenes Englisch für Tischräumen/Artikelaufgaben. Die Hilfe umfasst Aufgabenanweisungen, nicht sämtliche Fallseiten, Dialoge, Rückmeldungen oder Antwortoptionen. Das Fenster sperrt Bewegung und dahinterliegende Antworten; es verändert weder Fortschritt noch Zielerfüllung. Die englische Anleitung erklärt die Funktion. AGENTS.md verlangt nun Anleitungsaktualisierungen für jede neue/geänderte spielerseitige Funktion und gepflegte Anweisungsübersetzungen. Nummerierung, Löffel zuerst, 53 tragbare/80 feste Ziele und Speicherstände bleiben. Darstellung/Berührung erfordern weiterhin Unity-/Geräteprüfung.
-
-| 2026-11-22 | حذف مسیر قدیمی، کد و صوت اختصاصی؛ حفظ مسیر جدید ۴۳۰مرحله‌ای و سابقهٔ شناسه‌ها | Removed old course, dedicated code/audio; retained new 430-task path and ID history | Altpfad und eigener Code/Audio entfernt; neuer 430er-Pfad und ID-Verlauf erhalten |
-
-| 2026-11-22 | تکمیل ۱۱۵ صدای اشیا و اجزا؛ پوشش ۲۴۲ نام؛ بدون مرحلهٔ تازه | Added 115 object/part recordings; 242 names covered; no new stage | 115 Objekt-/Teilaufnahmen ergänzt; 242 Namen abgedeckt; keine neue Aufgabe |
-
-| 2026-11-22 | جایگزینی آموزش با ۲۱ گام روی بازی؛ فقط نخستین اجرا یا درخواست منو؛ بدون مرحلهٔ تازه | Replaced guide with 21-step spotlight tour; first launch or menu request only; no new stage | Anleitung durch 21-Schritt-Einführung ersetzt; nur Erststart oder Menüaufruf; keine neue Aufgabe |
+#### 5.1 حرکت و تعامل
+
+| ID | وضعیت | شرح |
+| --- | --- | --- |
+| GDD-03 | Done | توقف، حرکت و پویانمایی محیط را متوقف می‌کند؛ ادامه، بازی را برمی‌گرداند. |
+| GDD-04 | Done | کنترل گوشی: جوی‌استیک حرکت، کشیدن برای نگاه و دکمه‌های وابسته به عمل قابل انجام. |
+| GDD-05 | Done | رایانه: WASD، نگاه ماوس، E تعامل، F نام کل، Shift+F جزء، G گذاشتن، R چرخش، Escape توقف و H آشکارکردن هدف در مرور. |
+| GDD-06 | Done | پایین کشیدن و ۰٫۶ ثانیه نگه‌داشتن: نشستن؛ تکرار پس از رها کردن: درازکشیدن. حرکت رو به بالا، یک حالت را برمی‌گرداند. C/X معادل رایانه‌اند. |
+| GDD-07 | Done | دوربین و کپسول برخورد با وضعیت بدن تغییر می‌کنند؛ زیر مانع بلند شدن مجاز نیست. |
+| GDD-08 | Done | دکمهٔ دایره‌ای یگانهٔ شناسایی برای شیء نزدیک و روبه‌رو، نامش را با Anhören طبق حالت نمایش، نشان می‌دهد یا می‌خواند. |
+| GDD-09 | Done | برداشتن یک وسیله در هر لحظه، چرخش ۴۵ درجه و گذاشتن روی سطح رو به بالا در دسترس. |
+| GDD-10 | Done | درهای کابینت‌ها، کشو، وسایل بزرگ و اتاق‌ها تعاملی‌اند؛ شیر آب جریان نمایشی دارد. |
+| GDD-11 | Done | آشپزخانه ۵۳ وسیلهٔ قابل حمل دارد؛ ظروف، ابزار و خوراکی‌ها در کابینت، کشو، زیر سینک، یخچال و فریزر قرار دارند. |
+| GDD-12 | Done | صندلی‌ها، میز، طبقه‌ها و اجزای سینک مانند خروجی، سیفون، لوله و شلنگ‌ها نام دارند؛ اجزای ثابت قابل حمل نیستند. |
+| GDD-25 | Done | وسیلهٔ داخل کشو همراه آن حرکت می‌کند؛ پس از گذاشتن روی سطح ثابت از کشو جدا می‌شود و پس از بازگرداندن به کشو دوباره همراهش حرکت می‌کند. |
+| GDD-31 | Done | هود و وسایل مهم موجود نام دارند. اجزای قابل تشخیص مانند پایه و صفحهٔ میز، در و دستگیرهٔ کابینت، قاب پنجره و اجزای حمام نام و صدا دارند؛ Anhören فقط نام صاحب و Detail فقط نام جزء را ارائه می‌کند؛ عمل اصلی صاحب حفظ می‌شود. |
+
+#### 5.2 تکمیل و راهنما
+
+| ID | وضعیت | شرح |
+| --- | --- | --- |
+| GDD-15 | Done | مسیر یگانه ۴۲۸ وظیفه دارد: ۱۰۶ P، ۹۲ I، ۹۰ G، ۱۴۰ C؛ CUR-102 و CUR-191 بازنشسته‌اند. |
+| GDD-16 | Done | عمل لازم و پاسخ درست شرط تکمیل تمرین ترکیبی است؛ پایان CUR-430 در شمارهٔ نمایشی ۴۲۸ است. |
+| GDD-19 | Done | نقشه هدف زنده و مسیر را نشان می‌دهد؛ در مرور هدف/مسیر تا «Ziel zeigen» یا H مخفی‌اند و با مرحلهٔ بعد دوباره مخفی می‌شوند. |
+| GDD-24 | Done | پیشرفت با شناسهٔ CUR و وضعیت اشیای قابل حمل محلی ذخیره می‌شود؛ بازنشانی پس از تأیید؛ ذخیرهٔ ابری نیست. |
+
+### 6. جهان و اشیا
+
+| ID | وضعیت | شرح |
+| --- | --- | --- |
+| GDD-01 | Done | یادگیری واژه‌های آلمانی با حرف تعریف در خانهٔ سه‌بعدی و دید اول‌شخص. |
+| GDD-13 | Done | بیرون پنجرهٔ آشپزخانه باغی تزئینی با درخت، چمن، بوته، گل، مسیر، سنگ، نیمکت و تپه دیده می‌شود. |
+| GDD-14 | Done | اتاق‌خواب‌ها، پذیرایی، ورودی و حمام مبله‌اند؛ موجودی جاری ۷۹ هدف ثابت است و آینهٔ راهرو حذف شده است. |
+| GDD-26 | Done | هر ۸۰ نمونهٔ برنامه ساخته شد؛ پس از حذف آینهٔ راهرو ۷۹ هدف ثابت باقی است؛ سفارش تازه لازم است. |
+| GDD-30 | Done | صف ساخت F01–F16 تکمیل است؛ این سابقه به معنی وجود فعلی آینهٔ راهرو نیست. |
+| GDD-34 | Done | ۲۰ نمونهٔ F01–F04 شامل تخت و وسایل خواب، کمد، دراور، پاتختی، چراغ، چوب‌لباسی، میز تحریر، صندلی کار، قفسه و کتاب ساخته شدند؛ هر نمونه هدف مستقلِ شناسایی دارد. هشت در/کشو باز می‌شوند و اجزای مهم نام و صدا دارند. |
+| GDD-36 | Done | ۱۹ هدف ثابت F05–F08 پس از حذف آینهٔ راهرو باقی است؛ ترتیب 48 خالی می‌ماند. |
+| GDD-38 | Done | ۲۰ مورد F09، F12، F13 و چهار ردیف اول F14 ساخته شدند؛ نام و صدای اجزا، هدف مستقل و دو عمل بازکردن لباس‌شویی دارند. |
+| GDD-40 | Done | ده وسیلهٔ آخر F14–F16 نام، صدای آلمانی، هدف مستقل و نام اجزای مهم دارند؛ کلید برق سه چراغ پذیرایی را قطع و وصل می‌کند و وضعیتش با ورود دوباره روشن می‌شود. |
+
+### 7. رابط و دسترس‌پذیری
+
+| ID | وضعیت | شرح |
+| --- | --- | --- |
+| GDD-02 | Done | منوی ورود شامل شروع، ادامه، شروع دوباره، تنظیمات، انتخاب کنترل و آموزش انگلیسی How to play است؛ آموزش روی بازی فقط در اولین اجرا خودکار و سپس از منو باز می‌شود. |
+| GDD-20 | Done | تنظیمات درس شامل فقط متن، فقط صدا و هر دو، بلندی گوینده، تست صدا و گزینهٔ «صدا نمی‌شنوم» است؛ حالت و بلندی ذخیره می‌شوند. |
+| GDD-21 | Done | با صدای رسانهٔ صفر یا گزارش نشنیدن، هشدار نوشتاری و متن جایگزین فعال می‌شود؛ تشخیص خودکار کلید Silent آیفون پشتیبانی نمی‌شود. |
+
+### 8. هنر و صدا
+
+| ID | وضعیت | شرح |
+| --- | --- | --- |
+| GDD-22 | Done | صدای آلمانی Tanja با سرعت ۸٪ کمتر؛ ۱۸۸۱ فایل موجود در منابع. پخش گوشی نیازمند بررسی است. |
+| GDD-23 | Done | موسیقی از Assets/Resources/Music/background.mp3 بارگذاری می‌شود؛ کلید قطع/وصل در منوی مشترک کنار نقشه دارد و هنگام گویندگی آرام‌تر می‌شود. فایل موسیقی را کاربر می‌گذارد. |
+| GDD-29 | Done | اصلاح بصری سطوح چوب، گچ، سنگ، کاشی و فلز؛ لبه‌های نرم‌شده، مدل پالایش‌شدهٔ کاسه/بشقاب/لیوان و قاشق/چنگال/چاقو/سیب/گوجه، قرنیز و پوشش کاشی، نور و بازتاب محیط و رندر موبایل با وضوح اصلی. |
+
+### 9. محدودیت‌ها و کار آینده
+
+| ID | وضعیت | شرح |
+| --- | --- | --- |
+| GDD-27 | Verify | آزمون روی گوشی واقعی برای چندلمسی، اندازهٔ رابط، صدا، هدست، بازگشت به برنامه و هشدار بی‌صدا لازم است؛ آزمون Unity جای آن را نمی‌گیرد. |
+| GDD-28 | Limit | گذاشتن آزاد فعلی، هم‌پوشانی وسایل و لبهٔ میز را رد نمی‌کند؛ پخت‌وپز، سرمایش و جمع شدن آب شبیه‌سازی نشده‌اند. |
+| GDD-33 | Limit | تجهیزات حمام در این نسخه برای شناسایی‌اند؛ آب دوش، فلاش و تخلیه شبیه‌سازی نمی‌شوند. دو درِ کابینت روشویی باز می‌شوند؛ عملکرد شیر آشپزخانهٔ قبلی حفظ شده است. |
+| GDD-35 | Limit | اشیای اتاق خواب ثابت‌اند؛ بالش، کتاب و چوب‌لباسی قابل حمل نیستند. چراغ پاتختی اتاق اول و چراغ مطالعهٔ اتاق دوم اکنون پس از آماده‌شدن سناریو کنترل زمان اجرا دارند؛ سایر چراغ‌های این گروه کلید مستقل ندارند. |
+| GDD-37 | Limit | تلویزیون تصویر ثابت دارد؛ تعویض کانال نیست؛ کلید راهرو سه چراغ پذیرایی را کنترل می‌کند. |
+| GDD-39 | Limit | لوازم این گروه ثابت‌اند؛ شست‌وشو، نظافت، چتر تاشو و ساعت زنده شبیه‌سازی نشده‌اند. |
+| GDD-41 | Limit | این ده مورد ثابت‌اند؛ گرمایش، عملکرد پریز، برش، توست‌کردن، قهوه‌سازی و وزن‌کشی شبیه‌سازی نشده‌اند. |
+| GDD-42 | Next | ۴۲۸ اقتباس گزینه‌ای اجرا می‌شوند؛ معیارهای اصلی تولید آزاد هنوز Next هستند. |
+| GDD-43 | Done | متن، پاسخ و شرط عمل برای ۴۲۸ وظیفه و چهار پرونده در منابع بازی تعریف شده‌اند؛ تولید آزاد در GDD-42/GDD-44 و تست موتور در GDD-49 جداگانه باز است. |
+| GDD-44 | Next | هدف دوره A1.1–C1.2 با مرور هر ده و سنجش هر بیست مرحله؛ .1/.2 تقسیم داخلی‌اند. C1 به متن چنددیدگاهی، استنباط، پاسخ باز و پرسش تازه نیاز دارد؛ تعداد کلیک مدرک سطح نیست. |
+| GDD-45 | Verify | فلاش، هود، دوش، شیر روشویی، چراغ پاتختی و مطالعه با کنترل زمان اجرا، شمارندهٔ رویداد و چیدمان مستقل در کد پیاده شده‌اند. صدا/جریان، شبیه‌سازی آموزشی است؛ اجرای کامل موتور و دستگاه تأیید نشده است. شناسه و پیشرفت حفظ‌اند. |
+| GDD-46 | Verify | ۴۲۸ ردیف، شناسه‌ها، اتصال به ۵۳ قابل حمل/۷۹ ثابت، چهار منبع و شمار صدا به‌صورت ایستا/مدیریت‌شده بررسی شده‌اند. هم‌ارزی سطح، کیفیت ارزیاب و تجربهٔ زبان‌آموز نیازمند بازبینی آموزشی و آزمون‌اند؛ نتیجهٔ رسمی C1 ثبت نشده است. |
+| GDD-47 | Done | محتوای داخلی A1.1–C1.2؛ سنجش رسمی یا تولید آزاد C1 اجرا نشده است. |
+| GDD-48 | Limit | دسترسی تولید فایل با Sonna تأیید نشد؛ پس از درخواست تازهٔ کاربر، صدای آلمانی دیگری انتخاب و Tanja نصب شد؛ این صدا Sonna نامیده نمی‌شود. |
+| GDD-49 | Verify | کامپایل/آزمون مدیریت‌شده موفق است؛ اجرای جداگانهٔ تازه پیش از آزمون با کد ‎−9 و بدون لاگ Unity بسته شد. codesign امضای هر دو نصب Editor را نامعتبر گزارش کرد؛ تلاش‌های قبلی خطای Licensing Client/headless داشتند. هیچ نتیجهٔ کامل موتور/گوشی ثبت نشده است. |
+
+آینهٔ حمام بازتاب زنده دارد؛ ظاهر نهایی و کارایی گوشی نیازمند آزمون است. شخصیت رویه‌ای اول‌شخص و حرکت دست پیاده شده‌اند. ترجمهٔ دستور از i یا I باز می‌شود و پاسخ‌ها را آشکار یا وظیفه را کامل نمی‌کند. راهنمای انگلیسی از منو قابل دسترسی است.
+
+### 10. فناوری و داده
+
+Unity 6000.6.7f1 با URP؛ صحنهٔ اصلی SampleScene است. LearningProgress منطق پیشرفت و ذخیرهٔ محلی، IntroA11.json محتوای اجرا و کاتالوگ‌های اتاق‌ها موجودی ساخت را تعریف می‌کنند. پنج ریشهٔ مبلمان باید حفظ شوند. RAM/FPS واقعی، انتشار موبایل و ارزیابی رسمی زبان تأیید نشده‌اند.
+
+### 11. پذیرش و اعتبارسنجی
+
+هدف، نام، صوت و نشان نقشه باید به نمونهٔ درست اشاره کنند. P نیازمند برداشتن تازه است؛ I فقط با شناسایی اصلی هدف یا جزء متعلق به آن کامل می‌شود. پاسخ اشتباه و عمل نامرتبط نباید پیشرفت ایجاد کنند. ترجمه و آموزش هدف را تکمیل نمی‌کنند. سناریوها مستقل و موقت‌اند؛ شرط عمل و پاسخ باید با دادهٔ همان وظیفه همسان باشند. ذخیرهٔ شناسه‌ای و جای وسایل باید پس از ادامه حفظ شوند. بررسی ایستا/مدیریت‌شده با تأیید Unity و گوشی و اعتبار آموزشی جداست؛ تاریخ نتایج قبلی در Changelog است.
+
+### 12. وضعیت‌ها
+
+| کد | شرح |
+| --- | --- |
+| Done | پیاده‌شده؛ وضعیت کد و صحنه، نه تأیید انتشار |
+| Next | درخواست آینده؛ هنوز انجام نشده |
+| Verify | بررسی لازم، هنوز تأیید کامل نشده |
+| Limit | محدودیت فعلی یا قابلیت پشتیبانی‌نشده |
+| Retired | حذف‌شده از بازی؛ فقط سابقه |
+| History | شناسهٔ گزارش تاریخی، نه الزام جاری |
+
+### 13. ردیابی شناسه‌های تاریخی
+
+| ID | وضعیت | شرح |
+| --- | --- | --- |
+| GDD-17 | Retired | قاعدهٔ مسیر قدیمی حذف‌شده؛ فقط سابقه در Changelog، نه هدف جاری. |
+| GDD-18 | Retired | قاعدهٔ مسیر قدیمی حذف‌شده؛ فقط سابقه در Changelog، نه هدف جاری. |
+| GDD-32 | Retired | قاعدهٔ مسیر قدیمی حذف‌شده؛ فقط سابقه در Changelog، نه هدف جاری. |
+| GDD-50 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-51 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-52 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-53 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-54 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-55 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-56 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-57 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-58 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-59 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-60 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-61 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-62 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-63 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-64 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-65 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-66 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-67 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-68 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-69 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+| GDD-70 | History | شناسهٔ سابقه؛ متن و معانی پیشین در Changelog حفظ‌اند؛ مشخصات جاری در بخش‌های این سند است. |
+
+برخی شناسه‌های ۵۸–۶۰ قبلاً برای بیش از یک موضوع استفاده شده‌اند؛ همهٔ معانی بدون شماره‌گذاری مجدد در نسخهٔ تاریخی Changelog حفظ‌اند. شناسهٔ سند به معنی دارایی وظیفه در اجرا نیست.
+
+### 14. منابع
+
+| فایل | شرح |
+| --- | --- |
+| [GameStages.md](GameStages.md) | مرحلهٔ ۰، ترتیب واقعی هدف‌ها و شرط تکمیل |
+| [CurriculumPlan.md](CurriculumPlan.md) · [JSON](CurriculumPlan.json) | طرح پایهٔ ۴۰۰تایی؛ ۴۲۸ وظیفهٔ جاری؛ تولید آزاد Next |
+| [tools.txt](tools.txt) | نام اشیا و معماری به سه زبان؛ شمارهٔ بخش‌ها مربوط به توسعه است |
+| [Learning.md](Learning.md) | راهنمای پیاده‌سازی، کنترل و بررسی |
+| [IntroVoice.json](IntroVoice.json) | متن متناظر با کلید فایل صوتی |
+| [IntroVoiceProfile.json](IntroVoiceProfile.json) | پروفایل صدای فعلی |
+| [SampleScene.unity](../Assets/Scenes/SampleScene.unity) | صحنهٔ فعلی |
+| [LearningProgress.cs](../Assets/scripts/LearningProgress.cs) | منبع منطق و ترتیب مراحل |
+
+### 15. نگهداری
+
+همراه هر درخواست جدید، الزام مرتبط در سه زبان و وضعیت واقعی آن اصلاح شود. تغییر مراحل در GameStages.md ثبت شود؛ برای تغییری که مرحلهٔ قابل بازی نمی‌سازد، شمارهٔ تازه اختراع نشود. نام هر شیء جدید در tools.txt ثبت شود. موارد انجام‌نشده فقط با وضعیت Next یا Verify درج شوند؛ محدودیت‌ها پنهان نشوند. راهنمای پایدار این کار در [AGENTS.md](../AGENTS.md) ثبت شده است.
+
+GDD فقط مشخصات جاری را نگه دارد؛ هر تغییر با تاریخ محلی و توضیح سه‌زبانه در [CHANGELOG.md](CHANGELOG.md) ثبت شود. تصمیم‌های نامشخص به‌جای اختراع قابلیت، نامشخص بمانند.
+
+---
+
+## English
+
+Last updated: **2026-11-27 — Europe/Berlin**
+
+| Document | Role |
+| --- | --- |
+| **GDD** | Current design |
+| [GameStages](GameStages.md) | Task order and completion |
+| [Changelog](CHANGELOG.md) | History and earlier checks |
+
+### 1. Overview and vision
+
+DeutschRoom is a first-person 3D learning game set in a home. Finding and identifying objects, moving items, selecting answers and carrying out household scenarios practise German vocabulary and grammar. Design pillars: learning in context, clear instruction/action links, recoverable mistakes and optional help.
+
+### 2. Audience and scope
+
+Intended for German learners; an age group is unspecified. Content uses internal A1.1–C1.2 bands without certifying proficiency or formal outcomes. Touch and desktop mouse/keyboard controls exist; release readiness and actual device quality are unverified. Currency, lives and in-game payments are not implemented.
+
+### 3. Core loop
+
+Start/resume → read/hear instruction → find the object or examine the case → perform the required action and answer when requested → feedback/retry → save progress and advance. Review targets remain hidden on the map until help is requested. Controls practice is separate from lessons and earns no course progress. Free practice remains available after completion.
+
+### 4. Content and progression
+
+| Metric | Current state |
+| --- | --- |
+| Tasks | **428**; P: 106 · I: 92 · G: 90 · C: 140 |
+| Scene population | **53** portable + **79** fixed |
+| Start | CUR-001 · Loeffel_Spoon · der Löffel |
+| Ending | CUR-430 · **428** |
+| Retired | CUR-102 · CUR-191; Hall_Mirror; fixed order **48** vacant |
+| Case packets | E · M · W · H; **16** pages |
+
+P is genuine pickup, I target identification, G grammar and C combined scenarios. Fifty-three portable introductions precede 79 fixed introductions, followed by reviews, grammar and scenarios. GameStages and IntroA11.json define exact order; display numbers differ from CUR IDs. The spoon remains first by swapping it with the first LessonOrder-sorted target. Saves use IDs rather than old counts; the legacy course is removed.
+
+### 5. Mechanics and controls
+
+#### 5.1 Movement and interaction
+
+| ID | Status | Description |
+| --- | --- | --- |
+| GDD-03 | Done | Pause freezes movement and world animation; resume restores play. |
+| GDD-04 | Done | Mobile controls use a movement joystick, swipe look and contextual action buttons. |
+| GDD-05 | Done | Desktop: WASD, mouse look, E interact, F whole name, Shift+F part, G place, R rotate, Escape pause, H reveals a review target. |
+| GDD-06 | Done | Swipe down and hold for 0.6 seconds to sit; release and repeat to lie down. Swipe up and hold to rise one posture. Desktop equivalents are C/X. |
+| GDD-07 | Done | Camera and collision capsule change with posture; obstacles prevent standing up. |
+| GDD-08 | Done | A single circular Anhören button for the nearby aimed object identifies it using the selected text/voice mode. |
+| GDD-09 | Done | Carry one item at a time, rotate it by 45 degrees and place it on a reachable upward-facing surface. |
+| GDD-10 | Done | Cabinet, drawer, appliance and room doors are interactive; the faucet has a visual water stream. |
+| GDD-11 | Done | The kitchen has 53 portable objects, including dishes, tools and food in cupboards, drawer, under-sink cabinet, refrigerator and freezer. |
+| GDD-12 | Done | Chairs, table, shelves and sink components such as drain, trap, pipes and hoses have vocabulary labels; fixed parts cannot be carried. |
+| GDD-25 | Done | Drawer contents move with it; placing an item on a static surface detaches it, and returning it to the drawer reattaches it. |
+| GDD-31 | Done | The hood and major existing objects are named. Recognizable parts such as table legs/top, cabinet doors/handles, window frames and bathroom parts have names and voices; Anhören names only the owner and Detail names only the part, preserving the owner's action. |
+
+#### 5.2 Completion and guidance
+
+| ID | Status | Description |
+| --- | --- | --- |
+| GDD-15 | Done | The sole course has 428 tasks: 106 P, 92 I, 90 G, 140 C; CUR-102 and CUR-191 are retired. |
+| GDD-16 | Done | Combined tasks require the specified action and correct response; CUR-430 ends the course at display number 428. |
+| GDD-19 | Done | Map follows live target/route; reviews hide marker/route until Ziel zeigen/H and hide them again on the next task. |
+| GDD-24 | Done | CUR-based progress and portable object poses save locally; restart requires confirmation; no cloud saves. |
+
+### 6. World and objects
+
+| ID | Status | Description |
+| --- | --- | --- |
+| GDD-01 | Done | Learn German vocabulary with articles in a first-person 3D home. |
+| GDD-13 | Done | The kitchen window overlooks a decorative garden with trees, grass, shrubs, flowers, paths, stones, a bench and hills. |
+| GDD-14 | Done | Bedrooms, living room, entrance and bathroom are furnished; 79 fixed targets remain after hall mirror removal. |
+| GDD-26 | Done | All eighty planned instances were built; 79 fixed targets remain after hall mirror removal; additions require a new request. |
+| GDD-30 | Done | F01–F16 construction queue is complete; this history does not imply the hall mirror still exists. |
+| GDD-34 | Done | 20 F01–F04 instances provide beds/bedding, wardrobe, dresser, bedside furniture, lamps, hanger, desk, office chair, bookcase and book; each instance has its own identification target. Eight doors/drawers open and meaningful parts have names/voices. |
+| GDD-36 | Done | Nineteen F05–F08 fixed targets remain after hall mirror removal; order 48 stays vacant. |
+| GDD-38 | Done | Twenty F09, F12, F13 and first-four-F14 instances have independent targets, named/spoken parts and two washer opening actions. |
+| GDD-40 | Done | Final ten F14–F16 objects have German names/voice, independent targets and named parts; the switch controls three living-room lights and resets on at scene reload. |
+
+### 7. Interface and accessibility
+
+| ID | Status | Description |
+| --- | --- | --- |
+| GDD-02 | Done | The opening menu provides start, continue, restart, settings, control selection and an English spotlight How to play tour that opens automatically only on first launch and can be replayed from the menu. |
+| GDD-20 | Done | Lesson settings provide text only, voice only or both, narration volume, a sound test and a no-sound fallback; mode and volume persist. |
+| GDD-21 | Done | Zero media volume or a no-sound report enables a written warning and text fallback; automatic detection of the iPhone Silent switch is unsupported. |
+
+### 8. Art and audio
+
+| ID | Status | Description |
+| --- | --- | --- |
+| GDD-22 | Done | German Tanja voice at 8% slower rate; 1881 files present in resources. Phone playback requires verification. |
+| GDD-23 | Done | Music loads from Assets/Resources/Music/background.mp3, has a toggle in the shared menu beside the map and ducks during narration. The user supplies the track. |
+| GDD-29 | Done | Visual polish adds wood, plaster, stone, tile and metal surfaces; softened edges, refined bowl/plate/glass and spoon/fork/knife/apple/tomato models, baseboards and tile cladding, environment light/reflections and native-resolution mobile rendering. |
+
+### 9. Limits and future work
+
+| ID | Status | Description |
+| --- | --- | --- |
+| GDD-27 | Verify | Real-device testing is required for multitouch, UI sizing, sound, headphones, app resume and mute warnings; Unity tests do not replace it. |
+| GDD-28 | Limit | Current free placement does not reject item overlaps or table edges; cooking, refrigeration and water accumulation are not simulated. |
+| GDD-33 | Limit | Bathroom fixtures currently support identification; shower water, flushing and drainage are not simulated. The vanity's two doors open; the existing kitchen faucet remains functional. |
+| GDD-35 | Limit | Bedroom objects remain fixed; pillows, book and hanger are not portable. First-bedroom bedside lamp and second-bedroom desk lamp now receive runtime action owners when scenarios initialize; other lamps in this batch have no independent controls. |
+| GDD-37 | Limit | TV has a still image with no channel control; the hall switch controls three living-room lights. |
+| GDD-39 | Limit | Accessories remain fixed; washing, cleaning, umbrella folding and a live clock are not simulated. |
+| GDD-41 | Limit | These ten objects are fixed; heating, socket operation, cutting, toasting, brewing and weighing are not simulated. |
+| GDD-42 | Next | 428 selection-based adaptations run; original free-production criteria remain Next. |
+| GDD-43 | Done | Text, choices and action criteria for 428 tasks/four packets are defined in runtime resources; free production remains open in GDD-42/GDD-44 and engine testing in GDD-49. |
+| GDD-44 | Next | Target A1.1–C1.2 with review every ten and checks every twenty stages; .1/.2 are internal divisions. C1 needs multiple perspectives, inference, open responses and fresh follow-ups; click counts do not certify level. |
+| GDD-45 | Verify | Flush, hood, shower, basin tap, bedside and desk lamps have runtime controls, event counters and independent presets in code. Effects are educational simulations; full engine/device execution remains unverified. IDs/progress are retained. |
+| GDD-46 | Verify | 428 rows, IDs, 53-portable/79-fixed bindings, four packets and voice counts passed static/managed checks. Level equivalence, assessor quality and learner experience still require teaching review/trials; no formal C1 result is recorded. |
+| GDD-47 | Done | Internal A1.1–C1.2 content; formal/free-production C1 assessment not implemented. |
+| GDD-48 | Limit | Sonna file-generation access remains unconfirmed; after the new user request another German voice was selected and Tanja installed, without labeling it Sonna. |
+| GDD-49 | Verify | Compilation/managed checks pass. Latest isolated launch exited −9 before tests without a Unity log; codesign reports invalid signatures for both Editor installations. Earlier runs failed on Licensing Client/headless. No full engine/device pass is recorded. |
+
+The bathroom mirror has live reflections; final appearance and phone performance require testing. A procedural first-person avatar and hand motion are implemented. Instruction translation opens through i/I without revealing choices or completing tasks. English How to play is available from the menu.
+
+### 10. Technology and data
+
+Unity 6000.6.7f1 with URP; SampleScene is the main scene. LearningProgress defines progression/local persistence, IntroA11.json runtime lessons and room catalogs generated inventory. Preserve all five furnishing roots. Actual RAM/FPS, mobile release and formal language assessment remain unverified.
+
+### 11. Acceptance and validation
+
+Target, name, audio and map marker must identify the correct instance. P requires a fresh pickup; I accepts primary identification of the target or its owned part. Wrong answers/unrelated actions must not advance progress. Translation/tutorial help cannot complete tasks. Scenarios use independent temporary presets; action/answer gates must match each task's data. ID-based progress and item poses must survive resume. Static/managed checks, Unity/device validation and educational validity are separate; earlier results are dated in Changelog.
+
+### 12. Status legend
+
+| Code | Description |
+| --- | --- |
+| Done | Implemented in code/scene; not a release certification |
+| Next | Requested future work; not implemented |
+| Verify | Verification required, not fully confirmed |
+| Limit | Current limitation or unsupported capability |
+| Retired | Removed from play; history only |
+| History | Historical report ID, not current requirement |
+
+### 13. Historical ID traceability
+
+| ID | Status | Description |
+| --- | --- | --- |
+| GDD-17 | Retired | Removed legacy-course rule; retained in Changelog only, not a current objective. |
+| GDD-18 | Retired | Removed legacy-course rule; retained in Changelog only, not a current objective. |
+| GDD-32 | Retired | Removed legacy-course rule; retained in Changelog only, not a current objective. |
+| GDD-50 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-51 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-52 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-53 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-54 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-55 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-56 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-57 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-58 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-59 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-60 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-61 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-62 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-63 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-64 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-65 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-66 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-67 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-68 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-69 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+| GDD-70 | History | Historical ID; original text and previous meanings remain in Changelog; current specification is in this document. |
+
+IDs 58–60 were previously reused for different topics; all meanings remain in the historical Changelog snapshot without renumbering. A document ID does not imply a runtime task asset.
+
+### 14. Sources
+
+| File | Description |
+| --- | --- |
+| [GameStages.md](GameStages.md) | Stage 0, actual objective order and completion rules |
+| [CurriculumPlan.md](CurriculumPlan.md) · [JSON](CurriculumPlan.json) | 400-task baseline; 428 live tasks; free production Next |
+| [tools.txt](tools.txt) | Trilingual object/architecture names; section numbers refer to development |
+| [Learning.md](Learning.md) | Implementation, controls and validation guide |
+| [IntroVoice.json](IntroVoice.json) | Text mapped to each audio-file key |
+| [IntroVoiceProfile.json](IntroVoiceProfile.json) | Current voice profile |
+| [SampleScene.unity](../Assets/Scenes/SampleScene.unity) | Current scene |
+| [LearningProgress.cs](../Assets/scripts/LearningProgress.cs) | Source of progression/order rules |
+
+### 15. Maintenance
+
+With each new request, update the related trilingual requirement and actual status. Record stage changes in GameStages.md; do not invent a new playable stage for a feature-only change. Register every new object name in tools.txt. Mark unfinished work Next or Verify and retain known limitations. Persistent instructions are in [AGENTS.md](../AGENTS.md).
+
+Keep current specifications in GDD; record each change with local date and trilingual description in [CHANGELOG.md](CHANGELOG.md). Leave undecided design questions explicit rather than inventing features.
+
+---
+
+## Deutsch
+
+Zuletzt aktualisiert: **2026-11-27 — Europe/Berlin**
+
+| Dokument | Zweck |
+| --- | --- |
+| **GDD** | Aktuelles Design |
+| [GameStages](GameStages.md) | Aufgabenfolge und Abschluss |
+| [Changelog](CHANGELOG.md) | Verlauf und frühere Prüfungen |
+
+### 1. Überblick und Vision
+
+DeutschRoom ist ein dreidimensionales Lernspiel in Ichperspektive in einem Haus. Suchen und Benennen, Umplatzieren, Antwortauswahl und Haushaltsszenarien üben deutschen Wortschatz und Grammatik. Gestaltungsprinzipien: Lernen im Kontext, klare Verbindung von Anweisung und Handlung, korrigierbare Fehler und freiwillige Hilfe.
+
+### 2. Zielgruppe und Umfang
+
+Für Deutschlernende; Altersgruppe nicht festgelegt. Inhalte nutzen interne Abschnitte A1.1–C1.2 ohne Niveaunachweis oder formales Ergebnis. Touch sowie Maus/Tastatur vorhanden; Veröffentlichungsreife und Gerätequalität ungeprüft. Währung, Leben und In-App-Zahlungen nicht umgesetzt.
+
+### 3. Kernablauf
+
+Start/Fortsetzen → Anweisung lesen/hören → Objekt suchen oder Fall prüfen → geforderte Handlung und gegebenenfalls Antwort → Rückmeldung/Korrektur → speichern und weiter. Wiederholungsziele bleiben bis zur Hilfeanforderung auf der Karte verborgen. Steuerungsübung ist vom Lernpfad getrennt und erzeugt keinen Lernfortschritt. Nach Abschluss bleibt freies Üben möglich.
+
+### 4. Inhalte und Fortschritt
+
+| Kennzahl | Aktueller Stand |
+| --- | --- |
+| Aufgaben | **428**; P: 106 · I: 92 · G: 90 · C: 140 |
+| Szenenbestand | **53** tragbar + **79** fest |
+| Anfang | CUR-001 · Loeffel_Spoon · der Löffel |
+| Ende | CUR-430 · **428** |
+| Stillgelegt | CUR-102 · CUR-191; Hall_Mirror; feste Reihenfolge **48** bleibt frei |
+| Fallpakete | E · M · W · H; **16** Seiten |
+
+P bedeutet echtes Aufheben, I Zielbenennung, G Grammatik, C kombinierte Szenarien. Auf 53 tragbare Einführungen folgen 79 feste, danach Wiederholung, Grammatik und Szenarien. GameStages und IntroA11.json bestimmen die genaue Folge; Anzeigenummern unterscheiden sich von CUR-IDs. Der Löffel bleibt durch Tausch mit dem ersten nach LessonOrder sortierten Ziel vorne. Spielstände nutzen IDs statt alter Anzahlen; Altpfad entfernt.
+
+### 5. Mechanik und Steuerung
+
+#### 5.1 Bewegung und Interaktion
+
+| ID | Status | Beschreibung |
+| --- | --- | --- |
+| GDD-03 | Done | Pause hält Bewegung und Weltanimationen an; Fortsetzen setzt das Spiel fort. |
+| GDD-04 | Done | Mobilsteuerung: Bewegungsjoystick, Wischen zum Umschauen und situationsabhängige Aktionstasten. |
+| GDD-05 | Done | Computer: WASD, Mausblick, E Aktion, F Gesamtname, Shift+F Teil, G ablegen, R drehen, Escape Pause, H Wiederholungsziel zeigen. |
+| GDD-06 | Done | Nach unten wischen und 0,6 Sekunden halten: hinsetzen; loslassen und wiederholen: hinlegen. Nach oben wischen und halten: eine Haltung aufrichten. Am Computer: C/X. |
+| GDD-07 | Done | Kamera und Kollisionskapsel folgen der Körperhaltung; Hindernisse verhindern das Aufstehen. |
+| GDD-08 | Done | Eine einzelne runde Anhören-Taste für den nahen anvisierten Gegenstand benennt ihn im gewählten Text-/Sprachmodus. |
+| GDD-09 | Done | Jeweils einen Gegenstand tragen, um 45 Grad drehen und auf einer erreichbaren nach oben gerichteten Fläche ablegen. |
+| GDD-10 | Done | Schranktüren, Schublade, Geräte- und Zimmertüren sind bedienbar; der Wasserhahn zeigt einen Wasserstrahl. |
+| GDD-11 | Done | Die Küche enthält 53 tragbare Gegenstände: Geschirr, Werkzeuge und Lebensmittel in Schränken, Schublade, Spülenunterschrank, Kühlschrank und Gefrierfach. |
+| GDD-12 | Done | Stühle, Tisch, Böden und Spülenteile wie Abfluss, Siphon, Rohre und Schläuche sind benannt; feste Teile sind nicht tragbar. |
+| GDD-25 | Done | Schubladeninhalt bewegt sich mit; Ablegen auf einer festen Fläche löst den Gegenstand, Zurücklegen in die Schublade verbindet ihn wieder. |
+| GDD-31 | Done | Abzugshaube und wichtige vorhandene Objekte sind benannt. Erkennbare Teile wie Tischbeine/-platte, Schranktüren/-griffe, Fensterrahmen und Badteile haben Namen und Stimmen; Anhören benennt nur das Gesamtobjekt und Detail nur das Teil; die ursprüngliche Aktion bleibt erhalten. |
+
+#### 5.2 Abschluss und Hinweise
+
+| ID | Status | Beschreibung |
+| --- | --- | --- |
+| GDD-15 | Done | Einziger Lernpfad: 428 Aufgaben, 106 P, 92 I, 90 G, 140 C; CUR-102 und CUR-191 stillgelegt. |
+| GDD-16 | Done | Kombinationsaufgaben verlangen vorgesehene Handlung und richtige Antwort; CUR-430 beendet den Pfad bei Anzeigenummer 428. |
+| GDD-19 | Done | Karte folgt echtem Ziel/Weg; Wiederholungen verbergen Ziel/Weg bis Ziel zeigen/H und bei nächster Aufgabe erneut. |
+| GDD-24 | Done | CUR-basierter Fortschritt und Positionen tragbarer Objekte lokal gespeichert; Neustart nach Bestätigung; keine Cloud-Speicherung. |
+
+### 6. Welt und Objekte
+
+| ID | Status | Beschreibung |
+| --- | --- | --- |
+| GDD-01 | Done | Deutsche Wörter mit Artikeln in einem dreidimensionalen Zuhause aus der Ichperspektive lernen. |
+| GDD-13 | Done | Durch das Küchenfenster sieht man einen dekorativen Garten mit Bäumen, Gras, Sträuchern, Blumen, Wegen, Steinen, einer Bank und Hügeln. |
+| GDD-14 | Done | Schlafzimmer, Wohnzimmer, Eingang und Bad sind eingerichtet; nach Entfernung des Flurspiegels bleiben 79 feste Ziele. |
+| GDD-26 | Done | Alle achtzig Planinstanzen wurden gebaut; nach Flurspiegelentfernung bleiben 79 feste Ziele; Ergänzungen erfordern neue Anweisung. |
+| GDD-30 | Done | Bauplan F01–F16 abgeschlossen; daraus folgt kein aktueller Bestand des Flurspiegels. |
+| GDD-34 | Done | 20 F01–F04-Instanzen umfassen Betten/Bettzeug, Schrank, Kommode, Nachttisch, Lampen, Bügel, Schreibtisch, Bürostuhl, Regal und Buch; jede hat ein eigenes Benennungsziel. Acht Türen/Schubladen öffnen sich, wichtige Teile haben Namen/Stimmen. |
+| GDD-36 | Done | Nach Flurspiegelentfernung bleiben 19 feste F05–F08-Ziele; Reihenfolge 48 bleibt frei. |
+| GDD-38 | Done | Zwanzig Instanzen aus F09, F12, F13 und den ersten vier F14-Zeilen haben eigene Ziele, benannte/gesprochene Teile und zwei Waschmaschinen-Öffnungsaktionen. |
+| GDD-40 | Done | Letzte zehn F14–F16-Objekte haben deutsche Namen/Stimme, eigene Ziele und benannte Teile; der Schalter steuert drei Wohnzimmerlampen und ist nach Neuladen wieder an. |
+
+### 7. Oberfläche und Zugänglichkeit
+
+| ID | Status | Beschreibung |
+| --- | --- | --- |
+| GDD-02 | Done | Das Startmenü bietet Start, Fortsetzen, Neustart, Einstellungen, Steuerungswahl und eine englische How-to-play-Einführung direkt im Spiel, die nur beim ersten Start automatisch und danach auf Menüaufruf erscheint. |
+| GDD-20 | Done | Lektionseinstellungen bieten nur Text, nur Stimme oder beides, Sprachlautstärke, Klangtest und eine Hilfe bei fehlendem Ton; Modus und Lautstärke werden gespeichert. |
+| GDD-21 | Done | Bei Medienlautstärke null oder gemeldetem fehlendem Ton erscheinen ein schriftlicher Hinweis und Ersatztext; der iPhone-Stummschalter wird nicht automatisch erkannt. |
+
+### 8. Gestaltung und Audio
+
+| ID | Status | Beschreibung |
+| --- | --- | --- |
+| GDD-22 | Done | Deutsche Tanja-Stimme, 8 % langsamer; 1881 Dateien in Ressourcen. Smartphone-Wiedergabe benötigt Prüfung. |
+| GDD-23 | Done | Musik wird aus Assets/Resources/Music/background.mp3 geladen, lässt sich im gemeinsamen Menü neben der Karte schalten und wird während der Sprache leiser. Die Musikdatei liefert der Nutzer. |
+| GDD-29 | Done | Optische Überarbeitung mit Holz-, Putz-, Stein-, Fliesen- und Metalloberflächen; weicheren Kanten, verfeinerten Schüssel-/Teller-/Glas- sowie Löffel-/Gabel-/Messer-/Apfel-/Tomatenmodellen, Sockelleisten und Fliesenverkleidung, Umgebungslicht/-reflexionen und mobiler Darstellung in nativer Auflösung. |
+
+### 9. Grenzen und künftige Arbeit
+
+| ID | Status | Beschreibung |
+| --- | --- | --- |
+| GDD-27 | Verify | Tests auf echten Geräten für Mehrfingereingabe, UI-Größe, Ton, Kopfhörer, App-Rückkehr und Stummhinweise sind nötig; Unity-Tests ersetzen sie nicht. |
+| GDD-28 | Limit | Das freie Ablegen verhindert derzeit weder Überlappungen noch Tischkanten; Kochen, Kühlung und Wasseransammlung werden nicht simuliert. |
+| GDD-33 | Limit | Badobjekte dienen derzeit der Benennung; Duschwasser, Spülung und Abfluss werden nicht simuliert. Die zwei Waschtischtüren öffnen sich; der bisherige Küchenwasserhahn bleibt funktionsfähig. |
+| GDD-35 | Limit | Schlafzimmerobjekte bleiben fest; Kissen, Buch und Bügel sind nicht tragbar. Nachttischlampe im ersten und Leselampe im zweiten Schlafzimmer erhalten bei Szenariostart Laufzeitbedienung; andere Lampen dieser Gruppe haben keine eigene Steuerung. |
+| GDD-37 | Limit | TV zeigt ein Standbild ohne Kanalwahl; Flurschalter steuert drei Wohnzimmerlampen. |
+| GDD-39 | Limit | Zubehör bleibt fest; Waschen, Reinigen, Schirmfalten und laufende Uhr nicht simuliert. |
+| GDD-41 | Limit | Diese zehn Objekte sind fest; Heizung, Steckdosenbetrieb, Schneiden, Toasten, Kaffeebrühen und Wiegen werden nicht simuliert. |
+| GDD-42 | Next | 428 Auswahlanpassungen laufen; ursprüngliche freie Produktionskriterien bleiben Next. |
+| GDD-43 | Done | Text, Auswahl und Handlungskriterien für 428 Aufgaben/vier Pakete liegen in Laufzeitressourcen; freie Produktion bleibt in GDD-42/GDD-44 und Engineprüfung in GDD-49 offen. |
+| GDD-44 | Next | Ziel A1.1–C1.2 mit Wiederholung je zehn und Prüfung je zwanzig Aufgaben; .1/.2 sind interne Abschnitte. C1 braucht Perspektiven, Schlussfolgern, offene Antworten und neue Rückfragen; Klickzahlen belegen kein Niveau. |
+| GDD-45 | Verify | Spülung, Haube, Dusche, Waschtischarmatur, Nacht-/Leselampe haben Laufzeitbedienung, Ereigniszähler und unabhängige Vorgaben im Code. Effekte sind Lernsimulationen; vollständige Engine-/Geräteausführung ungeprüft. IDs/Fortschritt bleiben. |
+| GDD-46 | Verify | 428 Zeilen, IDs, Bindungen an 53 tragbare/79 feste Ziele, vier Quellen und Sprachanzahl sind statisch/verwaltet geprüft. Niveaugerechtigkeit, Bewertungsqualität und Lernerfahrung brauchen didaktische Prüfung/Tests; kein formales C1-Ergebnis. |
+| GDD-47 | Done | Interner Inhalt A1.1–C1.2; formale/freie C1-Produktionsbewertung nicht umgesetzt. |
+| GDD-48 | Limit | Sonna-Dateierzeugung bleibt unbestätigt; auf neue Nutzeranweisung andere deutsche Stimme gewählt und Tanja installiert, nicht als Sonna bezeichnet. |
+| GDD-49 | Verify | Kompilierung/verwaltete Prüfungen bestanden. Neuester isolierter Start endete vor Tests mit −9 ohne Unity-Log; codesign meldet ungültige Signaturen beider Editorinstallationen. Frühere Läufe scheiterten an Licensing Client/headless. Kein vollständiger Engine-/Gerätepass. |
+
+Der Badspiegel hat Echtzeitreflexionen; endgültiges Aussehen und Smartphone-Leistung benötigen Tests. Prozedurale Ichfigur und Handbewegung sind umgesetzt. Anweisungsübersetzung über i/I verrät keine Antwort und erfüllt keine Aufgabe. Englische How-to-play-Hilfe ist im Menü verfügbar.
+
+### 10. Technik und Daten
+
+Unity 6000.6.7f1 mit URP; Hauptszene SampleScene. LearningProgress bestimmt Fortschritt/lokales Speichern, IntroA11.json Laufzeitaufgaben und Raumkataloge erzeugten Bestand. Alle fünf Einrichtungswurzeln erhalten. Tatsächlicher RAM/FPS, mobile Veröffentlichung und formale Sprachbewertung ungeprüft.
+
+### 11. Abnahme und Prüfung
+
+Ziel, Name, Audio und Kartenmarkierung müssen dieselbe richtige Instanz benennen. P verlangt frisches Aufheben; I akzeptiert Hauptbenennung des Ziels oder zugehörigen Teils. Falsche Antworten/fremde Handlungen dürfen keinen Fortschritt auslösen. Übersetzung/Einführung erfüllen keine Aufgabe. Szenarien verwenden unabhängige temporäre Vorgaben; Handlungs-/Antwortbedingungen müssen zu den Aufgabendaten passen. ID-Fortschritt und Objektpositionen müssen Fortsetzen überstehen. Statische/verwaltete Prüfung, Unity-/Gerätetests und didaktische Gültigkeit sind getrennt; frühere Ergebnisse datiert im Changelog.
+
+### 12. Statuslegende
+
+| Code | Beschreibung |
+| --- | --- |
+| Done | In Code/Szene umgesetzt; keine Veröffentlichungsfreigabe |
+| Next | Gewünschte künftige Arbeit; noch nicht umgesetzt |
+| Verify | Prüfung erforderlich, noch nicht vollständig bestätigt |
+| Limit | Aktuelle Einschränkung oder nicht unterstützte Funktion |
+| Retired | Aus Spiel entfernt; nur Verlauf |
+| History | Historische Berichts-ID, keine aktuelle Anforderung |
+
+### 13. Historische ID-Nachverfolgung
+
+| ID | Status | Beschreibung |
+| --- | --- | --- |
+| GDD-17 | Retired | Regel des entfernten Altpfads; nur im Changelog erhalten, kein aktuelles Ziel. |
+| GDD-18 | Retired | Regel des entfernten Altpfads; nur im Changelog erhalten, kein aktuelles Ziel. |
+| GDD-32 | Retired | Regel des entfernten Altpfads; nur im Changelog erhalten, kein aktuelles Ziel. |
+| GDD-50 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-51 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-52 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-53 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-54 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-55 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-56 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-57 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-58 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-59 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-60 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-61 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-62 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-63 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-64 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-65 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-66 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-67 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-68 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-69 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+| GDD-70 | History | Historische ID; Originaltext und frühere Bedeutungen bleiben im Changelog; aktuelle Spezifikation in diesem Dokument. |
+
+IDs 58–60 wurden früher für verschiedene Themen verwendet; sämtliche Bedeutungen bleiben ohne Neunummerierung im historischen Changelog erhalten. Eine Dokument-ID bedeutet kein Laufzeit-Aufgabenasset.
+
+### 14. Quellen
+
+| Datei | Beschreibung |
+| --- | --- |
+| [GameStages.md](GameStages.md) | Stufe 0, tatsächliche Zielreihenfolge und Abschlussregeln |
+| [CurriculumPlan.md](CurriculumPlan.md) · [JSON](CurriculumPlan.json) | 400er-Grundplan; 428 aktuelle Aufgaben; freie Produktion Next |
+| [tools.txt](tools.txt) | Dreisprachige Objekt-/Architekturnamen; Abschnittsnummern beziehen sich auf die Entwicklung |
+| [Learning.md](Learning.md) | Leitfaden für Umsetzung, Steuerung und Prüfung |
+| [IntroVoice.json](IntroVoice.json) | Text zu jedem Audiodateischlüssel |
+| [IntroVoiceProfile.json](IntroVoiceProfile.json) | Aktuelles Stimmprofil |
+| [SampleScene.unity](../Assets/Scenes/SampleScene.unity) | Aktuelle Szene |
+| [LearningProgress.cs](../Assets/scripts/LearningProgress.cs) | Quelle der Fortschritts- und Reihenfolgeregeln |
+
+### 15. Pflege
+
+Bei jeder neuen Anweisung die zugehörige dreisprachige Anforderung und ihren tatsächlichen Status aktualisieren. Aufgabenänderungen in GameStages.md nachführen; für reine Funktionsänderungen keine neue spielbare Stufe erfinden. Neue Objektnamen in tools.txt eintragen. Unfertige Arbeit als Next oder Verify kennzeichnen und bekannte Einschränkungen beibehalten. Dauerhafte Anweisungen stehen in [AGENTS.md](../AGENTS.md).
+
+Im GDD nur aktuelle Spezifikationen pflegen; jede Änderung mit lokalem Datum und dreisprachiger Beschreibung in [CHANGELOG.md](CHANGELOG.md) festhalten. Offene Designfragen offen lassen statt Funktionen zu erfinden.

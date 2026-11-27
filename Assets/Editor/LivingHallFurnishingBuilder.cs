@@ -193,8 +193,7 @@ public static class LivingHallFurnishingBuilder
         for(int i=0;i<4;i++){float x=-.33f+i*.22f;Part(Tube(t,"CoatHook",new Vector3(x,-.025f,-.03f),new Vector3(x,-.025f,-.12f),.012f,metal),"der Haken","قلاب","hook");Tube(t,"HookTip",new Vector3(x,-.025f,-.12f),new Vector3(x,.035f,-.12f),.012f,metal);}
         t=Item("Hall_Mat","die Fußmatte","پادری","doormat",47,new Vector3(2.8f,.012f,-5.8f));Box(t,"Doormat",Vector3.zero,new Vector3(.95f,.024f,.58f),rug);
         for(int i=0;i<12;i++)Box(t,"MatRib",new Vector3(-.43f+i*.078f,.014f,0),new Vector3(.018f,.004f,.51f),black);
-        t=Item("Hall_Mirror","der Spiegel","آینه","mirror",48,new Vector3(3.67f,1.5f,-11.65f),90);
-        Box(t,"MirrorBacking",Vector3.zero,new Vector3(.62f,1.16f,.035f),oak);Part(Box(t,"MirrorSurface",new Vector3(0,0,-.022f),new Vector3(.54f,1.08f,.008f),mirror),"die Spiegelfläche","سطح آینه","mirror surface");
+        // Hall mirror (former order 48) removed at the user's request.
         t=Item("Hall_Bench","die Sitzbank","نیمکت ورودی","entrance bench",49,new Vector3(3.44f,0,-6.05f),90);
         Feet(t,1.05f,.24f,.38f);Part(Box(t,"BenchSeat",new Vector3(0,.42f,0),new Vector3(1.25f,.08f,.37f),oak),"die Sitzfläche","سطح نشیمن","seat surface");
         Box(t,"BenchPad",new Vector3(0,.48f,0),new Vector3(1.14f,.05f,.34f),upholstery);
@@ -215,7 +214,7 @@ public static class LivingHallFurnishingBuilder
         if(start>=0){int next=text.IndexOf("\nمرحله ",start+heading.Length,StringComparison.Ordinal);if(next>=0)later="\n"+text.Substring(next);text=text.Substring(0,start).TrimEnd();}
         text+="\n\n"+heading+"\nDeutsch | فارسی | English\n";foreach(var w in catalog.vocabulary)text+=w.de+" | "+w.fa+" | "+w.en+"\n";
         int pending=System.Text.RegularExpressions.Regex.Matches(text,@"(?m)^\[ \] (der|die|das) ").Count;
-        text+="\n۲۰ مورد F05–F08 ساخته شدند؛ تعداد موارد در انتظار در کل فهرست: "+pending+". این وسایل هدف شناسایی ثابت‌اند؛ دو در جاکفشی باز می‌شوند. تلویزیون تصویر ثابت دارد، چراغ‌ها روشن‌اند و آینه سطح فلزی براق دارد.\n";
+        text+="\n۱۹ مورد F05–F08 باقی مانده‌اند؛ تعداد موارد در انتظار در کل فهرست: "+pending+". این وسایل هدف شناسایی ثابت‌اند؛ دو در جاکفشی باز می‌شوند. تلویزیون تصویر ثابت دارد و چراغ‌ها روشن‌اند؛ آینهٔ راهرو حذف شده است.\n";
         File.WriteAllText(path,text+later);
     }
 }

@@ -42,7 +42,12 @@ public sealed class HouseMirror : MonoBehaviour
         var shader = Resources.Load<Shader>("Mirrors/HouseMirror");
         if (shader == null) { enabled = false; return; }
         material = new Material(shader);
-        texture = new RenderTexture(512, 512, 24) { name = "Live house mirror" };
+        // Match larger screens without letting the reflection exceed 1024 square.
+        int resolution = Mathf.Clamp(Mathf.NextPowerOfTwo(Mathf.Max(Screen.width, Screen.height) / 2), 512, 1024);
+        texture = new RenderTexture(resolution, resolution, 24) {
+            name = "Live house mirror", filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Clamp
+        };
         texture.Create();
         material.SetTexture("_ReflectionTex", texture);
         surface.sharedMaterial = material;

@@ -8,7 +8,7 @@ public static class BedroomVocabularyValidation
     public static void Run(PlayerInteraction player)
     {
         var all=UnityEngine.Object.FindObjectsByType<FixedLearningTarget>().OrderBy(item=>item.Order).ToArray();
-        Check(all.Length==80 && all.Select(item=>item.Order).SequenceEqual(Enumerable.Range(0,80)),"Fixed target order must preserve bathroom then append twenty bedroom instances.");
+        Check(all.Length==79 && all.Select(item=>item.Order).SequenceEqual(Enumerable.Range(0,80).Where(order=>order!=48)),"Fixed target order must preserve bathroom then append twenty bedroom instances.");
         Transform bedrooms=GameObject.Find("BedroomFurnishings")?.transform;
         Check(bedrooms!=null && bedrooms.GetComponentsInChildren<FixedLearningTarget>().Length==20,"Bedroom batch must contain exactly twenty primary targets.");
         Check(bedrooms.GetComponentsInChildren<Openable>().Length==BedroomFurnishingBuilder.AddedDoors,"Expected wardrobe doors and bedroom drawers.");

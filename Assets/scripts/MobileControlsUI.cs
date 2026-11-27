@@ -23,6 +23,8 @@ public sealed class MobileControlsUI : MonoBehaviour
     private readonly Vector3[] corners = new Vector3[4];
     private TouchControlLayout geometry;
     private readonly System.Collections.Generic.List<Sprite> icons = new System.Collections.Generic.List<Sprite>();
+    private Image interactIcon;
+    private Sprite graspIcon, openDoorIcon, closeDoorIcon;
     private Image pressedAction;
     private Color pressedBase;
     private float pressedUntil;
@@ -56,6 +58,9 @@ public sealed class MobileControlsUI : MonoBehaviour
         Anchor(move.rectTransform, Vector2.zero, new Vector2(145, 31), new Vector2(180, 30));
 
         interactButton = ActionButton("Interact", new Vector2(-125, 130), "BENUTZEN", out interactText);
+        graspIcon = interactIcon.sprite;
+        openDoorIcon = CreateIcon("Open door"); icons.Add(openDoorIcon);
+        closeDoorIcon = CreateIcon("Close door"); icons.Add(closeDoorIcon);
         placeButton = ActionButton("Place", new Vector2(-125, 265), "ABLEGEN", out _);
         rotateButton = ActionButton("Rotate", new Vector2(-265, 265), "DREHEN", out _);
         hearButton = ActionButton("Hear object", new Vector2(-265, 130), "ANHÖREN", out _);
@@ -153,6 +158,10 @@ public sealed class MobileControlsUI : MonoBehaviour
         bool targeting = interaction != null && interaction.CanUseFocused;
         string caption=targeting ? interaction.FocusedObject.GetAction(interaction) : "BENUTZEN";
         if(interactText.text!=caption)interactText.text=caption;
+        // Use the actual action owner, including handles belonging to a door/drawer.
+        var door = targeting ? interaction.FocusedObject as Openable : null;
+        Sprite symbol = door != null ? (door.IsOpen ? closeDoorIcon : openDoorIcon) : graspIcon;
+        if(interactIcon.sprite != symbol) interactIcon.sprite = symbol;
     }
     public void ShowPress(Vector2 point)
     {
@@ -179,6 +188,7 @@ public sealed class MobileControlsUI : MonoBehaviour
         Anchor(accent.rectTransform, new Vector2(.5f, 0), new Vector2(0, 9), new Vector2(22, 3));
         Sprite symbol=CreateIcon(name);icons.Add(symbol);
         Image icon=Image("Action icon",button.transform,primary?new Color(.57f,1,.83f):new Color(.68f,.80f,.94f),symbol);
+        if(name=="Interact")interactIcon=icon;
         Anchor(icon.rectTransform,new Vector2(.5f,1),new Vector2(0,-29),new Vector2(28,28));
         Anchor(button.rectTransform, new Vector2(1, 0), position, new Vector2(126, 100));
         text = Label(name + " label", button.transform, caption, 18);
@@ -195,10 +205,41 @@ public sealed class MobileControlsUI : MonoBehaviour
         const int size=48;
         var lines=new System.Collections.Generic.List<Vector4>();
         void Line(float x,float y,float x2,float y2)=>lines.Add(new Vector4(x,y,x2,y2));
-        if(action=="Interact" || action=="Place")
+        if(action=="Open door" || action=="Close door")
         {
-            bool up=action=="Interact";float end=up?37:16,tail=up?15:38,wing=up?29:24;
-            Line(24,tail,24,end);Line(24,end,16,wing);Line(24,end,32,wing);
+            // Door frame and leaf; arrow shows the action offered by the label.
+            Line(10,7,10,41);Line(10,41,35,41);Line(35,41,35,7);
+            if(action=="Open door")
+            {
+                Line(11,8,28,14);Line(28,14,28,35);Line(28,35,11,40);
+                Line(22,24,23,24);Line(31,23,43,23);
+                Line(43,23,38,28);Line(43,23,38,18);
+            }
+            else
+            {
+                Line(12,8,33,8);Line(33,8,33,39);Line(33,39,12,39);
+                Line(28,24,29,24);Line(44,19,36,19);
+                Line(36,19,40,23);Line(36,19,40,15);
+            }
+        }
+        else if(action=="Interact")
+        {
+            // Closed grasp: four curled fingers, thumb across the palm and a wrist.
+            // Texture coordinates increase upward.
+            Line(16,7,16,14);Line(16,14,11,20);Line(11,20,10,29);
+            Line(10,29,12,34);Line(12,34,16,34);
+            Line(16,34,17,38);Line(17,38,22,38);
+            Line(22,38,24,40);Line(24,40,29,40);
+            Line(29,40,31,37);Line(31,37,36,37);
+            Line(36,37,38,33);Line(38,33,38,21);
+            Line(38,21,33,14);Line(33,14,33,7);Line(33,7,16,7);
+            Line(16,34,16,27);Line(23,37,23,29);Line(30,37,30,29);
+            Line(37,25,27,28);Line(27,28,22,25);Line(22,25,24,21);
+            Line(24,21,32,20);Line(17,13,32,13);
+        }
+        else if(action=="Place")
+        {
+            Line(24,38,24,16);Line(24,16,16,24);Line(24,16,32,24);
             Line(11,12,37,12);
         }
         else if(action=="Hear object")

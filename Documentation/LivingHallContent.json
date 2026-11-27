@@ -145,14 +145,6 @@
             "order": 47
         },
         {
-            "id": "Hall_Mirror",
-            "de": "der Spiegel",
-            "fa": "آینه",
-            "en": "mirror",
-            "room": "Hallway",
-            "order": 48
-        },
-        {
             "id": "Hall_Bench",
             "de": "die Sitzbank",
             "fa": "نیمکت ورودی",
@@ -431,22 +423,6 @@
             "de": "die Fußmatte",
             "fa": "پادری",
             "en": "doormat",
-            "room": "",
-            "order": 0
-        },
-        {
-            "id": "",
-            "de": "der Spiegel",
-            "fa": "آینه",
-            "en": "mirror",
-            "room": "",
-            "order": 0
-        },
-        {
-            "id": "",
-            "de": "die Spiegelfläche",
-            "fa": "سطح آینه",
-            "en": "mirror surface",
             "room": "",
             "order": 0
         },

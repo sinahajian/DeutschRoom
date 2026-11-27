@@ -38,14 +38,14 @@ public sealed class FirstPersonBody : MonoBehaviour
         standingHeight = controller.height;
         feet = controller.center.y - controller.height / 2;
         previousPosition = transform.position;
-        materials[0] = Surface("Avatar teal sweatshirt", new Color(.12f, .39f, .38f), .28f);
-        materials[1] = Surface("Avatar navy trousers", new Color(.075f, .12f, .19f), .18f);
-        materials[2] = Surface("Avatar skin", new Color(.64f, .43f, .31f), .22f);
+        materials[0] = Surface("Avatar teal sweatshirt", new Color(.17f, .48f, .46f), .28f);
+        materials[1] = Surface("Avatar navy trousers", new Color(.11f, .17f, .25f), .18f);
+        materials[2] = Surface("Avatar skin", new Color(.73f, .52f, .39f), .22f);
         materials[3] = Surface("Avatar sneakers", new Color(.79f, .82f, .79f), .28f);
-        materials[4] = Surface("Avatar hair", new Color(.065f, .045f, .035f), .15f);
+        materials[4] = Surface("Avatar hair", new Color(.10f, .067f, .045f), .15f);
         materials[5] = Surface("Warm eye whites", new Color(.86f,.84f,.78f), .5f);
         materials[6] = Surface("Brown irises",new Color(.15f,.08f,.035f),.48f);
-        materials[7] = Surface("Muted lips",new Color(.46f,.27f,.22f),.26f);
+        materials[7] = Surface("Muted lips",new Color(.49f,.25f,.21f),.26f);
         root = new GameObject("Player Avatar").transform; root.SetParent(transform, false);
         Mesh shirt = AvatarAnatomy.Shirt(); ownedMeshes.Add(shirt);
         torso = MeshPart("Sweatshirt", root, shirt, materials[0]);
@@ -59,9 +59,9 @@ public sealed class FirstPersonBody : MonoBehaviour
             float side=i==0?-1:1;
             eyes[i]=new GameObject(i==0?"Left eye":"Right eye").transform;eyes[i].SetParent(head,false);
             eyes[i].localPosition=new Vector3(side*.185f,.085f,.4f);
-            FacialPart("Eye white",eyes[i],Vector3.zero,new Vector3(.135f,.060f,.035f),materials[5]);
-            FacialPart("Iris",eyes[i],new Vector3(0,0,.022f),new Vector3(.049f,.051f,.015f),materials[6]);
-            FacialPart("Pupil",eyes[i],new Vector3(0,0,.031f),new Vector3(.025f,.032f,.008f),materials[4]);
+            FacialPart("Eye white",eyes[i],Vector3.zero,new Vector3(.145f,.070f,.038f),materials[5]);
+            FacialPart("Iris",eyes[i],new Vector3(0,0,.022f),new Vector3(.055f,.058f,.016f),materials[6]);
+            FacialPart("Pupil",eyes[i],new Vector3(0,0,.031f),new Vector3(.028f,.035f,.008f),materials[4]);
             FacialPart("Eye catchlight",eyes[i],new Vector3(-.009f,.011f,.037f),new Vector3(.009f,.009f,.004f),materials[5]);
             Contour("Upper eyelid",eyes[i],new Vector3(0,.022f,.023f),.145f,.018f,.012f,.008f,materials[2]);
             Contour("Lower eyelid",eyes[i],new Vector3(0,-.023f,.023f),.135f,.012f,-.007f,.006f,materials[2]);
@@ -124,6 +124,10 @@ public sealed class FirstPersonBody : MonoBehaviour
     {
         Material material = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = name };
         material.SetColor("_BaseColor", color); material.SetFloat("_Smoothness", smoothness);
+        // A small material-only fill preserves facial/clothing separation in dark rooms.
+        // It does not add a scene light or flatten the Lit shader's directional shading.
+        material.EnableKeyword("_EMISSION");
+        material.SetColor("_EmissionColor", color * .075f);
         return material;
     }
 

@@ -49,7 +49,7 @@ public static class IntroLessonValidation
             Field("fixedTargets").SetValue(learning, fixtures);
             Field("data").SetValue(learning, JsonUtility.FromJson("{\"started\":false,\"stage\":0,\"completedTasks\":[],\"poses\":[]}", Field("data").FieldType));
             Check(learning.IsIntroCourse && learning.TotalStages == IntroLessonCatalog.ImplementedTaskCount && learning.IsPreview,
-                "Intro course must expose exactly 430 implemented introduction/review tasks.");
+                "Intro course must expose exactly 428 implemented introduction/review tasks.");
             Check(Resources.Load<Material>("Lessons/PlacementZone") != null, "Placement marker material missing.");
             Check(targets[0].name == "Loeffel_Spoon" && catalog.tasks[0].instruction == "Nimm den Löffel.", "Intro lost spoon-first explicit pickup instruction.");
             Check(!learning.TryGetMapTarget(out _, out _), "Preview has a stale intro map target.");
@@ -128,7 +128,7 @@ public static class IntroLessonValidation
                             player.TryPlaceHeld(wrong), "Wrong-zone placement could not be tested.");
                         FinishPlacement(player);
                         Check(learning.Stage == i && !learning.GrammarAnswerOpen, "Wrong table zone opened answers.");
-                        if (i == 250)
+                        if (catalog.tasks[i].id == "CUR-251")
                         {
                             Check(scenario.TryGetOriginal(pickup, out var original), "Preset forgot original pose.");
                             var poses = (System.Collections.IEnumerable)Field("data").GetValue(learning).GetType().GetField("poses").GetValue(Field("data").GetValue(learning));
@@ -203,7 +203,7 @@ public static class IntroLessonValidation
                     }
                     Check(player.TryPickUp(all[0]), "Cannot test pickup during a fixed-target task.");
                     Check(learning.Stage == i, "Pickup completed a fixed identification task.");
-                    if (i != 132) Release(player);
+                    if (i != 131) Release(player);
                     player.Identify(target);
                 }
                 Check(learning.Stage == i + 1 && player.Voice.LastRequest[0] == catalog.tasks[i].success,
@@ -219,11 +219,11 @@ public static class IntroLessonValidation
                 else
                     Check(player.Voice.LastRequest.Contains(GermanLessonSpeech.IntroComplete(IntroLessonCatalog.ImplementedTaskCount)) &&
                           !player.Voice.LastRequest.Contains("Aufgabe 431."), "Ending announces an unimplemented task.");
-                if (i == 132)
+                if (i == 131)
                 {
                     Check(player.HeldItem != null && player.HeldItem.name == "Loeffel_Spoon", "Held-at-review-start test did not retain the spoon.");
                     learning.Found(player.HeldItem);
-                    Check(learning.Stage == 133, "Already-held spoon completed its review without a fresh pickup.");
+                    Check(learning.Stage == 132, "Already-held spoon completed its review without a fresh pickup.");
                 }
                 if (target is PickupItem taken) learning.Found(taken);
                 else player.Identify(target);
@@ -231,12 +231,12 @@ public static class IntroLessonValidation
                 Release(player);
             }
             Check(learning.ScenarioSession == null || !learning.ScenarioSession.Active, "Scenario preset leaked into free play.");
-            Check(player.Voice.LastRequest.Contains(GermanLessonSpeech.IntroComplete(430)) && !player.Voice.LastRequest.Contains("Aufgabe 431."), "Scenario ending announces an unimplemented stage.");
+            Check(player.Voice.LastRequest.Contains(GermanLessonSpeech.IntroComplete(IntroLessonCatalog.ImplementedTaskCount)) && !player.Voice.LastRequest.Contains("Aufgabe 431."), "Scenario ending announces an unimplemented stage.");
             Check(learning.IsComplete && !learning.TryGetMapTarget(out _, out _),
                 "Curriculum completion left an active task or map marker.");
             Check(catalog.ResumeStage(new List<string> { "CUR-001", "CUR-003", "unknown" }) == 1,
                 "Stable-ID resume skipped an unfinished task.");
-            Check(catalog.ResumeStage(catalog.tasks.Select(task => task.id).ToList()) == 430,
+            Check(catalog.ResumeStage(catalog.tasks.Select(task => task.id).ToList()) == IntroLessonCatalog.ImplementedTaskCount,
                 "Completed intro IDs did not restore the completed course.");
             string serialized = JsonUtility.ToJson(Field("data").GetValue(learning));
             Check(serialized.Contains("CUR-430") && serialized.Contains("completedTasks"), "Intro save omits stable completion IDs.");
@@ -250,13 +250,13 @@ public static class IntroLessonValidation
                 "A completed 80-task save failed to resume at task 81.");
             Check(catalog.ResumeStage(catalog.tasks.Take(130).Select(task => task.id).ToList()) == 130,
                 "A completed 130-task save failed to resume at task 131.");
-            Check(catalog.ResumeStage(catalog.tasks.Take(133).Select(task => task.id).ToList()) == 133,
+            Check(catalog.ResumeStage(catalog.tasks.Take(132).Select(task => task.id).ToList()) == 132,
                 "Completed introductions incorrectly completed reviews of the same objects.");
             Check(learning.PlacementScenario == null || !learning.PlacementScenario.Active, "Practice layout remained after leaving placement section.");
             Check(catalog.ResumeStage(catalog.tasks.Take(230).Select(task => task.id).ToList()) == 230, "Completed 230 save failed to resume 231.");
             ValidateTutorial(player);
             ValidateHandsOnTutorial(player);
-            Debug.Log("INTRO_LESSON_VALIDATION_PASS: 430 tasks, 90 grammar and 140 scenarios, identification/placement gates, original-pose persistence, reset, answer touch, save continuation and ending without 431.");
+            Debug.Log("INTRO_LESSON_VALIDATION_PASS: 428 tasks, 90 grammar and 140 scenarios, identification/placement gates, original-pose persistence, reset, answer touch, save continuation and ending without 431.");
         }
         finally
         {

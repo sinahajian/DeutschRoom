@@ -302,7 +302,6 @@ Hallway — entrance / Flur — Eingangsbereich
 der Schuhschrank | جاکفشی | shoe cabinet
 die Garderobe | رخت‌آویز ورودی | coat rack
 die Fußmatte | پادری | doormat
-der Spiegel | آینه | mirror
 die Sitzbank | نیمکت ورودی | entrance bench
 
 گروه F09 — راهرو — وسایل روزمره
@@ -502,8 +501,6 @@ der Schrankgriff | دستگیره کابینت | cabinet handle
 die Garderobe | رخت‌آویز ورودی | coat rack
 der Haken | قلاب | hook
 die Fußmatte | پادری | doormat
-der Spiegel | آینه | mirror
-die Spiegelfläche | سطح آینه | mirror surface
 die Sitzbank | نیمکت ورودی | entrance bench
 die Sitzfläche | سطح نشیمن | seat surface
 
@@ -665,3 +662,5 @@ das Handgelenk | مچ دست | wrist
 این‌ها فقط جزئیات نمایشی شخصیت موجودند؛ واژهٔ قابل آزمون، هدف ثابت/قابل حمل یا مبلمان جدید نیستند. شمار ۵۳/۸۰، CUR-001–430 و F01–F16 حفظ است.
 Visual details of the existing avatar only; no tested vocabulary, fixed/portable targets or furniture added. 53/80 populations, CUR-001–430 and F01–F16 remain.
 Nur visuelle Details der bestehenden Figur; keine neuen geprüften Wörter, festen/tragbaren Ziele oder Möbel. Bestand 53/80, CUR-001–430 und F01–F16 bleiben erhalten.
+
+2026-11-23 — Hall_Mirror حذف شد / Hall_Mirror removed / Hall_Mirror entfernt: F08 اکنون چهار مورد؛ مجموع فعلی ۷۹ هدف ثابت. F08 now has four items; current total 79 fixed targets. F08 jetzt vier Gegenstände; aktuell 79 feste Ziele. آینهٔ حمام باقی است / bathroom mirror retained / Badspiegel bleibt.

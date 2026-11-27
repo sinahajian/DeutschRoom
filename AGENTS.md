@@ -45,3 +45,7 @@ FinalFurnishingBuilder generates FinalFurnishings at orders 70–79, catalog Fin
 ## Keep the player guide current
 
 For every new or changed player-facing feature, update the English How to play guide in Assets/scripts/RoomExperience.cs in the same task. Explain how the player accesses and uses it, with accurate touch and keyboard/mouse instructions where applicable. Also maintain the existing trilingual GDD/GameStages updates. New or changed lesson instructions must include a matching englishInstruction in IntroA11.json; translation help must not complete tasks or reveal answer choices.
+
+## Hall mirror removal — 2026-11-23
+
+Hall_Mirror was explicitly removed by the user. Do not restore it when rebuilding F05–F08. Fixed order 48 remains vacant; all other orders stay unchanged. Earlier eighty-item completion statements describe build history: current population is 53 portable/79 fixed targets. CUR-102 and CUR-191 are retired (historical plan IDs only); current playable sequence has 428 tasks ending in CUR-430 at display number 428. Preserve ID-based saves and the bathroom mirror.

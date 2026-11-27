@@ -9,13 +9,20 @@ void Reject(Action<IntroLessonCatalog> change, string reason)
     throw new Exception(reason);
 }
 var catalog = Load(); catalog.Validate();
-Check(catalog.tasks.Length == 430, "Wrong total");
-Check(catalog.tasks.Count(t => t.kind == "P") == 106 && catalog.tasks.Count(t => t.kind == "I") == 94 &&
+Check(catalog.tasks.Length == 428, "Wrong total");
+Check(catalog.tasks.Count(t => t.kind == "P") == 106 && catalog.tasks.Count(t => t.kind == "I") == 92 &&
     catalog.tasks.Count(t => t.kind == "G") == 90 && catalog.tasks.Count(t=>t.IsScenario) == 140, "Wrong category counts");
 Check(catalog.tasks.Count(t => t.IsGrammar && t.InteractionKind == "I") == 10 &&
     catalog.tasks.Count(t => t.RequiresPlacement) == 20, "New action modes missing");
 foreach (int previous in new[] {17,30,53,80,130,133,150,180,200,230,240,250,260,270,280,290,300,310,320,330,340,350,360,361,370,380,390,400,410,420,430})
-    Check(catalog.ResumeStage(catalog.tasks.Take(previous).Select(t=>t.id).ToList()) == previous, "Lost progress " + previous);
+    Check(catalog.ResumeStage(catalog.tasks.Take(previous).Select(t=>t.id).ToList()) == Math.Min(previous,428), "Lost progress " + previous);
+foreach (int oldCount in new[] { 101,102,103,190,191,192,400,430 })
+{
+    var completed = Enumerable.Range(1,oldCount).Select(n=>$"CUR-{n:000}").ToList();
+    int expected = oldCount - (oldCount>=102?1:0) - (oldCount>=191?1:0);
+    Check(catalog.ResumeStage(completed)==expected,"Hall mirror removal reset/skipped a save at "+oldCount);
+}
+Check(catalog.tasks.All(t=>t.targetName!="Hall_Mirror"),"Removed mirror still playable");
 Check(catalog.ResumeStage(new List<string>{"CUR-001","CUR-003","unknown"}) == 1, "Skipped unfinished ID");
 foreach (var task in catalog.tasks.Where(t=>t.IsGrammar && !t.IsScenario))
 {
@@ -29,15 +36,15 @@ foreach (var task in catalog.tasks.Where(t=>t.IsGrammar && !t.IsScenario))
         Check(task.ActionSatisfied(pickup,identified,placed)==expected,"Wrong physical gate " + task.id);
     }
 }
-Reject(c=>c.tasks[230].answerIndex=4,"Bad answer index");
-Reject(c=>c.tasks[240].choices[0]="", "Empty choice");
-Reject(c=>c.tasks[240].action="P", "Identification prompt accepted as pickup");
-Reject(c=>c.tasks[250].relation="unter", "Unsupported placement relation");
-Reject(c=>c.tasks[250].referenceName=c.tasks[250].targetName,"Self reference");
-Reject(c=>c.tasks[250].reviewOf="CUR-251","Future/self review");
-Reject(c=>c.tasks[133].reviewOf=null,"Unmarked duplicate target");
-Reject(c=>c.tasks[133].kind="I","Review action mismatch");
-Reject(c=>c.tasks[1].id=c.tasks[0].id,"Duplicate ID");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-231").answerIndex=4,"Bad answer index");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-241").choices[0]="", "Empty choice");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-241").action="P", "Identification prompt accepted as pickup");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-251").relation="unter", "Unsupported placement relation");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-251").referenceName=c.tasks.Single(t=>t.id=="CUR-251").targetName,"Self reference");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-251").reviewOf="CUR-251","Future/self review");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-134").reviewOf=null,"Unmarked duplicate target");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-134").kind="I","Review action mismatch");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-002").id=c.tasks.Single(t=>t.id=="CUR-001").id,"Duplicate ID");
 // 43 x 36 cm zone, normal pickup footprints, table contact and tolerance boundaries.
 bool InZone(float x0,float x1,float z0,float z1,float y) => LessonPlacementRules.Accepts(x0,x1,z0,z1,y,-.215f,.215f,-.18f,.18f,.9f);
 Check(InZone(-.12f,.12f,-.12f,.12f,.91f),"Correct tabletop placement rejected");
@@ -49,17 +56,17 @@ Check(!InZone(-.1f,.1f,-.1f,.1f,1.1f),"Floating/stacked object accepted");
 Check(!InZone(.1f,-.1f,-.1f,.1f,.91f),"Inverted bounds accepted");
 Check(!InZone(float.NaN,.1f,-.1f,.1f,.91f),"NaN accepted");
 Check(GermanLessonSpeech.IntroComplete(280).Contains("280"),"Wrong ending");
-Console.WriteLine("PASS: 430 catalog tasks; stable-save migrations; 90 grammar graders and physical gates; 140 scenario schemas; invalid schemas; full-footprint/height/side placement rejection.");
+Console.WriteLine("PASS: 428 catalog tasks; stable-save migrations; 90 grammar graders and physical gates; 140 scenario schemas; invalid schemas; full-footprint/height/side placement rejection.");
 
 foreach(var task in catalog.tasks.Where(t=>t.IsScenario))
 {
     LessonScenarioRules.Validate(task);
     for(int i=-1;i<4;i++) Check(task.AcceptsChoice(i)==(i==task.answerIndex),"Bad scenario report grader");
 }
-Reject(c=>c.tasks[290].steps[0].op="invented","Unknown operation accepted");
-Reject(c=>c.tasks[290].steps[0].zones[0]="absent","Unknown arrangement zone accepted");
-Reject(c=>c.tasks[290].zones[0].x=2,"Zone beyond tabletop accepted");
-Reject(c=>c.tasks[300].presets[0].key="absent","Unknown device accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-291").steps[0].op="invented","Unknown operation accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-291").steps[0].zones[0]="absent","Unknown arrangement zone accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-291").zones[0].x=2,"Zone beyond tabletop accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-301").presets[0].key="absent","Unknown device accepted");
 Check(!LessonScenarioRules.FreshState(4,4,false,false,true),"Stale preset accepted");
 Check(!LessonScenarioRules.FreshState(5,4,false,false,false),"Moving door accepted");
 Check(!LessonScenarioRules.FreshState(5,4,true,false,true),"Wrong state accepted");
@@ -78,11 +85,11 @@ Check(string.Join(" ",cases.Get("E").pages).Contains("80 W")&&string.Join(" ",ca
 foreach(var t in catalog.tasks.Where(t=>t.IsScenario))
     foreach(var step in t.steps.Where(s=>s.op=="dialogue"))
         for(int i=-1;i<=3;i++)Check(step.AcceptsDialogue(i)==(i==step.answerIndex),"Dialogue choice guard failed");
-Reject(c=>c.tasks[344].steps[0].answerIndex=3,"Invalid clarification answer accepted");
-Reject(c=>c.tasks[360].caseId="unknown","Unknown case accepted");
-Reject(c=>c.tasks[337].startHeld="absent","Unknown held preset accepted");
-Reject(c=>c.tasks[330].excludedItems=new[]{"absent"},"Unknown exclusion accepted");
-Reject(c=>c.tasks[338].scenarioItems[0].zone="absent","Unknown initial zone accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-345").steps[0].answerIndex=3,"Invalid clarification answer accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-361").caseId="unknown","Unknown case accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-338").startHeld="absent","Unknown held preset accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-331").excludedItems=new[]{"absent"},"Unknown exclusion accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-339").scenarioItems[0].zone="absent","Unknown initial zone accepted");
 Console.WriteLine("PASS: source packets E/M; dialogue graders; case IDs; initial-zone, exclusion and held-preset schemas.");
 
 Check(LessonScenarioRules.BlockOpening(true,false,.6f),"Near opening was not blocked");
@@ -91,19 +98,19 @@ Check(!LessonScenarioRules.BlockOpening(true,true,.6f),"Closing incorrectly bloc
 Check(!LessonScenarioRules.BlockOpening(true,false,.85f),"Clearance threshold is too strict");
 Check(!LessonScenarioRules.ClearanceReached(false,1.2f),"Skipped required rejected attempt");
 Check(!LessonScenarioRules.ClearanceReached(true,.94f)&&LessonScenarioRules.ClearanceReached(true,.95f),"Retreat threshold failed");
-Reject(c=>c.tasks[334].unchangedDevices=Array.Empty<string>(),"Unguarded no-action task accepted");
-Reject(c=>c.tasks[343].steps[0].key="living","Non-door clearance owner accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-335").unchangedDevices=Array.Empty<string>(),"Unguarded no-action task accepted");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-344").steps[0].key="living","Non-door clearance owner accepted");
 Console.WriteLine("PASS: clearance boundaries, legacy guard isolation and protected no-action confirmation.");
 
 Check(cases.cases.Length==4 && cases.Get("W").pages.Length==4 && cases.Get("H").pages.Length==4,"W/H sources missing");
-foreach(var t in catalog.tasks.Skip(380))
+foreach(var t in catalog.tasks.Where(t=>int.Parse(t.id.Substring(4))>=381))
     Check(t.level=="C1.2" && t.IsScenario && t.steps[0].op=="read","New stage missing source/gate");
 Check(catalog.ResumeStage(catalog.tasks.Take(400).Select(t=>t.id).ToList())==400,"400 checkpoint became final ending");
-Reject(c=>c.tasks[380].caseId="unimplemented-case","Unknown new case accepted");
-Console.WriteLine("PASS: W/H packets, 50 source-based stages, 380/400 save continuation and 430 ending.");
+Reject(c=>c.tasks.Single(t=>t.id=="CUR-381").caseId="unimplemented-case","Unknown new case accepted");
+Console.WriteLine("PASS: W/H packets, 50 source-based stages, 380/400 save continuation and CUR-430 ending at display 428.");
 
 Check(catalog.tasks.All(t => !string.IsNullOrWhiteSpace(t.englishInstruction)), "Missing English instruction");
-Reject(c => c.tasks[0].englishInstruction = " ", "Blank English instruction accepted");
+Reject(c => c.tasks.Single(t=>t.id=="CUR-001").englishInstruction = " ", "Blank English instruction accepted");
 Console.WriteLine("PASS: English instruction coverage and missing-translation rejection.");
 
 Check(catalog.controlsPractice.Length == 7 && catalog.controlsPractice.All(s => !string.IsNullOrWhiteSpace(s.englishInstruction)),

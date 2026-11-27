@@ -992,15 +992,6 @@
       "englishInstruction": "Identify the doormat in the hallway; aim at it and tap “Anhören”."
     },
     {
-      "id": "CUR-102",
-      "kind": "I",
-      "level": "A1.2",
-      "targetName": "Hall_Mirror",
-      "instruction": "Finde den Spiegel im Flur und tippe auf „Anhören“.",
-      "success": "Richtig! Du hast den Spiegel erkannt.",
-      "englishInstruction": "Identify the mirror in the hallway; aim at it and tap “Anhören”."
-    },
-    {
       "id": "CUR-103",
       "kind": "I",
       "level": "A1.2",
@@ -1844,20 +1835,10 @@
       "kind": "I",
       "level": "A2.1",
       "targetName": "Bath_Mirror",
-      "instruction": "Finde den Spiegel im Bad, nicht im Flur, und tippe auf „Anhören“.",
+      "instruction": "Finde den Spiegel im Bad und tippe auf „Anhören“.",
       "success": "Richtig! Du hast den Spiegel erkannt.",
       "reviewOf": "CUR-109",
-      "englishInstruction": "Find the bathroom mirror rather than the hall mirror and tap “Anhören”."
-    },
-    {
-      "id": "CUR-191",
-      "kind": "I",
-      "level": "A2.1",
-      "targetName": "Hall_Mirror",
-      "instruction": "Finde den Spiegel im Flur und tippe auf „Anhören“.",
-      "success": "Richtig! Du hast den Spiegel erkannt.",
-      "reviewOf": "CUR-102",
-      "englishInstruction": "Find the hall mirror and tap “Anhören”."
+      "englishInstruction": "Find the bathroom mirror and tap “Anhören”."
     },
     {
       "id": "CUR-192",

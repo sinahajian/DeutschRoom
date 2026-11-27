@@ -10,7 +10,7 @@ public static class LivingHallVocabularyValidation
         Transform root=GameObject.Find("LivingHallFurnishings")?.transform;
         Check(root!=null,"Missing living/hall furnishing root.");
         var targets=root.GetComponentsInChildren<FixedLearningTarget>().OrderBy(t=>t.Order).ToArray();
-        Check(targets.Length==20&&targets.Select(t=>t.Order).SequenceEqual(Enumerable.Range(30,20)),"F05-F08 must append twenty stable targets at 30-49.");
+        Check(targets.Length==19&&targets.Select(t=>t.Order).SequenceEqual(Enumerable.Range(30,20).Where(order=>order!=48)),"F05-F08 must append nineteen stable targets (48 retired) at 30-49.");
         Check(player.Learning.TotalStages==IntroLessonCatalog.ImplementedTaskCount,"Unexpected curriculum size.");
         foreach(var target in targets)
         {
@@ -36,7 +36,7 @@ public static class LivingHallVocabularyValidation
         Ray("Living_Cushion",new Vector3(-2.5f,1.6f,-6.8f),new Vector3(-2.5f,.7f,-5.83f));
         var rug=GameObject.Find("Living_Rug").GetComponent<KitchenInteractable>();
         Ray("Living_Rug",new Vector3(-.1f,1.6f,-7.1f),rug.IdentificationPoint.position);
-        Debug.Log("LIVING_HALL_VOCABULARY_VALIDATION_PASS: twenty appended targets, German voice, functional storage, saved phases, clear corridor/room access and exposed textile/remote surfaces.");
+        Debug.Log("LIVING_HALL_VOCABULARY_VALIDATION_PASS: nineteen targets, German voice, functional storage, saved phases, clear corridor/room access and exposed textile/remote surfaces.");
     }
     static void Clear(PlayerInteraction player,Vector3 at)
     {

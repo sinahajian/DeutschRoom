@@ -17,7 +17,7 @@ def rotate(p,q):
  return (px+w*tx+y*tz-z*ty,py+w*ty+z*tx-x*tz,pz+w*tz+x*ty-y*tx)
 def apply(p,t):
  pos,q,sc=trans[t];r=rotate(tuple(a*b for a,b in zip(p,sc)),q);return tuple(a+b for a,b in zip(pos,r))
-for task in json.load(open('Assets/Resources/Lessons/IntroA11.json'))['tasks'][250:260]:
+for task in (t for t in json.load(open('Assets/Resources/Lessons/IntroA11.json'))['tasks'] if 251 <= int(t['id'][-3:]) <= 260):
  name=task['targetName'];root=bygo[next(g for g,n in names.items() if n==name)];points=[]
  for gid,(mid,guid) in mesh.items():
   child=bygo[gid];chain=[]
@@ -42,7 +42,7 @@ for b in blocks:
   name=names[re.search(r'm_GameObject: \{fileID: (\d+)\}',b)[1]]
   if pickup_guid in b:pickups[name]=int(re.search(r'  lessonOrder: (\d+)',b)[1])
   else:fixtures[name]=int(re.search(r'  order: (\d+)',b)[1])
-assert len(pickups)==53 and len(fixtures)==80 and sorted(fixtures.values())==list(range(80))
+assert len(pickups)==53 and len(fixtures)==79 and sorted(fixtures.values())==[n for n in range(80) if n != 48]
 catalog=json.loads(pathlib.Path('Assets/Resources/Lessons/IntroA11.json').read_text())['tasks']
 controls=json.loads(pathlib.Path('Assets/Resources/Lessons/IntroA11.json').read_text())['controlsPractice']
 assert len(controls)==7 and len({step['id'] for step in controls})==7
@@ -55,8 +55,8 @@ assert all(hint['instruction'].strip() and hint['englishInstruction'].strip() fo
 manifest=json.loads(pathlib.Path('Documentation/IntroVoice.json').read_text())
 assert all(hint['instruction'] in manifest.values() for hint in guidance),'Control hints missing from voice manifest'
 plan=json.loads(pathlib.Path('Documentation/CurriculumPlan.json').read_text())['stages']
-assert len(catalog)==430 and len(plan)==430
-assert sum(s['status']=='Done' for s in plan)==430 and sum(s['status']=='Next' for s in plan)==0
+assert len(catalog)==428 and len(plan)==430
+assert sum(s['status']=='Done' for s in plan)==428 and sum(s['status']=='Next' for s in plan)==0
 ordered=sorted(pickups,key=lambda n:(pickups[n],n));spoon=ordered.index('Loeffel_Spoon');ordered[0],ordered[spoon]=ordered[spoon],ordered[0]
 assert ordered[0]=='Loeffel_Spoon' and catalog[0]['targetName']==ordered[0]
 assert {t['targetName'] for t in catalog[:53]}==set(ordered)
@@ -66,7 +66,10 @@ for task in catalog:
   continue
  assert task['targetName'] in (fixtures if task['kind']=='I' else pickups)
  if task.get('action')=='L':assert task['referenceName'] in pickups
-for task,stage in zip(catalog[230:290],plan[230:290]):
+catalog_by_id={t['id']:t for t in catalog}
+plan_by_id={t['id']:t for t in plan}
+def batch(first,last): return [(t,plan_by_id[t['id']]) for t in catalog if first<=int(t['id'][-3:])<=last]
+for task,stage in batch(231,290):
  assert task['id']==stage['id'] and task['instruction']==stage['de']
  assert task['answer']==stage['expected'].split('; ')[1]
 for file in ['GDD.md','GameStages.md','CurriculumPlan.md']:
@@ -75,9 +78,9 @@ for file in ['GDD.md','GameStages.md','CurriculumPlan.md']:
   if ':' not in link and not link.startswith('#'):assert pathlib.Path('Documentation',link.split('#')[0]).exists(),(file,link)
 plan_md=pathlib.Path('Documentation/CurriculumPlan.md').read_text();stages_md=pathlib.Path('Documentation/GameStages.md').read_text()
 assert len(re.findall(r'^\| CUR-\d{3} ·',plan_md,re.M))==430
-assert len(re.findall(r'^\| CUR-\d{3} ·.* · Done \|',plan_md,re.M))==430
-assert len(re.findall(r'^\| \d+ \| `CUR-',stages_md,re.M))==430
-print('PASS: 53 portable/80 fixed bindings; spoon-first LessonOrder; 430 implemented selection-based adaptations; exact new answer forms; document counts/links.')
+assert len(re.findall(r'^\| CUR-\d{3} ·.* · Done \|',plan_md,re.M))==428
+assert len(re.findall(r'^\| \d+ \| `CUR-',stages_md,re.M))==428
+print('PASS: 53 portable/79 fixed bindings; spoon-first LessonOrder; 428 implemented selection-based adaptations; exact new answer forms; document counts/links.')
 # Runtime device aliases must resolve to the existing scene action owners/parts.
 paths={}
 for gid,tid in bygo.items():
@@ -90,9 +93,9 @@ for required in ['Faucet_Interactive','Schrank_Cabinet/Hinge_der_Unterschrank_Le
  'BathroomFurnishings/Bath_BasinTap/TapLever','BathroomFurnishings/Bath_Cistern/FlushButton','BathroomFurnishings/Bath_Toilet/ToiletLid',
  'BedroomFurnishings/Bedroom1_NightLamp/LampBase']:
  assert (required in paths if '/' in required else required in names.values()),required
-for task in catalog[290:]:
+for task,stage in batch(291,430):
  assert task['kind']=='C' and task['action']=='S' and task['steps']
- assert task['instruction']==plan[int(task['id'][-3:])-1]['de']
+ assert task['instruction']==stage['de']
  for z in task['zones']:assert abs(z['x'])+z['width']/2<=1 and abs(z['z'])+z['depth']/2<=.6
 print('PASS: runtime scenario action-owner paths, independent preset items and table zone containment.')
 
@@ -105,28 +108,32 @@ for case in casebook['cases']:
  section=plan_text.split('### '+case['id']+' —',1)[1].split('**Deutsch — Quellenpaket:** ',1)[1].split('**فارسی',1)[0]
  assert ' '.join(' '.join(case['pages']).split())==' '.join(section.split())
  assert len(case['pages'])==4 and all(len(page)<=460 for page in case['pages'])
-for task,stage in zip(catalog[330:380],plan[330:380]):
+for task,stage in batch(331,380):
  assert task['instruction']==stage['de'] and stage['freeProductionStatus']=='Next'
  if int(task['id'][-3:])>=361:assert task['steps'][0]['op']=='read' and task['caseId'] in ['E','M']
 print('PASS: desk/shoe bindings; complete original E/M sources in eight pages; 50 adapted tasks with free-production limits recorded.')
 
-assert len(plan)==430 and {t['caseId'] for t in catalog[380:430]}=={'E','M','W','H'}
-for task,stage in zip(catalog[380:430],plan[380:430]):
+assert len(plan)==430 and {t['caseId'] for t,s in batch(381,430)}=={'E','M','W','H'}
+for task,stage in batch(381,430):
  assert task['id']==stage['id'] and task['instruction']==stage['de'] and task['level']=='C1.2'
  assert stage['freeProductionStatus']=='Next' and task['steps'][0]['op']=='read'
 metadata=json.loads(pathlib.Path('Documentation/CurriculumPlan.json').read_text())
 assert metadata['baselineTotal']==400 and metadata['baselineCounts']=={'search':200,'grammar':100,'action':100}
-assert sum(metadata['counts'].values())==430 and metadata['counts']['action']==130
+assert sum(metadata['counts'].values())==428 and metadata['counts']['action']==130
 for number in [394,398,419,423]:
- assert any(s['op']=='dialogue' and 'Nils liest aktuell' in s['reply'] for s in catalog[number-1]['steps'])
-print('PASS: 430 live rows, preserved 400 baseline, four case packets, 30 new C1.2 tasks and fresh reading confirmations.')
+ assert any(s['op']=='dialogue' and 'Nils liest aktuell' in s['reply'] for s in catalog_by_id[f'CUR-{number:03}']['steps'])
+print('PASS: 428 live rows, preserved 400 baseline, four case packets, 30 new C1.2 tasks and fresh reading confirmations.')
 
-for task,stage in zip(catalog,plan):
+for task in catalog:
+ stage=plan_by_id[task['id']]
  assert task['englishInstruction'].strip() and task['englishInstruction']==stage['en'],task['id']
-intro_names={t['targetName'] for t in catalog[:133]}
+intro_names={t['targetName'] for t in catalog[:132]}
 assert intro_names==set(pickups)|set(fixtures)
-print('PASS: all 430 English instructions match authored translations; all 133 scene targets have translation coverage.')
+print('PASS: all 428 English instructions match authored translations; all 132 scene targets have translation coverage.')
 
 # Every scene/part label must have a valid clip, including vocabulary outside lesson targets.
 import subprocess, sys
 subprocess.run([sys.executable, 'Tools/Voice/check_object_coverage.py'], check=True)
+
+assert not any(t["targetName"]=="Hall_Mirror" for t in catalog)
+assert {s["id"] for s in plan if s["status"]=="Removed"}=={"CUR-102","CUR-191"}
