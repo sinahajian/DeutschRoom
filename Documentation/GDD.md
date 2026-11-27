@@ -22,6 +22,8 @@ DeutschRoom بازی آموزشی سه‌بعدی اول‌شخص در یک خا
 
 ### 3. چرخهٔ بازی
 
+خلاصهٔ کوتاه روند بازی: [GDD_SUM](GDD_SUM.md).
+
 ورود یا ادامه ← خواندن/شنیدن دستور ← جست‌وجوی شیء یا بررسی پرونده ← عمل لازم و پاسخ در صورت درخواست ← بازخورد و اصلاح ← ثبت پیشرفت و هدف بعدی. نقشه در مرور تا درخواست کمک هدف را آشکار نمی‌کند. آموزش کنترل جدا از درس است و پیشرفت درسی ایجاد نمی‌کند. پس از پایان، تمرین آزاد ممکن است.
 
 ### 4. محتوا و پیشرفت
@@ -224,6 +226,8 @@ Intended for German learners; an age group is unspecified. Content uses internal
 
 ### 3. Core loop
 
+Short gameplay overview: [GDD_SUM](GDD_SUM.md).
+
 Start/resume → read/hear instruction → find the object or examine the case → perform the required action and answer when requested → feedback/retry → save progress and advance. Review targets remain hidden on the map until help is requested. Controls practice is separate from lessons and earns no course progress. Free practice remains available after completion.
 
 ### 4. Content and progression
@@ -425,6 +429,8 @@ DeutschRoom ist ein dreidimensionales Lernspiel in Ichperspektive in einem Haus.
 Für Deutschlernende; Altersgruppe nicht festgelegt. Inhalte nutzen interne Abschnitte A1.1–C1.2 ohne Niveaunachweis oder formales Ergebnis. Touch sowie Maus/Tastatur vorhanden; Veröffentlichungsreife und Gerätequalität ungeprüft. Währung, Leben und In-App-Zahlungen nicht umgesetzt.
 
 ### 3. Kernablauf
+
+Kurzer Überblick zum Spielablauf: [GDD_SUM](GDD_SUM.md).
 
 Start/Fortsetzen → Anweisung lesen/hören → Objekt suchen oder Fall prüfen → geforderte Handlung und gegebenenfalls Antwort → Rückmeldung/Korrektur → speichern und weiter. Wiederholungsziele bleiben bis zur Hilfeanforderung auf der Karte verborgen. Steuerungsübung ist vom Lernpfad getrennt und erzeugt keinen Lernfortschritt. Nach Abschluss bleibt freies Üben möglich.
 

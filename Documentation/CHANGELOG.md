@@ -2,6 +2,15 @@
 
 آخرین به‌روزرسانی / Last updated / Zuletzt aktualisiert: **2026-11-27 — Europe/Berlin**
 
+## خلاصهٔ روند بازی / Gameplay summary / Kurzfassung des Spielablaufs — 2026-11-27
+
+**فارسی:** [GDD_SUM](GDD_SUM.md) با توضیح بسیار کوتاه روند بازی به فارسی، انگلیسی و آلمانی اضافه شد. فقط مستندات؛ ترتیب و ۴۲۸ وظیفهٔ فعلی تغییر نکردند.
+
+**English:** Added [GDD_SUM](GDD_SUM.md) with a very short gameplay overview in Persian, English and German. Documentation only; the order and current 428 tasks are unchanged.
+
+**Deutsch:** [GDD_SUM](GDD_SUM.md) mit sehr kurzem Spielablauf auf Persisch, Englisch und Deutsch ergänzt. Nur Dokumentation; Reihenfolge und bestehende 428 Aufgaben unverändert.
+
+
 ## اتصال شیء به دست / Held-object palm contact / Handkontakt beim Tragen — 2026-11-27
 
 **فارسی:** گرفتن روی ریگ واردشده اصلاح شد: نقطهٔ تماس از کف دست/بندهای پایهٔ انگشت محاسبه می‌شود، نه فاصلهٔ فرضی مچ. قاشق/چنگال/چاقو نقطهٔ گرفتن روی دسته دارند؛ دیگر اشیا از لبهٔ نزدیک گرفته می‌شوند. نقطه با چرخش و مقیاس واقعی شیء تغییر می‌کند. وضعیت نگه‌داری نزدیک‌تر و در برد دست است؛ پس از پایان برداشتن، شیء به تماس کف دست هم‌راستا می‌شود تا حرکت بدن/دوربین آن را از دست جدا نکند. مسیر و موقعیت تأییدشدهٔ گذاشتن دست‌نخورده‌اند و این اصلاح در هنگام گذاشتن اجرا نمی‌شود. کنترل لمس AUFHEBEN/ABLEGEN/DREHEN و کلیدهای E/G/R و ذخیره/پیشروی حفظ‌اند؛ راهنمای انگلیسی و ترجمه‌ها به گرفتن خودکار اشاره دارند. بدون مرحله/هدف تازه؛ ۴۲۸ وظیفه، ۵۳ قابل حمل/۷۹ ثابت، قاشق اول و پایان CUR-430. آزمون مستقل Unity در ۳۲۴ حالت اتصال کف دست، گرفتن دستهٔ قاشق، عدم انباشت جابه‌جایی و عدم دخالت در برداشتن/گذاشتن موفق بود. کامپایل runtime/Editor و بررسی دارایی‌های مراحل/ترجمه موفق‌اند؛ تماس ظاهری انگشت‌ها و نفوذ اشیای بزرگ نیازمند بررسی داخل بازی‌اند.
